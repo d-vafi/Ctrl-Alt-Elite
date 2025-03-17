@@ -1,20 +1,11 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
-const SignUp = () => {
-    
+const Login = () => {
   const [formData, setFormData] = useState({
-    fullName: "",
     email: "",
     password: "",
-    role: "Organizer", // Default role
   });
-
-  const roles = [
-    "Organizer",
-    "Attendee",
-    "Administrative User",
-    "Stakeholder",
-  ];
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,32 +13,18 @@ const SignUp = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("User Data:", formData);
-    alert("Sign up successful!"); // Placeholder alert
+    console.log("Login Data:", formData);
+    alert("Login successful!"); // Placeholder for backend authentication
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-blue-600 mb-6">
-          Sign Up
+          Sign In
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Full Name */}
-          <div>
-            <label className="block text-gray-700 font-semibold">Full Name</label>
-            <input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              required
-              className="w-full p-2 border border-gray-300 rounded mt-1"
-              placeholder="Enter your full name"
-            />
-          </div>
-
-          {/* Email */}
+          {/* Email Field */}
           <div>
             <label className="block text-gray-700 font-semibold">Email</label>
             <input
@@ -61,7 +38,7 @@ const SignUp = () => {
             />
           </div>
 
-          {/* Password */}
+          {/* Password Field */}
           <div>
             <label className="block text-gray-700 font-semibold">Password</label>
             <input
@@ -75,34 +52,25 @@ const SignUp = () => {
             />
           </div>
 
-          {/* Role Selection */}
-          <div>
-            <label className="block text-gray-700 font-semibold">Select Role</label>
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded mt-1"
-            >
-              {roles.map((role, index) => (
-                <option key={index} value={role}>
-                  {role}
-                </option>
-              ))}
-            </select>
-          </div>
-
           {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white p-2 rounded mt-4 hover:bg-blue-700"
           >
-            Create Account
+            Sign In
           </button>
+
+          {/* Sign Up Link */}
+          <p className="text-center text-gray-600 text-sm mt-4">
+            Don't have an account?{" "}
+            <Link to="/signup" className="text-blue-600 hover:underline">
+              Sign Up
+            </Link>
+          </p>
         </form>
       </div>
     </div>
   );
 };
 
-export default SignUp;
+export default Login;
