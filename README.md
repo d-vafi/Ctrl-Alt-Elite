@@ -7,10 +7,9 @@ SOEN 343 - Project
 Make sure you're on the path of the porject folder: ./Ctrl-Alt-Elite
 run the following commands:
   npm install
-  npm run dev
+  npm start
 
-React Vite will return this: 
-VITE v4.5.9  ready in 1021 ms
+It will return this: 
 
   ➜  Local:   http://localhost:XXXX/
   ➜  Network: use --host to expose
