@@ -6,6 +6,7 @@ import About from "./pages/About.jsx";
 import Navbar from "./components/Navbar.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Login from "./pages/LogIn.jsx";
+import EventLogin from "./pages/EventLogIn.jsx";
 
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="/signup" element={<SignUp/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/about" element={<About />}/>
+          <Route path="/eventlogin" element={<EventLogin />}/>
         </Routes>
       </main>
       <Footer />
