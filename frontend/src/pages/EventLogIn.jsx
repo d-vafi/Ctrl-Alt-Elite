@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const Login = () => {
+const EventLogin = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -17,7 +17,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/login", formData);
+      const response = await axios.post("http://localhost:8080/api/auth/eventlogin", formData);
       if (response.data.status === "success") {
         alert("Login successful!");
         setMessage(response.data.message);
@@ -27,6 +27,7 @@ const Login = () => {
         setMessage(null);
       }
     } catch (error) {
+      console.error("Login error:", error.response || error.message || error);
       setError("An error occurred during login.");
       setMessage(null);
     }
@@ -77,4 +78,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default EventLogin;

@@ -13,7 +13,12 @@ public class UserService {
 
     public boolean authenticateAdmin(String username, String password) {
         Optional<User> user = userRepository.findByUsernameAndPasswordAndType(username, password, "admin");
-        return user.isPresent();  // Returns true if an admin user is found
+        if (user.isPresent()) {
+            System.out.println("Admin login successful for: " + username);
+        } else {
+            System.out.println("Admin login failed for: " + username);
+        }
+        return user.isPresent();
     }
 
     public User registerUser(User user) {
