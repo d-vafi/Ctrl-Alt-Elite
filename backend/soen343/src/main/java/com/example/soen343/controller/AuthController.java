@@ -27,10 +27,10 @@ public class AuthController {
             User user = userOpt.get();
             response.put("message", "Login successful");
             response.put("status", "success");
-            response.put("type", user.getType()); // Send back the user type
-        } else {
-            response.put("message", "Invalid credentials");
-            response.put("status", "failure");
+            response.put("type", user.getType());
+            if ("user".equals(user.getType())) {
+                response.put("email", user.getEmail()); // Add this line
+            }
         }
     
         return response;

@@ -26,10 +26,11 @@ const EventLogin = () => {
         setMessage(response.data.message);
         setError(null);
   
-        if (response.data.type === "admin") {
-          navigate("/eventpromotiondashboard");
-        } else if (response.data.type === "user") {
+        if (response.data.type === "user") {
+          sessionStorage.setItem("userEmail", response.data.email);
           navigate("/userpromotiondashboard");
+        } else if (response.data.type === "admin") {
+          navigate("/eventpromotiondashboard");
         }
       } else {
         setError(response.data.message);
