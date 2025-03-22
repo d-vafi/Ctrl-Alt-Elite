@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -15,6 +16,25 @@ public class CampaignController {
 
     @Autowired
     private CampaignRepository campaignRepository;
+
+    @GetMapping
+    public List<Campaign> getAllCampaigns() {
+        return campaignRepository.findAll();
+    }
+
+    @PutMapping("/{id}")
+    public Campaign updateCampaign(@PathVariable String id, @RequestBody Campaign updatedCampaign) {
+        return campaignRepository.findById(id)
+                .map(campaign -> {
+                    campaign.setTitle(updatedCampaign.getTitle());
+                    campaign.setDescription(updatedCampaign.getDescription());
+                    campaign.setEventRef(updatedCampaign.getEventRef());
+                    campaign.setType(updatedCampaign.getType());
+                    campaign.setRecipients(updatedCampaign.getRecipients());
+                    return campaignRepository.save(campaign);
+                })
+                .orElseThrow(() -> new RuntimeException("Campaign not found with id: " + id));
+    }
 
     @PostMapping("/create")
     public Campaign createCampaign(@RequestBody Map<String, String> body) {
