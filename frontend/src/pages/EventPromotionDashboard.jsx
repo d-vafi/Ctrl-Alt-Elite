@@ -31,10 +31,15 @@ const EventPromotionDashboard = () => {
     }
   };
   
-  const handleSend = (index) => {
+  const handleSend = async (index) => {
     const campaign = campaigns[index];
-    console.log("Sending campaign:", campaign);
-    alert(`Campaign "${campaign.title}" sent to recipients.`);
+    try {
+      await axios.post(`http://localhost:8080/api/campaigns/${campaign.id}/send`);
+      alert(`Campaign "${campaign.title}" sent successfully.`);
+    } catch (error) {
+      console.error("Error sending campaign:", error);
+      alert("Failed to send campaign.");
+    }
   };
 
     // Inside the component

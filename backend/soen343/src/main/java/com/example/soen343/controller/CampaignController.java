@@ -2,7 +2,11 @@ package com.example.soen343.controller;
 
 import com.example.soen343.model.Campaign;
 import com.example.soen343.repository.CampaignRepository;
+import com.example.soen343.service.EmailService;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -16,6 +20,9 @@ public class CampaignController {
 
     @Autowired
     private CampaignRepository campaignRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping
     public List<Campaign> getAllCampaigns() {
@@ -55,5 +62,21 @@ public class CampaignController {
         );
 
         return campaignRepository.save(campaign);
+    }
+
+    @PostMapping("/{id}/send")
+    public ResponseEntity<String> sendCampaignEmail(@PathVariable String id) {
+        Campaign campaign = campaignRepository.findById(id).orElse(null);
+        if (campaign == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Campaign not found");
+        }
+
+        emailService.sendCampaignEmail(
+            campaign.getTitle(),
+            campaign.getDescription(),
+            campaign.getRecipients()
+        );
+
+        return ResponseEntity.ok("Emails sent successfully!");
     }
 }
