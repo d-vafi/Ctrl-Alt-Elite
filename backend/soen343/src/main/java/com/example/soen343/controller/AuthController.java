@@ -18,6 +18,9 @@ public class AuthController {
     @PostMapping("/eventlogin")
     public Map<String, String> login(@RequestBody User loginRequest) {
         System.out.println("Received login request: " + loginRequest.getUsername());
+
+        System.out.println("USERNAME: " + loginRequest.getUsername());
+        System.out.println("PASSWORD: " + loginRequest.getPassword());
     
         boolean isAuthenticated = userService.authenticateAdmin(loginRequest.getUsername(), loginRequest.getPassword());
         Map<String, String> response = new HashMap<>();

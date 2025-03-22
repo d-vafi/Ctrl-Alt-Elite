@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const EventLogin = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -22,6 +25,7 @@ const EventLogin = () => {
         alert("Login successful!");
         setMessage(response.data.message);
         setError(null);
+        navigate("/eventpromotiondashboard"); // 👈 route to dashboard
       } else {
         setError(response.data.message);
         setMessage(null);

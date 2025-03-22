@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.*;
 
-@Document(collection = "users")  // Maps to MongoDB collection
+@Document(collection = "user")  // Maps to MongoDB collection
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 public class User {

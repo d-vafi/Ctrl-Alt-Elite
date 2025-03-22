@@ -13,6 +13,7 @@ public class UserService {
 
     public boolean authenticateAdmin(String username, String password) {
         Optional<User> user = userRepository.findByUsernameAndPasswordAndType(username, password, "admin");
+        System.out.println(userRepository.findAll());
         if (user.isPresent()) {
             System.out.println("Admin login successful for: " + username);
         } else {
