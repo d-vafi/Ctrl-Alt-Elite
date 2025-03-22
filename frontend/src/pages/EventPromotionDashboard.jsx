@@ -11,6 +11,41 @@ const EventPromotionDashboard = () => {
     recipients: "",
   });
 
+  const [mockCampaigns, setMockCampaigns] = useState([
+    {
+      title: "Library Meetup",
+      description: "Come study with us in the library this Friday.",
+      eventRef: "67de0dd7510a59f39dc1781b",
+      type: "email",
+      recipients: "john@example.com, jane@example.com",
+    },
+    {
+      title: "Coding Jam",
+      description: "Join our coding event on March 30th!",
+      eventRef: "67de0dd7510a59f39dc1781c",
+      type: "social",
+      recipients: "dev@example.com",
+    },
+  ]);
+  
+  const handleCampaignChange = (index, field, value) => {
+    const updated = [...mockCampaigns];
+    updated[index][field] = value;
+    setMockCampaigns(updated);
+  };
+  
+  const handleUpdate = (index) => {
+    const campaign = mockCampaigns[index];
+    console.log("Updated campaign:", campaign);
+    alert(`Campaign "${campaign.title}" updated.`);
+  };
+  
+  const handleSend = (index) => {
+    const campaign = mockCampaigns[index];
+    console.log("Sending campaign:", campaign);
+    alert(`Campaign "${campaign.title}" sent to recipients.`);
+  };
+
     // Inside the component
     const [events, setEvents] = useState([]);
 
@@ -24,10 +59,25 @@ const EventPromotionDashboard = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitted data:", formData);
-    setIsModalOpen(false); // Close the modal for now
+    try {
+      const response = await axios.post("http://localhost:8080/api/campaigns/create", formData);
+      console.log("Campaign created:", response.data);
+      alert("Campaign successfully created!");
+      setIsModalOpen(false); // Close modal
+      // Optionally reset form
+      setFormData({
+        event: "",
+        type: "",
+        title: "",
+        description: "",
+        recipients: "",
+      });
+    } catch (error) {
+      console.error("Error creating campaign:", error);
+      alert("There was an error creating the campaign.");
+    }
   };
 
   return (
@@ -134,6 +184,61 @@ const EventPromotionDashboard = () => {
           </div>
         </div>
       )}
+
+        {/* Mock Campaign List */}
+        <div className="mt-10 w-full max-w-3xl">
+        <h2 className="text-xl font-bold mb-4 text-center text-gray-800">Existing Campaigns</h2>
+        {mockCampaigns.map((campaign, index) => (
+            <div key={index} className="bg-white shadow-md rounded p-6 mb-6">
+            <input
+                type="text"
+                className="block w-full mb-2 border border-gray-300 rounded p-2"
+                value={campaign.title}
+                onChange={(e) => handleCampaignChange(index, "title", e.target.value)}
+            />
+            <textarea
+                className="block w-full mb-2 border border-gray-300 rounded p-2"
+                value={campaign.description}
+                rows="2"
+                onChange={(e) => handleCampaignChange(index, "description", e.target.value)}
+            />
+            <input
+                type="text"
+                className="block w-full mb-2 border border-gray-300 rounded p-2"
+                value={campaign.eventRef}
+                onChange={(e) => handleCampaignChange(index, "eventRef", e.target.value)}
+            />
+            <select
+                className="block w-full mb-2 border border-gray-300 rounded p-2"
+                value={campaign.type}
+                onChange={(e) => handleCampaignChange(index, "type", e.target.value)}
+            >
+                <option value="email">Email</option>
+                <option value="social">Social Media</option>
+            </select>
+            <input
+                type="text"
+                className="block w-full mb-4 border border-gray-300 rounded p-2"
+                value={campaign.recipients}
+                onChange={(e) => handleCampaignChange(index, "recipients", e.target.value)}
+            />
+            <div className="flex justify-end space-x-2">
+                <button
+                onClick={() => handleUpdate(index)}
+                className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                >
+                Update
+                </button>
+                <button
+                onClick={() => handleSend(index)}
+                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                >
+                Send out Campaign
+                </button>
+            </div>
+            </div>
+        ))}
+        </div>
     </div>
   );
 };
