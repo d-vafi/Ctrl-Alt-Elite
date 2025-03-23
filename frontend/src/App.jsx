@@ -8,7 +8,7 @@ import SignUp from "./pages/SignUp.jsx";
 import Login from "./pages/LogIn.jsx";
 import EventLogin from "./pages/EventLogIn.jsx";
 import EventPromotionDashboard from "./pages/EventPromotionDashboard.jsx";
-
+import Networking from "./pages/Networking.jsx";
 
 const App = () => {
   return (
@@ -17,11 +17,15 @@ const App = () => {
       <main className="w-full min-h-screen flex flex-col items-center justify-center p-4">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/signup" element={<SignUp/>}/>
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/about" element={<About />}/>
-          <Route path="/eventlogin" element={<EventLogin />}/>
-          <Route path="/eventpromotiondashboard" element={<EventPromotionDashboard />}/>
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/eventlogin" element={<EventLogin />} />
+          <Route
+            path="/eventpromotiondashboard"
+            element={<EventPromotionDashboard />}
+          />
+          <Route path="/networking" element={<Networking />} />
         </Routes>
       </main>
       <Footer />
