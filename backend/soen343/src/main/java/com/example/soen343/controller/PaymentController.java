@@ -42,6 +42,10 @@ public class PaymentController {
     PaymentOrder previewOrder = paymentService.previewOrder(order, discountStrategy, paymentStrategy);
     return ResponseEntity.ok(previewOrder);
 }
+   @GetMapping("/user/{userId}")
+    public List<PaymentOrder> getOrdersByUser(@PathVariable String userId) {
+     return paymentRepository.findByUserId(userId);
+    }
 
 }
 

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 @Component("percentageDiscountStrategy")
 public class PercentageDiscountStrategy implements DiscountStrategy {
 
-    // You can inject the discount percentage from properties
     @Value("${discount.percentage:10}")
     private double percentage;
 

@@ -5,12 +5,12 @@ import axios from "axios";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    username: "", // make sure it's username if your backend expects username
+    username: "", 
     password: "",
   });
 
-  const { setIsLoggedIn } = useContext(AuthContext); // ✅ Context
-  const navigate = useNavigate(); // ✅ Navigation
+  const { setIsLoggedIn } = useContext(AuthContext); 
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,9 +22,10 @@ const Login = () => {
     try {
       const res = await axios.post("http://localhost:8080/api/auth/login", formData);
       if (res.data.status === "success") {
-        localStorage.setItem("token", "mock-token"); // optional
-        setIsLoggedIn(true); // ✅ update login state
-        navigate("/events"); // ✅ redirect
+        localStorage.setItem("token", "mock-token"); 
+        localStorage.setItem("userId", res.data.userId);
+        setIsLoggedIn(true); 
+        navigate("/events");
       } else {
         alert("Invalid credentials");
       }

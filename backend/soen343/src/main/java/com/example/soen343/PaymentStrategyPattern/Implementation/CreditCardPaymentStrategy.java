@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 public class CreditCardPaymentStrategy implements PaymentStrategy {
     @Override
     public boolean processPayment(double amount) {
-        // Implement credit card payment logic (e.g., call external API)
         System.out.println("Processing credit card payment for $" + amount);
+        System.out.println("Paid Successfully!");
         return true;
     }
 }

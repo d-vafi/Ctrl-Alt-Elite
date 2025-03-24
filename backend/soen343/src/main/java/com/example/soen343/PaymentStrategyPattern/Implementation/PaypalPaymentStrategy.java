@@ -8,8 +8,9 @@ import org.springframework.stereotype.Component;
 public class PaypalPaymentStrategy implements PaymentStrategy {
     @Override
     public boolean processPayment(double amount) {
-        // Implement PayPal payment logic (e.g., call external API)
+        
         System.out.println("Processing PayPal payment for $" + amount);
+        System.out.println("Paid Successfully!");
         return true;
     }
 }
