@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-// @CrossOrigin(origins = "http://localhost:3000") // Allows React to call API
+@CrossOrigin(origins = "http://localhost:3000") // Allows React to call API
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -40,4 +40,22 @@ public class AuthController {
     public User registerUser(@RequestBody User user) {
         return userService.registerUser(user);
     }
+
+    @PostMapping("/login")
+    public Map<String, String> loginUser(@RequestBody User loginRequest) {
+     Optional<User> userOpt = userService.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
+     Map<String, String> response = new HashMap<>();
+
+     if (userOpt.isPresent()) {
+        response.put("message", "Login successful");
+        response.put("status", "success");
+        response.put("username", loginRequest.getUsername());
+     } else {
+        response.put("message", "Invalid credentials");
+        response.put("status", "error");
+     }
+
+     return response;
+}
+
 }
