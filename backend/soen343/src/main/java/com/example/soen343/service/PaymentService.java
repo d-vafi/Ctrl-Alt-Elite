@@ -20,7 +20,7 @@ public class PaymentService {
 
     public PaymentOrder processPayment(PaymentOrder order, String discountStrategyType, String paymentStrategyType) {
 
-        // Retrieve the strategy beans by name (e.g., "noDiscountStrategy", "percentageDiscountStrategy")
+        // Retrieve the strategy beans by name
         DiscountStrategy discountStrategy = (DiscountStrategy) applicationContext.getBean(discountStrategyType);
         PaymentStrategy paymentStrategy = (PaymentStrategy) applicationContext.getBean(paymentStrategyType);
 

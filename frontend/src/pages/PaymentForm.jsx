@@ -15,8 +15,6 @@ const PaymentForm = () => {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
 
-  const userId = localStorage.getItem("userId");
-
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -44,7 +42,6 @@ const PaymentForm = () => {
             const order = {
                 amount: parseFloat(eventData.price),
                 eventId: eventId,
-                userId: userId
               };
       
           const res = await axios.post(
