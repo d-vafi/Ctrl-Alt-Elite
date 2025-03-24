@@ -1,0 +1,159 @@
+@startuml classdiagram
+
+class PaymentOrder {
+    - String id
+    - double amount
+    - double discountedAmount
+    - String discountType
+    - String paymentType
+    - String eventId
+    - String userId
+
+    + PaymentOrder()
+    + PaymentOrder(double amount)
+    + String getId()
+    + void setId(String id)
+    + double getAmount()
+    + void setAmount(double amount)
+    + double getDiscountedAmount()
+    + void setDiscountedAmount(double discountedAmount)
+    + String getDiscountType()
+    + void setDiscountType(String discountType)
+    + String getPaymentType()
+    + void setPaymentType(String paymentType)
+    + String getEventId()
+    + void setEventId(String eventId)
+    + String getUserId()
+    + void setUserId(String userId)
+
+}
+
+class User {
+    
+    - String id;
+    - String username;
+    - String password;
+    - String type; 
+    - String email;  
+}
+class Campaign {
+    
+    - String id
+    - String eventRef
+    - String type
+    - String title
+    - String description
+    - List<String> recipients
+
+    + Campaign()
+    + Campaign(String eventRef, String type, 
+    String title, String description, List<String> recipients)
+    + String getId()
+    + void setId(String id)
+    + String getEventRef()
+    + void setEventRef(String eventRef)
+    + String getType()
+    + void setType(String type)
+    + String getTitle()
+    + void setTitle(String title)
+    + String getDescription()
+    + void setDescription(String description)
+    + List<String> getRecipients()
+    + void setRecipients(List<String> recipients)
+}
+
+class Event {
+    - String id
+    - String title
+    - String description
+    - double price
+
+    + Event()
+    + Event(String title, String description, double price)
+    + String getId()
+    + void setId(String id)
+    + String getTitle()
+    + void setTitle(String title)
+    + String getDescription()
+    + void setDescription(String description)
+    + double getPrice()
+    + void setPrice(double price)
+}
+
+'PaymentStrategyPattern
+
+interface DiscountStrategy {
+    + double applyDiscount(double amount)
+}
+
+class NoDiscountStrategy implements DiscountStrategy {
+    + double applyDiscount(double amount)
+}
+class TenDollarsOffDiscountStrategy implements DiscountStrategy {
+    + double applyDiscount(double amount)
+}
+
+class PercentageDiscountStrategy implements DiscountStrategy {
+    + double applyDiscount(double amount)
+}
+
+interface PaymentStrategy {
+    + boolean processPayment(double amount)
+}
+
+class PaypalPaymentStrategy implements PaymentStrategy {
+    + boolean processPayment(double amount)
+}
+
+class CreditCardPaymentStrategy implements PaymentStrategy {
+    + boolean processPayment(double amount)
+}
+
+'service
+class UserService {
+    + Optional<User> findByUsernameAndPassword(
+    String username, 
+    String password)
+    + User registerUser(User user)
+}
+
+class PaymentService {
+    + PaymentOrder processPayment(PaymentOrder order, 
+    String discountStrategyType, String paymentStrategyType)
+    + PaymentOrder previewOrder(PaymentOrder order, 
+    String discountName, String paymentName)
+}
+
+class EmailService {
+    + void sendCampaignEmail(String title, String body, 
+    List<String> recipients)
+}
+
+'controller
+class AuthController {
+    + Map<String, String> login(User loginRequest)
+    + User registerUser(User user)
+    + Map<String, String> loginUser(User loginRequest)
+}
+
+class CampaignController {
+    + List<Campaign> getAllCampaigns()
+    + Campaign updateCampaign(String id, Campaign updatedCampaign)
+    + Campaign createCampaign(Map<String, String> body)
+    + ResponseEntity<String> sendCampaignEmail(String id)
+    + Campaign subscribe(String id, String email)
+    + Campaign unsubscribe(String id, String email)
+}
+
+class PaymentController {
+    + ResponseEntity<PaymentOrder> processPayment(PaymentOrder order, String discountStrategy, String paymentStrategy)
+    + ResponseEntity<PaymentOrder> previewPayment(PaymentOrder order, String discountStrategy, String paymentStrategy)
+    + List<PaymentOrder> getOrdersByUser(String userId)
+}
+
+class EventController {
+    + List<Event> getAllEvents()
+    + ResponseEntity<Event> getEventById(String id)
+}
+
+@enduml
