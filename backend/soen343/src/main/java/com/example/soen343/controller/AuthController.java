@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 // @CrossOrigin(origins = "http://localhost:3000") // Allows React to call API
 @RestController
@@ -18,19 +19,18 @@ public class AuthController {
     @PostMapping("/eventlogin")
     public Map<String, String> login(@RequestBody User loginRequest) {
         System.out.println("Received login request: " + loginRequest.getUsername());
-
-        System.out.println("USERNAME: " + loginRequest.getUsername());
-        System.out.println("PASSWORD: " + loginRequest.getPassword());
     
-        boolean isAuthenticated = userService.authenticateAdmin(loginRequest.getUsername(), loginRequest.getPassword());
+        Optional<User> userOpt = userService.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
         Map<String, String> response = new HashMap<>();
     
-        if (isAuthenticated) {
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
             response.put("message", "Login successful");
             response.put("status", "success");
-        } else {
-            response.put("message", "Invalid credentials or not an admin");
-            response.put("status", "failure");
+            response.put("type", user.getType());
+            if ("user".equals(user.getType())) {
+                response.put("email", user.getEmail()); // Add this line
+            }
         }
     
         return response;

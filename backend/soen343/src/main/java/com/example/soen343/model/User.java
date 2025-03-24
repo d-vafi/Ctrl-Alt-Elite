@@ -13,4 +13,5 @@ public class User {
     private String username;
     private String password;
     private String type;  // "admin" or "user"
+    private String email;  // 👈 Add this line
 }

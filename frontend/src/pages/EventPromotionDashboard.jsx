@@ -21,8 +21,21 @@ const EventPromotionDashboard = () => {
   
   const handleUpdate = async (index) => {
     const campaign = campaigns[index];
+  
+    // Convert recipients from comma-separated string to an array
+    const formattedCampaign = {
+      ...campaign,
+      recipients: campaign.recipients
+        .split(",")
+        .map(email => email.trim())
+        .filter(email => email.length > 0)
+    };
+  
     try {
-      const response = await axios.put(`http://localhost:8080/api/campaigns/${campaign.id}`, campaign);
+      const response = await axios.put(
+        `http://localhost:8080/api/campaigns/${campaign.id}`,
+        formattedCampaign
+      );
       console.log("Campaign updated:", response.data);
       alert(`Campaign "${campaign.title}" successfully updated.`);
     } catch (error) {
