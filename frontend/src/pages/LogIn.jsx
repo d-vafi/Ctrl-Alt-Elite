@@ -36,7 +36,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center bg-gray-100 min-h-screen">
+    <div className="flex items-center justify-center min-h-screen">
       <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-blue-600 mb-6">
           Sign In
