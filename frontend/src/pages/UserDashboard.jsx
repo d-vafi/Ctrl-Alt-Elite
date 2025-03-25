@@ -249,24 +249,32 @@ const UserDashboard = () => {
       {/* Registered Events */}
       {hasRole("Attendee") && (
         <div className="mb-10">
-          <h2 className="text-xl font-bold mb-3">My Events</h2>
+          <h2 className="text-2xl font-bold mb-4 text-blue-700">My Events</h2>
+
           {user.registeredEvents.length === 0 ? (
-            <p className="text-gray-600">No registered events yet.</p>
+            <p className="text-gray-500 italic text-center">
+              You haven't registered for any events yet.
+            </p>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-6">
               {user.registeredEvents.map((event) => (
                 <div
                   key={event.id}
-                  className="border p-4 rounded shadow flex justify-between items-center"
+                  className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border border-gray-200 rounded-lg shadow-sm p-4 bg-white transition hover:shadow-md"
                 >
                   <div>
-                    <h3 className="font-semibold">{event.title}</h3>
-                    <p className="text-sm text-gray-600">Role: {event.role}</p>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      {event.title}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      Role: <span className="capitalize">{event.role}</span>
+                    </p>
                     <p className="text-sm text-gray-500">Date: {event.date}</p>
                   </div>
+
                   <button
                     onClick={() => cancelRegistration(event.id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                    className="self-end sm:self-auto bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-4 py-2 rounded transition"
                   >
                     Cancel
                   </button>
