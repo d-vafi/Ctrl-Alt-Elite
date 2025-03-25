@@ -1,8 +1,7 @@
 package com.example.soen343.service;
 
-import com.example.soen343.model.Event;
-import com.example.soen343.model.Registration;
-import com.example.soen343.model.User;
+import com.example.soen343.factory.UserFactory;
+import com.example.soen343.model.*;
 import com.example.soen343.repository.UserRepository;
 import com.example.soen343.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,31 +27,31 @@ public class UserService {
 
     public Map<String, Object> getUserProfile(String userId) {
         return userRepository.findById(userId).map(user -> {
+            AbstractUser castedUser = UserFactory.createUser(user);
             Map<String, Object> result = new HashMap<>();
-            result.put("user", user);
+            result.put("user", castedUser);
 
-            // Create enriched registeredEvents
-            List<Map<String, Object>> enrichedEvents = user.getRegistrations().stream()
-                    .map(reg -> {
-                        Event event = eventRepository.findById(reg.getEventId()).orElse(null);
-                        if (event == null) return null;
-                        Map<String, Object> enriched = new HashMap<>();
-                        enriched.put("id", event.getId());
-                        enriched.put("title", event.getTitle());
-                        enriched.put("description", event.getDescription());
-                        enriched.put("price", event.getPrice());
-                        enriched.put("date", event.getDate());
-                        enriched.put("role", reg.getRole()); // <== this is the key!
-                        return enriched;
-                    })
-                    .filter(Objects::nonNull)
-                    .toList();
+            if (castedUser instanceof Attendee attendee) {
+                List<Map<String, Object>> enrichedEvents = attendee.getRegistrations().stream()
+                        .map(reg -> {
+                            Event event = eventRepository.findById(reg.getEventId()).orElse(null);
+                            if (event == null) return null;
+                            Map<String, Object> enriched = new HashMap<>();
+                            enriched.put("id", event.getId());
+                            enriched.put("title", event.getTitle());
+                            enriched.put("description", event.getDescription());
+                            enriched.put("price", event.getPrice());
+                            enriched.put("date", event.getDate());
+                            enriched.put("role", reg.getRole());
+                            return enriched;
+                        })
+                        .filter(Objects::nonNull)
+                        .toList();
 
-            result.put("registeredEvents", enrichedEvents);
-
-            // Speaker invites remain the same
-            result.put("speakerInvitations",
-                    eventRepository.findAllById(user.getSpeakerInvitationIds()));
+                result.put("registeredEvents", enrichedEvents);
+                result.put("speakerInvitations",
+                        eventRepository.findAllById(attendee.getSpeakerInvitationIds()));
+            }
 
             return result;
         }).orElse(Collections.emptyMap());

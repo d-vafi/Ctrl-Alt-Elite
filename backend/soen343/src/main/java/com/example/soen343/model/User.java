@@ -15,16 +15,16 @@ public class User {
     private String id;
     private String username;
     private String password;
-    private String type;  // "admin" or "user"
-    private String email;  // 👈 Add this line
-
-    // Profile info
+    private String type; // "attendee" or "stakeholder"
+    private String email;
     private String fullName;
-    private String affiliation;
-    private String profession;
-    private String organization;
 
-    // Store event references only
+    // Attendee-only fields
+    private String profession;
+    private String affiliation;
     private List<Registration> registrations = new ArrayList<>();
     private List<String> speakerInvitationIds = new ArrayList<>();
+
+    // Stakeholder-only field
+    private String organization;
 }
