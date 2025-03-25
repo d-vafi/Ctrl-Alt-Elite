@@ -1,50 +1,47 @@
 import React, { useEffect, useState } from "react";
-
-// 🔧 Hardcoded mock user with dual roles
-const initialMockUser = {
-  fullName: "Youssef Ouakaa",
-  email: "youssef@example.com",
-  affiliation: "Concordia University",
-  role: "Attendee,Stakeholder",
-  profession: "Software Engineering Student",
-  organization: "EduEvents Inc.",
-  registeredEvents: [
-    { id: 1, title: "AI for Education", date: "2025-04-10", role: "learner" },
-    {
-      id: 2,
-      title: "Cybersecurity Trends",
-      date: "2025-05-01",
-      role: "speaker",
-    },
-  ],
-  speakerInvitations: [
-    { id: 3, title: "Quantum Computing for Beginners", status: "pending" },
-  ],
-};
+import axios from "axios";
 
 const UserDashboard = () => {
-  const [user, setUser] = useState(initialMockUser);
+  const [user, setUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    affiliation: "",
-    profession: "",
-    organization: "",
-  });
+  const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    setFormData({
-      fullName: user.fullName,
-      email: user.email,
-      affiliation: user.affiliation,
-      profession: user.profession,
-      organization: user.organization,
-    });
-  }, [user]);
+  const userId = localStorage.getItem("userId");
 
-  const hasRole = (role) => user.role?.includes(role);
+  const hasRole = (role) => user?.type?.includes(role);
+
+  const fetchUser = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/api/users/me?userId=${userId}`
+      );
+
+      const userData = res.data.user;
+
+      // Attach registered events and speaker invitations directly to user object
+      userData.registeredEvents = res.data.registeredEvents || [];
+      userData.speakerInvitations = res.data.speakerInvitations || [];
+
+      setUser(userData);
+
+      console.log(userData);
+      setFormData({
+        fullName: userData.fullName,
+        email: userData.email,
+        affiliation: userData.affiliation,
+        profession: userData.profession,
+        organization: userData.organization,
+        role: userData.type,
+      });
+    } catch (err) {
+      console.error("Error fetching user", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -53,55 +50,70 @@ const UserDashboard = () => {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.fullName.trim())
+    if (!formData.fullName?.trim())
       newErrors.fullName = "Full name is required.";
-    if (!formData.email.trim()) newErrors.email = "Email is required.";
+    if (!formData.email?.trim()) newErrors.email = "Email is required.";
     else if (!/^\S+@\S+\.\S+$/.test(formData.email))
-      newErrors.email = "Email format is invalid.";
-    if (!formData.affiliation.trim())
+      newErrors.email = "Invalid email format.";
+    if (!formData.affiliation?.trim())
       newErrors.affiliation = "Affiliation is required.";
-    if (hasRole("Attendee") && !formData.profession.trim())
-      newErrors.profession = "Profession is required for attendees.";
-    if (hasRole("Stakeholder") && !formData.organization.trim())
-      newErrors.organization =
-        "Organization name is required for stakeholders.";
+    if (hasRole("Attendee") && !formData.profession?.trim())
+      newErrors.profession = "Profession is required.";
+    if (hasRole("Stakeholder") && !formData.organization?.trim())
+      newErrors.organization = "Organization is required.";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (!validate()) return;
-    setUser((prev) => ({
-      ...prev,
-      ...formData,
-    }));
-    setEditMode(false);
-    alert("Profile updated!");
+
+    try {
+      await axios.put(
+        `http://localhost:8080/api/users/me?userId=${userId}`,
+        formData
+      );
+      alert("Profile updated!");
+      setEditMode(false);
+      fetchUser();
+    } catch (err) {
+      console.error("Failed to update profile", err);
+      alert("Failed to update your profile.");
+    }
   };
 
-  const acceptInvitation = (event) => {
-    setUser((prev) => ({
-      ...prev,
-      registeredEvents: [
-        ...prev.registeredEvents,
-        { ...event, role: "speaker" },
-      ],
-      speakerInvitations: prev.speakerInvitations.filter(
-        (e) => e.id !== event.id
-      ),
-    }));
-    alert(`Accepted invitation to speak at "${event.title}"`);
-  };
-
-  const cancelRegistration = (eventId) => {
+  const cancelRegistration = async (eventId) => {
     const event = user.registeredEvents.find((e) => e.id === eventId);
     if (!window.confirm(`Cancel registration for "${event.title}"?`)) return;
 
-    setUser((prev) => ({
-      ...prev,
-      registeredEvents: prev.registeredEvents.filter((e) => e.id !== eventId),
-    }));
+    try {
+      await axios.delete(
+        `http://localhost:8080/api/users/registrations/${eventId}?userId=${userId}`
+      );
+      alert("Registration cancelled.");
+      fetchUser();
+    } catch (err) {
+      console.error("Failed to cancel registration", err);
+      alert("Failed to cancel.");
+    }
   };
+
+  const acceptInvitation = async (event) => {
+    try {
+      await axios.post(
+        `http://localhost:8080/api/users/invitations/${event.id}/accept?userId=${userId}`,
+        { userId }
+      );
+      alert(`Accepted invitation for ${event.title}`);
+      fetchUser();
+    } catch (err) {
+      console.error("Failed to accept invitation", err);
+      alert("Could not accept invitation.");
+    }
+  };
+
+  if (!user) return <p>Loading user data...</p>;
 
   return (
     <div className="max-w-3xl mx-auto mt-10 p-6 bg-white rounded shadow-md">
@@ -158,7 +170,7 @@ const UserDashboard = () => {
               )}
             </div>
 
-            {/* Profession (Attendee) */}
+            {/* Profession */}
             {hasRole("Attendee") && (
               <div className="mb-4">
                 <label className="block font-semibold">Profession</label>
@@ -175,10 +187,10 @@ const UserDashboard = () => {
               </div>
             )}
 
-            {/* Organization (Stakeholder) */}
+            {/* Organization */}
             {hasRole("Stakeholder") && (
               <div className="mb-4">
-                <label className="block font-semibold">Organization Name</label>
+                <label className="block font-semibold">Organization</label>
                 <input
                   type="text"
                   name="organization"
@@ -221,8 +233,9 @@ const UserDashboard = () => {
               </p>
             )}
             <p>
-              <strong>Role:</strong> {user.role}
+              <strong>Role:</strong> {user.type}
             </p>
+
             <button
               onClick={() => setEditMode(true)}
               className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
@@ -238,9 +251,7 @@ const UserDashboard = () => {
         <div className="mb-10">
           <h2 className="text-xl font-bold mb-3">My Events</h2>
           {user.registeredEvents.length === 0 ? (
-            <p className="text-gray-600">
-              You haven’t registered for any events yet.
-            </p>
+            <p className="text-gray-600">No registered events yet.</p>
           ) : (
             <div className="space-y-4">
               {user.registeredEvents.map((event) => (
@@ -294,7 +305,7 @@ const UserDashboard = () => {
         </div>
       )}
 
-      {/* Stakeholder Tools */}
+      {/* Stakeholder View */}
       {hasRole("Stakeholder") && (
         <div className="border-t pt-6">
           <h2 className="text-xl font-bold mb-3">Stakeholder Tools</h2>
