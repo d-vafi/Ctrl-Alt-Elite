@@ -25,7 +25,13 @@ const EventLogin = () => {
         alert("Login successful!");
         setMessage(response.data.message);
         setError(null);
-        navigate("/eventpromotiondashboard"); // 👈 route to dashboard
+  
+        if (response.data.type === "user") {
+          sessionStorage.setItem("userEmail", response.data.email);
+          navigate("/userpromotiondashboard");
+        } else if (response.data.type === "admin") {
+          navigate("/eventpromotiondashboard");
+        }
       } else {
         setError(response.data.message);
         setMessage(null);
@@ -36,6 +42,7 @@ const EventLogin = () => {
       setMessage(null);
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center bg-gray-100">

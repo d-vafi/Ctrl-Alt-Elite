@@ -11,15 +11,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public boolean authenticateAdmin(String username, String password) {
-        Optional<User> user = userRepository.findByUsernameAndPasswordAndType(username, password, "admin");
-        System.out.println(userRepository.findAll());
-        if (user.isPresent()) {
-            System.out.println("Admin login successful for: " + username);
-        } else {
-            System.out.println("Admin login failed for: " + username);
-        }
-        return user.isPresent();
+    public Optional<User> findByUsernameAndPassword(String username, String password) {
+        return userRepository.findByUsernameAndPassword(username, password);
     }
 
     public User registerUser(User user) {

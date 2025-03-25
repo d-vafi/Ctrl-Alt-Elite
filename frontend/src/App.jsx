@@ -8,6 +8,12 @@ import SignUp from "./pages/SignUp.jsx";
 import Login from "./pages/LogIn.jsx";
 import EventLogin from "./pages/EventLogIn.jsx";
 import EventPromotionDashboard from "./pages/EventPromotionDashboard.jsx";
+import UserPromotionDashboard from "./pages/UserPromotionDashboard.jsx";
+import PaymentForm from "./pages/PaymentForm.jsx";
+import EventCatalog from "./pages/EventCatalog.jsx";
+import PrivateRoute from "./components/PrivateRoute.jsx";
+import PaymentSuccess from "./pages/PaymentSuccess.jsx";
+import PaymentError from "./pages/PaymentError.jsx";
 import Networking from "./pages/Networking.jsx";
 
 const App = () => {
@@ -26,6 +32,21 @@ const App = () => {
             element={<EventPromotionDashboard />}
           />
           <Route path="/networking" element={<Networking />} />
+          <Route
+            path="/userpromotiondashboard"
+            element={<UserPromotionDashboard />}
+          />
+          <Route
+            path="/payment"
+            element={
+              <PrivateRoute>
+                <PaymentForm />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/events" element={<EventCatalog />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/payment-error" element={<PaymentError />} />
         </Routes>
       </main>
       <Footer />

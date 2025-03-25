@@ -79,4 +79,27 @@ public class CampaignController {
 
         return ResponseEntity.ok("Emails sent successfully!");
     }
+
+    @PutMapping("/{id}/subscribe")
+    public Campaign subscribe(@PathVariable String id, @RequestParam String email) {
+        return campaignRepository.findById(id).map(campaign -> {
+            if (!campaign.getRecipients().contains(email)) {
+                campaign.getRecipients().add(email);
+                return campaignRepository.save(campaign);
+            }
+            return campaign;
+        }).orElseThrow(() -> new RuntimeException("Campaign not found"));
+    }
+    
+    @PutMapping("/{id}/unsubscribe")
+    public Campaign unsubscribe(@PathVariable String id, @RequestParam String email) {
+        return campaignRepository.findById(id).map(campaign -> {
+            campaign.setRecipients(
+                campaign.getRecipients().stream()
+                    .filter(e -> !e.equalsIgnoreCase(email))
+                    .toList()
+            );
+            return campaignRepository.save(campaign);
+        }).orElseThrow(() -> new RuntimeException("Campaign not found"));
+    }
 }
