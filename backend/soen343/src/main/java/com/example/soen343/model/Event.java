@@ -10,14 +10,17 @@ public class Event {
     private String title;
     private String description;
     private double price;
-
+    private String date;
     // Constructors
     public Event() {}
 
-    public Event(String title, String description, double price) {
+
+
+    public Event(String title, String description, double price, String date) {
         this.title = title;
         this.description = description;
         this.price = price;
+        this.date = date;
     }
 
     // Getters and setters
@@ -51,5 +54,12 @@ public class Event {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }
