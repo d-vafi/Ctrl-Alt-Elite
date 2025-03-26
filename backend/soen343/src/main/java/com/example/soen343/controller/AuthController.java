@@ -50,6 +50,7 @@ public class AuthController {
         response.put("message", "Login successful");
         response.put("status", "success");
         response.put("username", loginRequest.getUsername());
+        response.put("userId", userOpt.get().getId());
      } else {
         response.put("message", "Invalid credentials");
         response.put("status", "error");
