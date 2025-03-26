@@ -3,6 +3,7 @@ package com.example.soen343.model;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.*;
 
@@ -14,7 +15,7 @@ import lombok.*;
 public class Conversation {
     @Id
     private String id;
-    private List<User> users;
+    private List<String> userIds;
     private boolean isGroup;
     private String lastMessage;
     private String lastMessageSender;

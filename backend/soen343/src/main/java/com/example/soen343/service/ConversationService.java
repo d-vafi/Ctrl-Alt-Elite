@@ -15,9 +15,6 @@ public class ConversationService {
     @Autowired
     private ConversationRepository conversationRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
     public List<Conversation> findByUsers_Id(String userId) {
         return conversationRepository.findByUsers_Id(userId);
     }
@@ -26,41 +23,24 @@ public class ConversationService {
         return conversationRepository.save(conversation);
     }
 
-    public Conversation createConversationGroup(User user1, User user2) {
+    public Conversation createConversationGroup(String userId1, String userId2) {
         Conversation conversation = new Conversation();
-        conversation.setUsers(List.of(user1, user2));
+        conversation.setUserIds(List.of(userId1, userId2));
         conversation.setGroup(true);
         return conversationRepository.save(conversation);
     }
 
-    public Conversation createConversationGroup(String userId1, String userId2) {
-        Optional<User> user1 = userRepository.findById(userId1);
-        Optional<User> user2 = userRepository.findById(userId2);
-        if (user1.isPresent() && user2.isPresent()) {
-            return createConversationGroup(user1.get(), user2.get());
-        }
-        return null;
-    }
-
-    public Conversation createConversationPrivateMessage(User user1, User user2) {
-        List<Conversation> conversations = conversationRepository.findByUsers_Id(user1.getId());
+    public Conversation createConversationPrivateMessage(String userId1, String userId2) {
+        List<Conversation> conversations = conversationRepository.findByUsers_Id(userId1);
         for (Conversation conversation : conversations) {
-            if (conversation.getUsers().contains(user2) && !conversation.isGroup()) {
+            if (conversation.getUserIds().contains(userId2) && !conversation.isGroup()) {
                 return conversation;
             }
         }
         Conversation conversation = new Conversation();
-        conversation.setUsers(List.of(user1, user2));
+        conversation.setUserIds(List.of(userId1, userId2));
         conversation.setGroup(false);
         return conversationRepository.save(conversation);
     }
 
-    public Conversation createConversationPrivateMessage(String userId1, String userId2) {
-        Optional<User> user1 = userRepository.findById(userId1);
-        Optional<User> user2 = userRepository.findById(userId2);
-        if (user1.isPresent() && user2.isPresent()) {
-            return createConversationPrivateMessage(user1.get(), user2.get());
-        }
-        return null;
-    }
 }
