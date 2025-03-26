@@ -13,5 +13,5 @@ import java.util.Optional;
 @Repository
 public interface ConversationRepository extends MongoRepository<Conversation, String> {
     @Query("SELECT c FROM Conversation c WHERE :userId IN (SELECT u.id FROM User u WHERE u IN c.users)")
-    public List<Conversation> findByUsers_Id(String userId);
+    public List<Conversation> findByUserId(String userId);
 }

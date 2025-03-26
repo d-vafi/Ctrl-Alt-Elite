@@ -15,8 +15,8 @@ public class ConversationService {
     @Autowired
     private ConversationRepository conversationRepository;
 
-    public List<Conversation> findByUsers_Id(String userId) {
-        return conversationRepository.findByUsers_Id(userId);
+    public List<Conversation> findByUserId(String userId) {
+        return conversationRepository.findByUserId(userId);
     }
 
     public Conversation save(Conversation conversation) {
@@ -31,7 +31,7 @@ public class ConversationService {
     }
 
     public Conversation createConversationPrivateMessage(String userId1, String userId2) {
-        List<Conversation> conversations = conversationRepository.findByUsers_Id(userId1);
+        List<Conversation> conversations = conversationRepository.findByUserId(userId1);
         for (Conversation conversation : conversations) {
             if (conversation.getUserIds().contains(userId2) && !conversation.isGroup()) {
                 return conversation;
