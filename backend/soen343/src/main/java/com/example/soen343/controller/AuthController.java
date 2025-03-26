@@ -19,10 +19,11 @@ public class AuthController {
     @PostMapping("/eventlogin")
     public Map<String, String> login(@RequestBody User loginRequest) {
         System.out.println("Received login request: " + loginRequest.getUsername());
-    
-        Optional<User> userOpt = userService.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
+
+        Optional<User> userOpt = userService.findByUsernameAndPassword(loginRequest.getUsername(),
+                loginRequest.getPassword());
         Map<String, String> response = new HashMap<>();
-    
+
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             response.put("message", "Login successful");
@@ -32,7 +33,7 @@ public class AuthController {
                 response.put("email", user.getEmail()); // Add this line
             }
         }
-    
+
         return response;
     }
 
@@ -43,19 +44,21 @@ public class AuthController {
 
     @PostMapping("/login")
     public Map<String, String> loginUser(@RequestBody User loginRequest) {
-     Optional<User> userOpt = userService.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
-     Map<String, String> response = new HashMap<>();
+        Optional<User> userOpt = userService.findByUsernameAndPassword(loginRequest.getUsername(),
+                loginRequest.getPassword());
+        Map<String, String> response = new HashMap<>();
 
-     if (userOpt.isPresent()) {
-        response.put("message", "Login successful");
-        response.put("status", "success");
-        response.put("username", loginRequest.getUsername());
-     } else {
-        response.put("message", "Invalid credentials");
-        response.put("status", "error");
-     }
+        if (userOpt.isPresent()) {
+            response.put("message", "Login successful");
+            response.put("status", "success");
+            response.put("username", loginRequest.getUsername());
+            response.put("userId", userOpt.get().getId());
+        } else {
+            response.put("message", "Invalid credentials");
+            response.put("status", "error");
+        }
 
-     return response;
-}
+        return response;
+    }
 
 }
