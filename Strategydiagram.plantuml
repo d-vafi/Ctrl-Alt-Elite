@@ -1,0 +1,34 @@
+@startuml Strategydiagram
+
+
+    interface PaymentStrategy {
+        +boolean processPayment(double amount)
+    }
+
+    interface DiscountStrategy {
+        +double applyDiscount(double amount)
+    }
+
+    class PaypalPaymentStrategy implements PaymentStrategy {
+        +boolean processPayment(double amount)
+    }
+
+    class CreditCardPaymentStrategy implements PaymentStrategy {
+        +boolean processPayment(double amount)
+    }
+
+    class TenDollarsOffDiscountStrategy implements DiscountStrategy {
+        +double applyDiscount(double amount)
+    }
+
+    class PercentageDiscountStrategy implements DiscountStrategy {
+        +double applyDiscount(double amount)
+    }
+
+    class NoDiscountStrategy implements DiscountStrategy {
+        +double applyDiscount(double amount)
+    }
+
+
+
+@enduml
