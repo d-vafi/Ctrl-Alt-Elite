@@ -21,8 +21,5 @@ public class Conversation {
     @Id
     private String id;
     private List<String> userIds;
-    private boolean isGroup;
-    private String lastMessage;
-    private String lastMessageSender;
-    private String lastMessageTime;
+
 }

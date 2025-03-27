@@ -4,6 +4,8 @@ import com.example.soen343.model.Conversation;
 import com.example.soen343.model.User;
 import com.example.soen343.repository.ConversationRepository;
 import com.example.soen343.repository.UserRepository;
+
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,30 +18,16 @@ public class ConversationService {
     private ConversationRepository conversationRepository;
 
     public List<Conversation> findByUserId(String userId) {
-        return conversationRepository.findByUserId(userId);
+        return conversationRepository.findByUserId(new ObjectId(userId));
     }
 
     public Conversation save(Conversation conversation) {
         return conversationRepository.save(conversation);
     }
 
-    public Conversation createConversationGroup(String userId1, String userId2) {
+    public Conversation createConversation(String userId1, String userId2) {
         Conversation conversation = new Conversation();
         conversation.setUserIds(List.of(userId1, userId2));
-        conversation.setGroup(true);
-        return conversationRepository.save(conversation);
-    }
-
-    public Conversation createConversationPrivateMessage(String userId1, String userId2) {
-        List<Conversation> conversations = conversationRepository.findByUserId(userId1);
-        for (Conversation conversation : conversations) {
-            if (conversation.getUserIds().contains(userId2) && !conversation.isGroup()) {
-                return conversation;
-            }
-        }
-        Conversation conversation = new Conversation();
-        conversation.setUserIds(List.of(userId1, userId2));
-        conversation.setGroup(false);
         return conversationRepository.save(conversation);
     }
 

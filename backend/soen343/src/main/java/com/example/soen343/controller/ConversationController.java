@@ -38,7 +38,15 @@ public class ConversationController {
             for (Conversation conversation : conversations) {
                 conversationDTOs.add(mapper.toDTO(conversation));
             }
-            conversationDTOs.sort((c1, c2) -> c2.getLastMessageTime().compareTo(c1.getLastMessageTime()));
+            conversationDTOs.sort((c1, c2) -> {
+                if (c1.getLastMessageTime() == null) {
+                    return 1;
+                } else if (c2.getLastMessageTime() == null) {
+                    return -1;
+                } else {
+                    return c2.getLastMessageTime().compareTo(c1.getLastMessageTime());
+                }
+            });
             response.put("conversations", conversationDTOs);
             response.put("success", true);
         } else {
@@ -53,18 +61,9 @@ public class ConversationController {
         Map<String, Object> response = new HashMap<>();
         String userId1 = (String) data.get("userId1");
         String userId2 = (String) data.get("userId2");
-        conversationService.createConversationPrivateMessage(userId1, userId2);
+        conversationService.createConversation(userId1, userId2);
         response.put("success", true);
         return response;
     }
 
-    @PostMapping("/createGroup")
-    public Map<String, Object> createGroup(@RequestBody Map<String, Object> data) {
-        Map<String, Object> response = new HashMap<>();
-        String userId1 = (String) data.get("userId1");
-        String userId2 = (String) data.get("userId2");
-        conversationService.createConversationGroup(userId1, userId2);
-        response.put("success", true);
-        return response;
-    }
 }

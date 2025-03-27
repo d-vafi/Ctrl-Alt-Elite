@@ -1,5 +1,6 @@
 package com.example.soen343.controller;
 
+import com.example.soen343.model.Message;
 import com.example.soen343.model.User;
 import com.example.soen343.repository.UserRepository;
 import com.example.soen343.service.ConversationService;
@@ -8,7 +9,9 @@ import com.example.soen343.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -33,7 +36,18 @@ public class MessageController {
     @GetMapping("/conversation/{conversationId}")
     public Map<String, Object> getMessagesByConversationId(@PathVariable String conversationId) {
         Map<String, Object> response = new HashMap<>();
-        response.put("messages", messageService.findAllByConversationId(conversationId));
+        List<Message> messages = messageService.findAllByConversationId(conversationId);
+        List<Map<String, Object>> messageList = new ArrayList<>();
+        for (Message message : messages) {
+            Map<String, Object> messageMap = new HashMap<>();
+            messageMap.put("id", message.getId());
+            messageMap.put("conversationId", message.getConversationId().toString());
+            messageMap.put("senderId", message.getSenderId().toString()); // Only return the id of senderId
+            messageMap.put("content", message.getContent());
+            messageMap.put("timestamp", message.getTimestamp());
+            messageList.add(messageMap);
+        }
+        response.put("messages", messageList);
         response.put("success", true);
         return response;
     }

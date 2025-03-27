@@ -18,7 +18,6 @@ public class ConversationDTO {
     @Id
     private String id;
     private HashMap<String, String> users;
-    private boolean isGroup;
     private String lastMessage;
     private String lastMessageSender;
     private String lastMessageTime;

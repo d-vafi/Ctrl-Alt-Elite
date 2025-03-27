@@ -6,6 +6,8 @@ import com.example.soen343.model.User;
 import com.example.soen343.repository.ConversationRepository;
 import com.example.soen343.repository.MessageRepository;
 import com.example.soen343.repository.UserRepository;
+
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,31 +19,20 @@ public class MessageService {
     @Autowired
     private MessageRepository messageRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
     public List<Message> findAllByConversationId(String conversationId) {
-        return messageRepository.findAllByConversationId(conversationId);
+        return messageRepository.findAllByConversationId(new ObjectId(conversationId));
     }
 
-    public Message save(Message message) {
-        return messageRepository.save(message);
-    }
-
-    public Message createMessage(String conversationId, User sender, String content) {
-        Message message = new Message();
-        message.setConversationId(conversationId);
-        message.setSender(sender);
-        message.setContent(content);
-        message.setTimestamp(Long.toString(System.currentTimeMillis()));
-        return messageRepository.save(message);
+    public Optional<Message> findFirstByConversationIdOrderByTimestampDesc(String conversationId) {
+        return messageRepository.findFirstByConversationIdOrderByTimestampDesc(new ObjectId(conversationId));
     }
 
     public Message createMessage(String conversationId, String senderId, String content) {
-        User sender = userRepository.findById(senderId).orElse(null);
-        if (sender == null) {
-            return null;
-        }
-        return createMessage(conversationId, sender, content);
+        Message message = new Message();
+        message.setConversationId(new ObjectId(conversationId));
+        message.setSenderId(new ObjectId(senderId));
+        message.setContent(content);
+        message.setTimestamp(Long.toString(System.currentTimeMillis() / 1000));
+        return messageRepository.save(message);
     }
 }
