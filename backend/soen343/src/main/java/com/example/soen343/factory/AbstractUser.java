@@ -1,4 +1,4 @@
-package com.example.soen343.model;
+package com.example.soen343.factory;
 
 import com.example.soen343.repository.EventRepository;
 import com.example.soen343.repository.OrganizationRepository;
