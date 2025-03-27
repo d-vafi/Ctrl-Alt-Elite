@@ -1,5 +1,8 @@
 package com.example.soen343.service;
 
+import com.example.soen343.factory.AbstractUser;
+import com.example.soen343.factory.Attendee;
+import com.example.soen343.factory.Stakeholder;
 import com.example.soen343.factory.UserFactory;
 import com.example.soen343.model.*;
 import com.example.soen343.repository.OrganizationRepository;
@@ -34,60 +37,7 @@ public class UserService {
             AbstractUser castedUser = UserFactory.createUser(user);
             Map<String, Object> result = new HashMap<>();
             result.put("user", castedUser);
-
-            if (castedUser instanceof Attendee attendee) {
-                List<Map<String, Object>> enrichedEvents = attendee.getRegistrations().stream()
-                        .map(reg -> {
-                            Event event = eventRepository.findById(reg.getEventId()).orElse(null);
-                            if (event == null) return null;
-                            Map<String, Object> enriched = new HashMap<>();
-                            enriched.put("id", event.getId());
-                            enriched.put("title", event.getTitle());
-                            enriched.put("description", event.getDescription());
-                            enriched.put("price", event.getPrice());
-                            enriched.put("date", event.getDate());
-                            enriched.put("role", reg.getRole());
-                            return enriched;
-                        })
-                        .filter(Objects::nonNull)
-                        .toList();
-
-                result.put("registeredEvents", enrichedEvents);
-                result.put("speakerInvitations",
-                        eventRepository.findAllById(attendee.getSpeakerInvitationIds()));
-            }
-
-            if (castedUser instanceof Stakeholder stakeholder) {
-                // Load and attach organization details
-                Organization org = organizationRepository.findById(stakeholder.getOrganizationId()).orElse(null);
-                result.put("organization", org);
-
-                // Find events sponsored by this org
-                List<Map<String, Object>> sponsoredEvents = eventRepository.findAll().stream()
-                        .filter(e -> e.getSponsorships() != null)
-                        .filter(e -> e.getSponsorships().stream()
-                                .anyMatch(s -> s.getOrganizationId().equals(stakeholder.getOrganizationId())))
-                        .map(e -> {
-                            Map<String, Object> eventInfo = new HashMap<>();
-                            eventInfo.put("id", e.getId());
-                            eventInfo.put("title", e.getTitle());
-                            eventInfo.put("description", e.getDescription());
-                            eventInfo.put("price", e.getPrice());
-
-                            // Get the amount for this org
-                            double amount = e.getSponsorships().stream()
-                                    .filter(s -> s.getOrganizationId().equals(stakeholder.getOrganizationId()))
-                                    .mapToDouble(Sponsorship::getAmount)
-                                    .sum();
-
-                            eventInfo.put("sponsorshipAmount", amount);
-                            return eventInfo;
-                        })
-                        .toList();
-
-                result.put("sponsoredEvents", sponsoredEvents);
-            }
-
+            result.putAll(castedUser.buildProfileData(eventRepository, organizationRepository));
             return result;
         }).orElse(Collections.emptyMap());
     }

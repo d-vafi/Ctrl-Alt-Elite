@@ -131,21 +131,27 @@ const EventCatalog = () => {
                 </button>
               ))}
 
-            {userType === "Stakeholder" &&
-              event.acceptsSponsorship &&
-              !isSponsored && (
-                <button
-                  className="mt-2 px-4 py-2 bg-yellow-500 text-white rounded"
-                  onClick={() => openModal(event.id)}
-                >
-                  Sponsor this Event
-                </button>
-              )}
-
-            {userType === "Stakeholder" && isSponsored && (
-              <span className="mt-2 inline-block px-4 py-2 bg-green-200 text-green-800 rounded">
-                You are a stakeholder for this event
-              </span>
+            {userType === "Stakeholder" && (
+              <>
+                {event.acceptsSponsorship ? (
+                  isSponsored ? (
+                    <span className="mt-2 inline-block px-4 py-2 bg-green-200 text-green-800 rounded">
+                      You are a stakeholder for this event
+                    </span>
+                  ) : (
+                    <button
+                      className="mt-2 px-4 py-2 bg-yellow-500 text-white rounded"
+                      onClick={() => openModal(event.id)}
+                    >
+                      Sponsor this Event
+                    </button>
+                  )
+                ) : (
+                  <span className="mt-2 inline-block px-4 py-2 bg-red-100 text-red-700 rounded">
+                    This event does not accept sponsorships
+                  </span>
+                )}
+              </>
             )}
           </div>
         );

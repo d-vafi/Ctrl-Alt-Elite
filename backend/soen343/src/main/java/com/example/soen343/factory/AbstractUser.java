@@ -1,6 +1,10 @@
 package com.example.soen343.model;
 
+import com.example.soen343.repository.EventRepository;
+import com.example.soen343.repository.OrganizationRepository;
 import lombok.*;
+
+import java.util.Map;
 
 @Getter
 @Setter
@@ -13,4 +17,7 @@ public abstract class AbstractUser {
     protected String type;
     protected String email;
     protected String fullName;
+    public abstract Map<String, Object> buildProfileData(EventRepository eventRepo, OrganizationRepository orgRepo);
+
+
 }
