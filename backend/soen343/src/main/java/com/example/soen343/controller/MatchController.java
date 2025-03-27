@@ -35,8 +35,8 @@ public class MatchController {
         Event event = eventOpt.get();
         User user = userOpt.get();
         List<User> usersAttending = List.of(
-                new User("1", "John Doe", "john.doe@example.com", eventId, eventId),
-                new User("2", "Jane Smith", "jane.smith@example.com", eventId, eventId));
+                new User("1", "John Doe", "john.doe@example.com", eventId, eventId, eventId, eventId, eventId, null, null, eventId),
+                new User("2", "Jane Smith", "jane.smith@example.com", eventId, eventId, eventId, eventId, eventId, null, null, eventId));
 
         EventMatcher matcher = EventMatchingFactory.getMatcher(event.getTitle());
         Optional<User> match = matcher.findMatch(user, event, usersAttending);
