@@ -18,6 +18,7 @@ import PaymentError from "./pages/PaymentError.jsx";
 import SwipePage from "./pages/SwipePage.jsx"; // Import the SwipePage component
 
 import UserDashboard from "./pages/UserDashboard.jsx";
+import Networking from "./pages/Networking.jsx";
 
 
 const App = () => {
@@ -35,6 +36,7 @@ const App = () => {
             path="/eventpromotiondashboard"
             element={<EventPromotionDashboard />}
           />
+          <Route path="/networking" element={<Networking />} />
           <Route
             path="/userpromotiondashboard"
             element={<UserPromotionDashboard />}
