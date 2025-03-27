@@ -42,12 +42,18 @@ const Navbar = () => {
               </Link>
             </>
           ) : (
-            <button
-              onClick={handleSignOut}
-              className="text-white hover:text-gray-200"
-            >
-              Sign Out
-            </button>
+            <>
+              <Link to="/dashboard" className="text-white hover:text-gray-200">
+                Dashboard
+              </Link>
+
+              <button
+                onClick={handleSignOut}
+                className="text-white hover:text-gray-200"
+              >
+                Sign Out
+              </button>
+            </>
           )}
         </div>
       </div>

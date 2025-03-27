@@ -5,12 +5,12 @@ import axios from "axios";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    username: "", 
+    username: "",
     password: "",
   });
 
-  const { setIsLoggedIn } = useContext(AuthContext); 
-  const navigate = useNavigate(); 
+  const { setIsLoggedIn } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,11 +20,14 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/login", formData);
+      const res = await axios.post(
+        "http://localhost:8080/api/auth/login",
+        formData
+      );
       if (res.data.status === "success") {
-        localStorage.setItem("token", "mock-token"); 
+        localStorage.setItem("token", "mock-token");
         localStorage.setItem("userId", res.data.userId);
-        setIsLoggedIn(true); 
+        setIsLoggedIn(true);
         navigate("/events");
       } else {
         alert("Invalid credentials");
@@ -43,7 +46,9 @@ const Login = () => {
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-700 font-semibold">Username</label>
+            <label className="block text-gray-700 font-semibold">
+              Username
+            </label>
             <input
               type="text"
               name="username"
@@ -56,7 +61,9 @@ const Login = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold">Password</label>
+            <label className="block text-gray-700 font-semibold">
+              Password
+            </label>
             <input
               type="password"
               name="password"
