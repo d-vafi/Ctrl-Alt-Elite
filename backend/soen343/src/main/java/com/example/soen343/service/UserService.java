@@ -2,6 +2,7 @@ package com.example.soen343.service;
 
 import com.example.soen343.factory.UserFactory;
 import com.example.soen343.model.*;
+import com.example.soen343.repository.OrganizationRepository;
 import com.example.soen343.repository.UserRepository;
 import com.example.soen343.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class UserService {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private OrganizationRepository organizationRepository;
 
     public Optional<User> findByUsernameAndPassword(String username, String password) {
         return userRepository.findByUsernameAndPassword(username, password);
@@ -51,6 +55,37 @@ public class UserService {
                 result.put("registeredEvents", enrichedEvents);
                 result.put("speakerInvitations",
                         eventRepository.findAllById(attendee.getSpeakerInvitationIds()));
+            }
+
+            if (castedUser instanceof Stakeholder stakeholder) {
+                // Load and attach organization details
+                Organization org = organizationRepository.findById(stakeholder.getOrganizationId()).orElse(null);
+                result.put("organization", org);
+
+                // Find events sponsored by this org
+                List<Map<String, Object>> sponsoredEvents = eventRepository.findAll().stream()
+                        .filter(e -> e.getSponsorships() != null)
+                        .filter(e -> e.getSponsorships().stream()
+                                .anyMatch(s -> s.getOrganizationId().equals(stakeholder.getOrganizationId())))
+                        .map(e -> {
+                            Map<String, Object> eventInfo = new HashMap<>();
+                            eventInfo.put("id", e.getId());
+                            eventInfo.put("title", e.getTitle());
+                            eventInfo.put("description", e.getDescription());
+                            eventInfo.put("price", e.getPrice());
+
+                            // Get the amount for this org
+                            double amount = e.getSponsorships().stream()
+                                    .filter(s -> s.getOrganizationId().equals(stakeholder.getOrganizationId()))
+                                    .mapToDouble(Sponsorship::getAmount)
+                                    .sum();
+
+                            eventInfo.put("sponsorshipAmount", amount);
+                            return eventInfo;
+                        })
+                        .toList();
+
+                result.put("sponsoredEvents", sponsoredEvents);
             }
 
             return result;
