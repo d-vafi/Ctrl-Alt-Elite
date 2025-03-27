@@ -23,3 +23,9 @@ Now, in `.\frontend` , do `npm install` to get all the necessary dependencies.
 Once done, do `npm start` do run the program. 
 
  
+## Run using maven
+
+Go to backend/soen343 then do `mvn clean install` 
+then, do `mvn spring-boot:run` after the build succeeds. 
+
+Go to frontend , do `npm i` and `npm start`
