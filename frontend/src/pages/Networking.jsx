@@ -1,5 +1,5 @@
 import NetworkChat from "../components/Networking/NetworkChat";
-import NetworkTinder from "../components/Networking/NetworkTinder";
+import SwipePage from "./SwipePage";
 import React, { useState } from "react";
 const Networking = () => {
   const [activeTab, setActiveTab] = useState("chat");
@@ -25,7 +25,7 @@ const Networking = () => {
         </ul>
         <div className="flex-1">
           {activeTab === "chat" && <NetworkChat />}
-          {activeTab === "tinder" && <NetworkTinder />}
+          {activeTab === "tinder" && <SwipePage />}
         </div>
       </div>
     </div>
