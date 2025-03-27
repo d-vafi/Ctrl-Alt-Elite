@@ -14,8 +14,12 @@ import EventCatalog from "./pages/EventCatalog.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 import PaymentSuccess from "./pages/PaymentSuccess.jsx";
 import PaymentError from "./pages/PaymentError.jsx";
+
+import SwipePage from "./pages/SwipePage.jsx"; // Import the SwipePage component
+
 import UserDashboard from "./pages/UserDashboard.jsx";
 import Networking from "./pages/Networking.jsx";
+
 
 const App = () => {
   return (
@@ -48,6 +52,7 @@ const App = () => {
           <Route path="/events" element={<EventCatalog />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-error" element={<PaymentError />} />
+          <Route path="/swipe" element={<SwipePage />} />
           <Route
             path="/dashboard"
             element={

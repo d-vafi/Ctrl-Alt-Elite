@@ -1,0 +1,53 @@
+@startuml FactoryPattern
+
+interface EventMatcher {
+    + Optional<User> findMatch(User, Event, List<User>)
+}
+
+class DefaultEventMatcher implements EventMatcher {
+    + findMatch(User, Event, List<User>): Optional<User>
+}
+
+class EventMatchingFactory {
+    + static getMatcher(String eventType): EventMatcher
+}
+
+class MatchController {
+    + findMatch(String userId, String eventId): ResponseEntity<?>
+}
+
+class EventRepository {
+    + findById(String id): Optional<Event>
+    + findAll(): List<Event>
+}
+
+class UserRepository {
+    + findById(String id): Optional<User>
+    + findUsersByEvent(String eventId): List<User>
+}
+
+class Event {
+    - String id
+    - String title
+    - String description
+    - double price
+    + ...(...)
+}
+
+class User {
+    - String id
+    - String username
+    - String password
+    - String email
+    + ...(...)
+}
+
+
+EventMatchingFactory ..> EventMatcher
+MatchController --> EventRepository
+MatchController --> UserRepository
+MatchController --> EventMatchingFactory
+UserRepository o-- User
+EventRepository o-- Event
+
+@enduml
