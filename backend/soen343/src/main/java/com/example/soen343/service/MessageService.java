@@ -20,7 +20,7 @@ public class MessageService {
     private MessageRepository messageRepository;
 
     public List<Message> findAllByConversationId(String conversationId) {
-        return messageRepository.findAllByConversationId(new ObjectId(conversationId));
+        return messageRepository.findAllByConversationIdOrderByTimestampAsc(new ObjectId(conversationId));
     }
 
     public Optional<Message> findFirstByConversationIdOrderByTimestampDesc(String conversationId) {
