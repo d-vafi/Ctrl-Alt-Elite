@@ -20,12 +20,11 @@ import SwipePage from "./pages/SwipePage.jsx"; // Import the SwipePage component
 import UserDashboard from "./pages/UserDashboard.jsx";
 import Networking from "./pages/Networking.jsx";
 
-
 const App = () => {
   return (
     <>
       <Navbar />
-      <main className="w-full min-h-screen flex flex-col items-center justify-center p-4">
+      <main className="w-full min-h-screen flex flex-col items-center justify-center p-4 pt-20">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignUp />} />
