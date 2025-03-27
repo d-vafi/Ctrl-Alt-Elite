@@ -1,7 +1,11 @@
 package com.example.soen343.service;
 
+import com.example.soen343.factory.AbstractUser;
+import com.example.soen343.factory.Attendee;
+import com.example.soen343.factory.Stakeholder;
 import com.example.soen343.factory.UserFactory;
 import com.example.soen343.model.*;
+import com.example.soen343.repository.OrganizationRepository;
 import com.example.soen343.repository.UserRepository;
 import com.example.soen343.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,9 @@ public class UserService {
     @Autowired
     private EventRepository eventRepository;
 
+    @Autowired
+    private OrganizationRepository organizationRepository;
+
     public Optional<User> findByUsernameAndPassword(String username, String password) {
         return userRepository.findByUsernameAndPassword(username, password);
     }
@@ -30,29 +37,7 @@ public class UserService {
             AbstractUser castedUser = UserFactory.createUser(user);
             Map<String, Object> result = new HashMap<>();
             result.put("user", castedUser);
-
-            if (castedUser instanceof Attendee attendee) {
-                List<Map<String, Object>> enrichedEvents = attendee.getRegistrations().stream()
-                        .map(reg -> {
-                            Event event = eventRepository.findById(reg.getEventId()).orElse(null);
-                            if (event == null) return null;
-                            Map<String, Object> enriched = new HashMap<>();
-                            enriched.put("id", event.getId());
-                            enriched.put("title", event.getTitle());
-                            enriched.put("description", event.getDescription());
-                            enriched.put("price", event.getPrice());
-                            enriched.put("date", event.getDate());
-                            enriched.put("role", reg.getRole());
-                            return enriched;
-                        })
-                        .filter(Objects::nonNull)
-                        .toList();
-
-                result.put("registeredEvents", enrichedEvents);
-                result.put("speakerInvitations",
-                        eventRepository.findAllById(attendee.getSpeakerInvitationIds()));
-            }
-
+            result.putAll(castedUser.buildProfileData(eventRepository, organizationRepository));
             return result;
         }).orElse(Collections.emptyMap());
     }
@@ -63,7 +48,7 @@ public class UserService {
             user.setEmail(updated.getEmail());
             user.setAffiliation(updated.getAffiliation());
             user.setProfession(updated.getProfession());
-            user.setOrganization(updated.getOrganization());
+//            user.setOrganizationId(updated.getOrganizationId());
             return userRepository.save(user);
         }).orElse(null);
     }

@@ -6,10 +6,12 @@ const UserDashboard = () => {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
+  const [sponsoredEvents, setSponsoredEvents] = useState([]);
 
   const userId = localStorage.getItem("userId");
 
-  const hasRole = (role) => user?.type?.includes(role);
+  const hasRole = (role) =>
+    user?.type?.toLowerCase()?.includes(role.toLowerCase());
 
   const fetchUser = async () => {
     try {
@@ -18,20 +20,18 @@ const UserDashboard = () => {
       );
 
       const userData = res.data.user;
-
-      // Attach registered events and speaker invitations directly to user object
       userData.registeredEvents = res.data.registeredEvents || [];
       userData.speakerInvitations = res.data.speakerInvitations || [];
 
       setUser(userData);
+      setSponsoredEvents(res.data.sponsoredEvents || []);
 
-      console.log(userData);
       setFormData({
         fullName: userData.fullName,
         email: userData.email,
         affiliation: userData.affiliation,
         profession: userData.profession,
-        organization: userData.organization,
+        organization: res.data.organization?.name || "",
         role: userData.type,
       });
     } catch (err) {
@@ -55,12 +55,10 @@ const UserDashboard = () => {
     if (!formData.email?.trim()) newErrors.email = "Email is required.";
     else if (!/^\S+@\S+\.\S+$/.test(formData.email))
       newErrors.email = "Invalid email format.";
-    if (!formData.affiliation?.trim())
+    if (hasRole("Attendee") && !formData.affiliation?.trim())
       newErrors.affiliation = "Affiliation is required.";
     if (hasRole("Attendee") && !formData.profession?.trim())
       newErrors.profession = "Profession is required.";
-    if (hasRole("Stakeholder") && !formData.organization?.trim())
-      newErrors.organization = "Organization is required.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -125,7 +123,6 @@ const UserDashboard = () => {
       <div className="mb-8">
         {editMode ? (
           <>
-            {/* Full Name */}
             <div className="mb-4">
               <label className="block font-semibold">Full Name</label>
               <input
@@ -140,7 +137,6 @@ const UserDashboard = () => {
               )}
             </div>
 
-            {/* Email */}
             <div className="mb-4">
               <label className="block font-semibold">Email</label>
               <input
@@ -155,52 +151,50 @@ const UserDashboard = () => {
               )}
             </div>
 
-            {/* Affiliation */}
-            <div className="mb-4">
-              <label className="block font-semibold">Affiliation</label>
-              <input
-                type="text"
-                name="affiliation"
-                value={formData.affiliation}
-                onChange={handleChange}
-                className="w-full p-2 border rounded"
-              />
-              {errors.affiliation && (
-                <p className="text-red-500 text-sm">{errors.affiliation}</p>
-              )}
-            </div>
-
-            {/* Profession */}
             {hasRole("Attendee") && (
-              <div className="mb-4">
-                <label className="block font-semibold">Profession</label>
-                <input
-                  type="text"
-                  name="profession"
-                  value={formData.profession}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded"
-                />
-                {errors.profession && (
-                  <p className="text-red-500 text-sm">{errors.profession}</p>
-                )}
-              </div>
+              <>
+                <div className="mb-4">
+                  <label className="block font-semibold">Affiliation</label>
+                  <input
+                    type="text"
+                    name="affiliation"
+                    value={formData.affiliation}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded"
+                  />
+                  {errors.affiliation && (
+                    <p className="text-red-500 text-sm">{errors.affiliation}</p>
+                  )}
+                </div>
+
+                <div className="mb-4">
+                  <label className="block font-semibold">Profession</label>
+                  <input
+                    type="text"
+                    name="profession"
+                    value={formData.profession}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded"
+                  />
+                  {errors.profession && (
+                    <p className="text-red-500 text-sm">{errors.profession}</p>
+                  )}
+                </div>
+              </>
             )}
 
-            {/* Organization */}
             {hasRole("Stakeholder") && (
               <div className="mb-4">
                 <label className="block font-semibold">Organization</label>
                 <input
                   type="text"
-                  name="organization"
                   value={formData.organization}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  disabled
+                  className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
                 />
-                {errors.organization && (
-                  <p className="text-red-500 text-sm">{errors.organization}</p>
-                )}
+                <p className="text-gray-500 text-sm mt-1">
+                  Organization info is not editable.
+                </p>
               </div>
             )}
 
@@ -219,17 +213,19 @@ const UserDashboard = () => {
             <p>
               <strong>Email:</strong> {user.email}
             </p>
-            <p>
-              <strong>Affiliation:</strong> {user.affiliation}
-            </p>
             {hasRole("Attendee") && (
-              <p>
-                <strong>Profession:</strong> {user.profession}
-              </p>
+              <>
+                <p>
+                  <strong>Affiliation:</strong> {user.affiliation}
+                </p>
+                <p>
+                  <strong>Profession:</strong> {user.profession}
+                </p>
+              </>
             )}
             {hasRole("Stakeholder") && (
               <p>
-                <strong>Organization:</strong> {user.organization}
+                <strong>Organization:</strong> {formData.organization}
               </p>
             )}
             <p>
@@ -250,7 +246,6 @@ const UserDashboard = () => {
       {hasRole("Attendee") && (
         <div className="mb-10">
           <h2 className="text-2xl font-bold mb-4 text-blue-700">My Events</h2>
-
           {user.registeredEvents.length === 0 ? (
             <p className="text-gray-500 italic text-center">
               You haven't registered for any events yet.
@@ -271,7 +266,6 @@ const UserDashboard = () => {
                     </p>
                     <p className="text-sm text-gray-500">Date: {event.date}</p>
                   </div>
-
                   <button
                     onClick={() => cancelRegistration(event.id)}
                     className="self-end sm:self-auto bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-4 py-2 rounded transition"
@@ -313,14 +307,28 @@ const UserDashboard = () => {
         </div>
       )}
 
-      {/* Stakeholder View */}
+      {/* Stakeholder Tools */}
       {hasRole("Stakeholder") && (
         <div className="border-t pt-6">
           <h2 className="text-xl font-bold mb-3">Stakeholder Tools</h2>
-          <p className="text-gray-600">
-            As a stakeholder, you can manage events, track promotions, or review
-            reports.
+          <p className="text-gray-600 mb-4">
+            Events sponsored by your organization:
           </p>
+          {sponsoredEvents.length === 0 ? (
+            <p className="text-gray-500 italic">No events sponsored yet.</p>
+          ) : (
+            <ul className="space-y-4">
+              {sponsoredEvents.map((event) => (
+                <li key={event.id} className="border p-4 rounded shadow">
+                  <h3 className="font-semibold text-lg">{event.title}</h3>
+                  <p>{event.description}</p>
+                  <p className="text-sm text-gray-600">
+                    Sponsorship Amount: ${event.sponsorshipAmount.toFixed(2)}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
     </div>

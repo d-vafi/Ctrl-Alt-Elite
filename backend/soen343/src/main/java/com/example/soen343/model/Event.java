@@ -3,6 +3,9 @@ package com.example.soen343.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Document(collection = "event")
 public class Event {
     @Id
@@ -11,6 +14,9 @@ public class Event {
     private String description;
     private double price;
     private String date;
+
+    private List<Sponsorship> sponsorships = new ArrayList<>();
+    private boolean acceptsSponsorship = true;             // Default to true
     // Constructors
     public Event() {}
 
@@ -61,5 +67,21 @@ public class Event {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public boolean isAcceptsSponsorship() {
+        return acceptsSponsorship;
+    }
+
+    public void setAcceptsSponsorship(boolean acceptsSponsorship) {
+        this.acceptsSponsorship = acceptsSponsorship;
+    }
+
+    public List<Sponsorship> getSponsorships() {
+        return sponsorships;
+    }
+
+    public void setSponsorships(List<Sponsorship> sponsorships) {
+        this.sponsorships = sponsorships;
     }
 }
