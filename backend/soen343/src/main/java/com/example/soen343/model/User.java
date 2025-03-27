@@ -26,5 +26,6 @@ public class User {
     private List<String> speakerInvitationIds = new ArrayList<>();
 
     // Stakeholder-only field
-    private String organization;
+    private String organizationId;
+
 }
