@@ -3,6 +3,8 @@ package com.example.soen343.service;
 import com.example.soen343.model.Conversation;
 import com.example.soen343.model.Message;
 import com.example.soen343.model.User;
+import com.example.soen343.observer.MessageEmailObserver;
+import com.example.soen343.observer.MessageObservable;
 import com.example.soen343.repository.ConversationRepository;
 import com.example.soen343.repository.MessageRepository;
 import com.example.soen343.repository.UserRepository;
@@ -16,6 +18,8 @@ import java.util.Optional;
 
 @Service
 public class MessageService {
+    @Autowired
+    private MessageObservable messageObservable;
     @Autowired
     private MessageRepository messageRepository;
 
@@ -33,6 +37,8 @@ public class MessageService {
         message.setSenderId(new ObjectId(senderId));
         message.setContent(content);
         message.setTimestamp(Long.toString(System.currentTimeMillis() / 1000));
-        return messageRepository.save(message);
+        message = messageRepository.save(message);
+        messageObservable.notifyObservers(message);
+        return message;
     }
 }
