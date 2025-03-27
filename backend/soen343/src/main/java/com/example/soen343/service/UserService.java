@@ -63,7 +63,7 @@ public class UserService {
             user.setEmail(updated.getEmail());
             user.setAffiliation(updated.getAffiliation());
             user.setProfession(updated.getProfession());
-            user.setOrganization(updated.getOrganization());
+//            user.setOrganizationId(updated.getOrganizationId());
             return userRepository.save(user);
         }).orElse(null);
     }

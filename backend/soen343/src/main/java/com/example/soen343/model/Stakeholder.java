@@ -6,11 +6,11 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 public class Stakeholder extends AbstractUser {
-    private String organization;
+    private String organizationId;
 
     public Stakeholder(User user) {
         super(user.getId(), user.getUsername(), user.getPassword(), user.getType(),
                 user.getEmail(), user.getFullName());
-        this.organization = user.getOrganization();
+        this.organizationId = user.getOrganizationId();
     }
 }
