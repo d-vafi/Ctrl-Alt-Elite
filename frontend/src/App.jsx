@@ -21,10 +21,18 @@ import UserDashboard from "./pages/UserDashboard.jsx";
 import Networking from "./pages/Networking.jsx";
 
 const App = () => {
+  //dark mode using state
+  const [darkMode, setDarkMode] = React.useState(false);
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
   return (
-    <>
-      <Navbar />
-      <main className="w-full min-h-screen flex flex-col items-center justify-center p-4 pt-20">
+    <div className={darkMode ? "dark" : ""}>
+      {/* dark mode accessibility feature */}
+      <Navbar toggleDarkMode={toggleDarkMode} />
+      <main className="w-full min-h-screen flex flex-col items-center justify-center p-4 pt-20 bg-white dark:bg-gray-900 text-black dark:text-white">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignUp />} />
@@ -63,7 +71,7 @@ const App = () => {
         </Routes>
       </main>
       <Footer />
-    </>
+    </div>
   );
 };
 
