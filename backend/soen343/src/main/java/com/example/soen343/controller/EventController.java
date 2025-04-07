@@ -62,6 +62,12 @@ public class EventController {
     public List<Event> getEventsSponsoredBy(@PathVariable String orgId) {
         return eventRepository.findBySponsorships_OrganizationId(orgId);
     }
+
+    @PostMapping("/create")
+    public ResponseEntity<Event> createEvent(@RequestBody Event event) {
+        Event savedEvent = eventRepository.save(event);
+        return ResponseEntity.ok(savedEvent);
+    }
 }
     
 

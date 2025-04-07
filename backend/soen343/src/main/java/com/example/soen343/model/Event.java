@@ -15,6 +15,8 @@ public class Event {
     private double price;
     private String date;
 
+    private List<String> speakers = new ArrayList<>();
+
     private List<Sponsorship> sponsorships = new ArrayList<>();
     private boolean acceptsSponsorship = true;             // Default to true
     // Constructors
@@ -83,5 +85,13 @@ public class Event {
 
     public void setSponsorships(List<Sponsorship> sponsorships) {
         this.sponsorships = sponsorships;
+    }
+
+    public List<String> getSpeakers() {
+        return speakers;
+    }
+    
+    public void setSpeakers(List<String> speakers) {
+        this.speakers = speakers;
     }
 }

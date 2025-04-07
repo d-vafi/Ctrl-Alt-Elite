@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const EventPlanning = () => {
   const [mockEvents, setMockEvents] = useState([
@@ -9,6 +10,7 @@ const EventPlanning = () => {
       price: "37.99",
       date: "2025-05-10",
       acceptsSponsorship: true,
+      speakers: ["Alice", "Bob"],
     },
     {
       id: 2,
@@ -17,6 +19,7 @@ const EventPlanning = () => {
       price: "29.99",
       date: "2025-07-15",
       acceptsSponsorship: true,
+      speakers: ["Jane Doe"],
     },
   ]);
 
@@ -27,11 +30,18 @@ const EventPlanning = () => {
     price: "",
     date: "",
     acceptsSponsorship: "true",
+    speakers: "", // <--- Add this
   });
 
   const handleChange = (index, field, value) => {
     const updated = [...mockEvents];
-    updated[index][field] = field === "acceptsSponsorship" ? value === "true" : value;
+    if (field === "acceptsSponsorship") {
+      updated[index][field] = value === "true";
+    } else if (field === "speakers") {
+      updated[index][field] = value.split(",").map((s) => s.trim());
+    } else {
+      updated[index][field] = value;
+    }
     setMockEvents(updated);
   };
 
@@ -50,17 +60,32 @@ const EventPlanning = () => {
     setNewEvent({ ...newEvent, [name]: value });
   };
 
-  const handleCreateEvent = () => {
-    alert(`Event "${newEvent.title}" created.`);
-    setIsModalOpen(false);
-    setNewEvent({
-      title: "",
-      description: "",
-      price: "",
-      date: "",
-      acceptsSponsorship: "true",
-    });
+  const handleCreateEvent = async () => {
+    try {
+      const payload = {
+        ...newEvent,
+        price: parseFloat(newEvent.price),
+        acceptsSponsorship: newEvent.acceptsSponsorship === "true",
+        speakers: newEvent.speakers.split(",").map(s => s.trim()),
+      };
+  
+      const response = await axios.post("http://localhost:8080/api/events/create", payload);
+      alert(`Event "${response.data.title}" created.`);
+      setIsModalOpen(false);
+      setNewEvent({
+        title: "",
+        description: "",
+        price: "",
+        date: "",
+        acceptsSponsorship: "true",
+        speakers: "",
+      });
+    } catch (error) {
+      console.error("Error creating event:", error);
+      alert("Failed to create event.");
+    }
   };
+  
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4">
@@ -108,6 +133,14 @@ const EventPlanning = () => {
                 value={newEvent.date}
                 onChange={handleNewEventChange}
                 className="w-full border border-gray-300 rounded p-2"
+              />
+              <input
+                type="text"
+                name="speakers"
+                value={newEvent.speakers}
+                onChange={handleNewEventChange}
+                className="w-full border border-gray-300 rounded p-2"
+                placeholder="Comma-separated speakers"
               />
               <select
                 name="acceptsSponsorship"
@@ -166,6 +199,13 @@ const EventPlanning = () => {
               className="w-full border border-gray-300 rounded p-2"
               value={event.date}
               onChange={(e) => handleChange(index, "date", e.target.value)}
+            />
+            <input
+              type="text"
+              className="w-full border border-gray-300 rounded p-2"
+              value={event.speakers?.join(", ") || ""}
+              onChange={(e) => handleChange(index, "speakers", e.target.value)}
+              placeholder="Comma-separated speakers"
             />
             <select
               className="w-full border border-gray-300 rounded p-2"
