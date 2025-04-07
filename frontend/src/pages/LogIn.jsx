@@ -27,6 +27,7 @@ const Login = () => {
       if (res.data.status === "success") {
         localStorage.setItem("token", "mock-token");
         localStorage.setItem("userId", res.data.userId);
+        localStorage.setItem("type", res.data.userType);
         setIsLoggedIn(true);
         navigate("/events");
       } else {

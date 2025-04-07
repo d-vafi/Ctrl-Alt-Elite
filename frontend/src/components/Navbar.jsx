@@ -6,13 +6,16 @@ const Navbar = () => {
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const userType = localStorage.getItem("type");
+
   const handleSignOut = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("type");
     setIsLoggedIn(false);
-    navigate("/"); // Redirect to home or login
+    navigate("/");
   };
-
-  return (
+   return (
     <nav className="bg-blue-600 w-full p-4 fixed top-0 left-0 z-10">
       <div className="container mx-auto flex justify-between items-center">
         <div className="text-white font-bold text-xl">
@@ -32,6 +35,15 @@ const Navbar = () => {
             Event Promotion
           </Link>
 
+          {userType === "organizer" && (
+            <Link
+              to="/organizer-dashboard"
+              className="text-white hover:text-gray-200"
+            >
+              Organizer Dashboard
+            </Link>
+          )}
+
           {!isLoggedIn ? (
             <>
               <Link to="/signup" className="text-white hover:text-gray-200">
@@ -43,10 +55,11 @@ const Navbar = () => {
             </>
           ) : (
             <>
+            {userType !== "organizer" && (
               <Link to="/dashboard" className="text-white hover:text-gray-200">
-                Dashboard
+              Dashboard
               </Link>
-
+            )}
               <button
                 onClick={handleSignOut}
                 className="text-white hover:text-gray-200"
