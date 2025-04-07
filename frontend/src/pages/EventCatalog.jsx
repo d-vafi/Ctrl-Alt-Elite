@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 
+
+//temp
 const EventCatalog = () => {
   const [events, setEvents] = useState([]);
   const [userEvents, setUserEvents] = useState([]);
