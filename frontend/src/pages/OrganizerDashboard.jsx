@@ -6,7 +6,7 @@ const OrganizerDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   const organizerId = localStorage.getItem("userId");
-
+//comment it
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
