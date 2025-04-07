@@ -15,7 +15,7 @@ public class User {
     private String id;
     private String username;
     private String password;
-    private String type; // "attendee" or "stakeholder" or "organizer"
+    private String type; // "attendee" or "stakeholder"
     private String email;
     private String fullName;
 
@@ -27,4 +27,5 @@ public class User {
 
     // Stakeholder-only field
     private String organizationId;
+
 }

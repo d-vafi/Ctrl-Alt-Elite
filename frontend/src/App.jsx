@@ -19,7 +19,6 @@ import SwipePage from "./pages/SwipePage.jsx"; // Import the SwipePage component
 
 import UserDashboard from "./pages/UserDashboard.jsx";
 import Networking from "./pages/Networking.jsx";
-import OrganizerDashboard from "./pages/OrganizerDashboard.jsx";
 
 const App = () => {
   return (
@@ -59,14 +58,6 @@ const App = () => {
               <PrivateRoute>
                 <UserDashboard />
               </PrivateRoute>
-            }
-          />
-          <Route
-            path="/organizer-dashboard"
-            element={
-                <PrivateRoute>
-                   <OrganizerDashboard/>
-                </PrivateRoute>
             }
           />
         </Routes>

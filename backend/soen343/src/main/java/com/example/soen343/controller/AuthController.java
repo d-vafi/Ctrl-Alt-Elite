@@ -49,12 +49,10 @@ public class AuthController {
         Map<String, String> response = new HashMap<>();
 
         if (userOpt.isPresent()) {
-            User user = userOpt.get();
             response.put("message", "Login successful");
             response.put("status", "success");
             response.put("username", loginRequest.getUsername());
             response.put("userId", userOpt.get().getId());
-            response.put("userType", user.getType());
         } else {
             response.put("message", "Invalid credentials");
             response.put("status", "error");

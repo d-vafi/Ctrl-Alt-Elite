@@ -3,12 +3,8 @@ import React, { createContext, useState, useEffect } from 'react';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    const token = localStorage.getItem("token");
-    return token ? true : false;
-  });
-  
   // Check token in localStorage on mount
   useEffect(() => {
     const token = localStorage.getItem('token');

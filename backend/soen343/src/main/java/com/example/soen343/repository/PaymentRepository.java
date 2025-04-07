@@ -10,5 +10,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PaymentRepository extends MongoRepository<PaymentOrder, String> {
     List<PaymentOrder> findByUserId(String userId);
-    List<PaymentOrder> findByEventId(String eventId);
 }
