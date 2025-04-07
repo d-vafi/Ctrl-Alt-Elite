@@ -6,8 +6,12 @@ import com.example.soen343.factory.Stakeholder;
 import com.example.soen343.factory.UserFactory;
 import com.example.soen343.model.*;
 import com.example.soen343.repository.OrganizationRepository;
+import com.example.soen343.repository.TinderMatchRepository;
 import com.example.soen343.repository.UserRepository;
+import com.example.soen343.repository.ConversationRepository;
 import com.example.soen343.repository.EventRepository;
+
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +27,12 @@ public class UserService {
 
     @Autowired
     private OrganizationRepository organizationRepository;
+
+    @Autowired
+    private ConversationRepository conversationRepository;
+
+    @Autowired
+    private TinderMatchRepository tinderMatchRepository;
 
     public Optional<User> findByUsernameAndPassword(String username, String password) {
         return userRepository.findByUsernameAndPassword(username, password);
@@ -48,7 +58,7 @@ public class UserService {
             user.setEmail(updated.getEmail());
             user.setAffiliation(updated.getAffiliation());
             user.setProfession(updated.getProfession());
-//            user.setOrganizationId(updated.getOrganizationId());
+            // user.setOrganizationId(updated.getOrganizationId());
             return userRepository.save(user);
         }).orElse(null);
     }
@@ -87,6 +97,51 @@ public class UserService {
             }
             return user;
         }).orElse(null);
+    }
+
+    public List<User> getOtherNonConnectedUsersInSameEvents(String userId) {
+        List<User> otherUsers = new ArrayList<>();
+        List<Conversation> conversations = conversationRepository.findByUserId(new ObjectId(userId));
+        HashSet<String> alreadyConnectedUserIds = new HashSet<>();
+        for (Conversation conversation : conversations) {
+            List<String> userIds = conversation.getUserIds();
+            if (userIds.size() != 2) {
+                continue;
+            }
+            for (String otherUserId : userIds) {
+                if (!otherUserId.equals(userId)) {
+                    alreadyConnectedUserIds.add(otherUserId);
+                }
+            }
+        }
+        List<TinderMatch> otherTinderUsers = tinderMatchRepository.findByUserId(userId);
+        for (TinderMatch otherTinderUser : otherTinderUsers) {
+            String otherUserId = otherTinderUser.getSenderUserId();
+            if (!otherUserId.equals(userId)) {
+                alreadyConnectedUserIds.add(otherUserId);
+            }
+            otherUserId = otherTinderUser.getReceiverUserId();
+            if (!otherUserId.equals(userId)) {
+                alreadyConnectedUserIds.add(otherUserId);
+            }
+        }
+        userRepository.findById(userId).ifPresent(user -> {
+            List<Registration> registrations = user.getRegistrations();
+            for (Registration registration : registrations) {
+                String eventId = registration.getEventId();
+                if (eventId != null) {
+                    List<User> eventUsers = userRepository.findByRegistrationsEventId(eventId);
+                    for (User eventUser : eventUsers) {
+                        if (!eventUser.getId().equals(userId) &&
+                                !alreadyConnectedUserIds.contains(eventUser.getId()) &&
+                                !otherUsers.contains(eventUser)) {
+                            otherUsers.add(eventUser);
+                        }
+                    }
+                }
+            }
+        });
+        return otherUsers;
     }
 
 }

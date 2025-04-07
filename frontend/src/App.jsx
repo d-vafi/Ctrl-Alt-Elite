@@ -51,7 +51,6 @@ const App = () => {
           <Route path="/events" element={<EventCatalog />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-error" element={<PaymentError />} />
-          <Route path="/swipe" element={<SwipePage />} />
           <Route
             path="/dashboard"
             element={

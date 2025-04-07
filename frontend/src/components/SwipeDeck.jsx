@@ -1,30 +1,62 @@
-import React, { useState } from 'react';
-import SwipeCard from './SwipeCard';
+import React, { useState, useEffect } from "react";
+import SwipeCard from "./SwipeCard";
+import axios from "axios";
+const SwipeDeck = ({ initialUsers }) => {
+  const [users, setUsers] = useState(initialUsers);
 
-const SwipeDeck = ({ users }) => {
-const [currentIndex, setCurrentIndex] = useState(0);
+  useEffect(() => {
+    setUsers(initialUsers); // Update users when initialUsers changes
+  }, [initialUsers]);
 
-const handleSwipe = (direction) => {
-    if (direction === 'left') {
-        setCurrentIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-    } else if (direction === 'right') {
-        setCurrentIndex((prevIndex) => Math.min(prevIndex + 1, users.length - 1));
-    }
-};
+  const handleSwipeLeft = () => {
+    axios
+      .post("http://localhost:8080/api/tindermatch/reject", {
+        senderUserId: localStorage.getItem("userId"),
+        receiverUserId: users[0].id,
+      })
+      .then((response) => {
+        console.log("User rejected:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error rejecting user:", error);
+      });
+    setUsers((prevUsers) => prevUsers.slice(1));
+  };
 
-return (
-    <div className="swipe-deck">
-        {users.length > 0 && currentIndex < users.length ? (
-            <SwipeCard user={users[currentIndex]} />
-        ) : (
-            <p>No more users to show</p>
-        )}
-        <div className="swipe-buttons">
-            <button onClick={() => handleSwipe('left')}>&larr;</button>
-            <button onClick={() => handleSwipe('right')}>&rarr;</button>
-        </div>
+  const handleSwipeRight = () => {
+    axios
+      .post("http://localhost:8080/api/tindermatch/create", {
+        senderUserId: localStorage.getItem("userId"),
+        receiverUserId: users[0].id,
+      })
+      .then((response) => {
+        console.log("User accepted:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error accepting user:", error);
+      });
+    setUsers((prevUsers) => prevUsers.slice(1));
+  };
+
+  console.log("Users after swipe:", users);
+
+  return (
+    <div className="">
+      {users.length > 0 ? (
+        <SwipeCard user={users[0]} />
+      ) : (
+        <p>No more users to show</p>
+      )}
+      <div className="flex justify-between mt-4">
+        <button className="text-4xl" onClick={handleSwipeLeft}>
+          &larr;
+        </button>
+        <button className="text-4xl" onClick={handleSwipeRight}>
+          &rarr;
+        </button>
+      </div>
     </div>
-);
+  );
 };
 
 export default SwipeDeck;

@@ -16,4 +16,6 @@ public interface ConversationRepository extends MongoRepository<Conversation, St
     @Query("{userIds: {$in: [?0]}}")
     public List<Conversation> findByUserId(ObjectId userId);
 
+    public List<Conversation> findByUserIds(List<ObjectId> userIds);
+
 }

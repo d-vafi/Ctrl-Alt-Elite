@@ -44,4 +44,9 @@ public class UserController {
     public User acceptInvite(@RequestParam String userId, @PathVariable String eventId) {
         return userService.acceptInvitation(userId, eventId);
     }
+
+    @GetMapping("/events/otherusers")
+    public List<User> getOtherUsers(@RequestParam String userId) {
+        return userService.getOtherNonConnectedUsersInSameEvents(userId);
+    }
 }

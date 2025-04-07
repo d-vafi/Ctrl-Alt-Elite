@@ -31,4 +31,12 @@ public class ConversationService {
         return conversationRepository.save(conversation);
     }
 
+    public List<Conversation> findByUserIds(List<String> userIds) {
+        return conversationRepository.findByUserIds(userIds.stream().map(ObjectId::new).toList());
+    }
+
+    public List<Conversation> findByUserIds(String userId1, String userId2) {
+        return findByUserIds(List.of(userId1, userId2));
+    }
+
 }
