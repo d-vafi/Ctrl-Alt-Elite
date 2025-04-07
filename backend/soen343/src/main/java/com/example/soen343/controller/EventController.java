@@ -68,6 +68,21 @@ public class EventController {
         Event savedEvent = eventRepository.save(event);
         return ResponseEntity.ok(savedEvent);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Event> updateEvent(@PathVariable String id, @RequestBody Event updatedEvent) {
+        return eventRepository.findById(id)
+            .map(existingEvent -> {
+                existingEvent.setTitle(updatedEvent.getTitle());
+                existingEvent.setDescription(updatedEvent.getDescription());
+                existingEvent.setPrice(updatedEvent.getPrice());
+                existingEvent.setDate(updatedEvent.getDate());
+                existingEvent.setAcceptsSponsorship(updatedEvent.isAcceptsSponsorship());
+                existingEvent.setSpeakers(updatedEvent.getSpeakers());
+                return ResponseEntity.ok(eventRepository.save(existingEvent));
+            })
+            .orElse(ResponseEntity.notFound().build());
+    }
 }
     
 

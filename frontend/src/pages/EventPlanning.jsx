@@ -1,28 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const EventPlanning = () => {
-  const [mockEvents, setMockEvents] = useState([
-    {
-      id: 1,
-      title: "Machine Learning Workshop",
-      description: "This is a beginner-friendly activity to get you started in learning machine learning.",
-      price: "37.99",
-      date: "2025-05-10",
-      acceptsSponsorship: true,
-      speakers: ["Alice", "Bob"],
-    },
-    {
-      id: 2,
-      title: "Spring Boot Workshop",
-      description: "Learn how to build APIs with Spring Boot and MongoDB.",
-      price: "29.99",
-      date: "2025-07-15",
-      acceptsSponsorship: true,
-      speakers: ["Jane Doe"],
-    },
-  ]);
-
+  const [events, setEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newEvent, setNewEvent] = useState({
     title: "",
@@ -30,11 +10,17 @@ const EventPlanning = () => {
     price: "",
     date: "",
     acceptsSponsorship: "true",
-    speakers: "", // <--- Add this
+    speakers: "",
   });
 
+  useEffect(() => {
+    axios.get("http://localhost:8080/api/events")
+      .then(response => setEvents(response.data))
+      .catch(error => console.error("Error fetching events:", error));
+  }, []);
+
   const handleChange = (index, field, value) => {
-    const updated = [...mockEvents];
+    const updated = [...events];
     if (field === "acceptsSponsorship") {
       updated[index][field] = value === "true";
     } else if (field === "speakers") {
@@ -42,16 +28,30 @@ const EventPlanning = () => {
     } else {
       updated[index][field] = value;
     }
-    setMockEvents(updated);
+    setEvents(updated);
   };
 
-  const handleUpdate = (index) => {
-    const event = mockEvents[index];
-    alert(`Event "${event.title}" updated.`);
+  const handleUpdate = async (index) => {
+    const event = events[index];
+    try {
+      const payload = {
+        ...event,
+        price: parseFloat(event.price),
+        acceptsSponsorship: Boolean(event.acceptsSponsorship),
+        speakers: Array.isArray(event.speakers)
+          ? event.speakers
+          : event.speakers.split(",").map((s) => s.trim()),
+      };
+      const response = await axios.put(`http://localhost:8080/api/events/${event.id}`, payload);
+      alert(`Event "${response.data.title}" successfully updated.`);
+    } catch (error) {
+      console.error("Error updating event:", error);
+      alert("Failed to update the event.");
+    }
   };
 
   const handleCancel = (index) => {
-    const event = mockEvents[index];
+    const event = events[index];
     alert(`Event "${event.title}" has been cancelled.`);
   };
 
@@ -66,9 +66,8 @@ const EventPlanning = () => {
         ...newEvent,
         price: parseFloat(newEvent.price),
         acceptsSponsorship: newEvent.acceptsSponsorship === "true",
-        speakers: newEvent.speakers.split(",").map(s => s.trim()),
+        speakers: newEvent.speakers.split(",").map((s) => s.trim()),
       };
-  
       const response = await axios.post("http://localhost:8080/api/events/create", payload);
       alert(`Event "${response.data.title}" created.`);
       setIsModalOpen(false);
@@ -80,6 +79,11 @@ const EventPlanning = () => {
         acceptsSponsorship: "true",
         speakers: "",
       });
+
+      // Refetch updated list
+      const updated = await axios.get("http://localhost:8080/api/events");
+      setEvents(updated.data);
+
     } catch (error) {
       console.error("Error creating event:", error);
       alert("Failed to create event.");
@@ -171,7 +175,7 @@ const EventPlanning = () => {
       )}
 
       <div className="w-full max-w-3xl space-y-6">
-        {mockEvents.map((event, index) => (
+        {events.map((event, index) => (
           <div key={event.id} className="bg-white shadow-md rounded p-6 space-y-4">
             <input
               type="text"
