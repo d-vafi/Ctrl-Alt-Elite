@@ -14,6 +14,7 @@ import EventCatalog from "./pages/EventCatalog.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 import PaymentSuccess from "./pages/PaymentSuccess.jsx";
 import PaymentError from "./pages/PaymentError.jsx";
+import EventPlanning from "./pages/EventPlanning"; // 👈 import the new page
 
 import SwipePage from "./pages/SwipePage.jsx"; // Import the SwipePage component
 
@@ -52,6 +53,7 @@ const App = () => {
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-error" element={<PaymentError />} />
           <Route path="/swipe" element={<SwipePage />} />
+          <Route path="/eventplanning" element={<EventPlanning />} />
           <Route
             path="/dashboard"
             element={
