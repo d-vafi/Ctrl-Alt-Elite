@@ -20,23 +20,26 @@ public class TinderMatchController {
     TinderMatchService tinderMatchService;
 
     @PostMapping("/create")
-    public String createTinderMatch(@RequestBody Map<String, Object> data) {
-        System.out.println(data);
+    public Map<String, Object> createTinderMatch(@RequestBody Map<String, Object> data) {
+        Map<String, Object> response = new java.util.HashMap<>();
         String senderUserId = (String) data.get("senderUserId");
         String receiverUserId = (String) data.get("receiverUserId");
         if (senderUserId == null || receiverUserId == null) {
-            return "Sender or receiver user ID is missing";
+            response.put("result", "Sender or receiver user ID is missing");
         }
-        return tinderMatchService.createTinderMatch(senderUserId, receiverUserId);
+        response.put("result", tinderMatchService.createTinderMatch(senderUserId, receiverUserId));
+        return response;
     }
 
     @PostMapping("/reject")
-    public String createTinderRejection(@RequestBody Map<String, Object> data) {
+    public Map<String, Object> createTinderRejection(@RequestBody Map<String, Object> data) {
+        Map<String, Object> response = new java.util.HashMap<>();
         String senderUserId = (String) data.get("senderUserId");
         String receiverUserId = (String) data.get("receiverUserId");
         if (senderUserId == null || receiverUserId == null) {
-            return "Sender or receiver user ID is missing";
+            response.put("result", "Sender or receiver user ID is missing");
         }
-        return tinderMatchService.createTinderRejection(senderUserId, receiverUserId);
+        response.put("result", tinderMatchService.createTinderRejection(senderUserId, receiverUserId));
+        return response;
     }
 }

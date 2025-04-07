@@ -36,6 +36,8 @@ const App = () => {
             element={<EventPromotionDashboard />}
           />
           <Route path="/networking" element={<Networking />} />
+          <Route path="/networking/chat" element={<Networking />} />
+          <Route path="/networking/tinder" element={<Networking />} />
           <Route
             path="/userpromotiondashboard"
             element={<UserPromotionDashboard />}

@@ -1,17 +1,21 @@
 package com.example.soen343.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.example.soen343.model.Conversation;
 import com.example.soen343.model.TinderMatch;
+import com.example.soen343.observer.TinderObservable;
 import com.example.soen343.repository.TinderMatchRepository;
 import com.example.soen343.repository.UserRepository;
 
 @Service
 public class TinderMatchService {
+    @Autowired
+    private TinderObservable tinderObservable;
     @Autowired
     private TinderMatchRepository tinderMatchRepository;
     @Autowired
@@ -43,6 +47,9 @@ public class TinderMatchService {
 
                 // Create a conversation
                 conversationService.createConversation(senderUserId, receiverUserId);
+                tinderObservable
+                        .notifyObservers(createNotification(senderUserId, receiverUserId));
+
                 return "Reverse match deleted and conversation created";
             }
 
@@ -71,5 +78,12 @@ public class TinderMatchService {
         } else {
             throw new IllegalArgumentException("One or both users do not exist");
         }
+    }
+
+    private Map<String, String> createNotification(String senderUserId, String receiverUserId) {
+        Map<String, String> notification = new HashMap<>();
+        notification.put("senderUserId", senderUserId);
+        notification.put("receiverUserId", receiverUserId);
+        return notification;
     }
 }
