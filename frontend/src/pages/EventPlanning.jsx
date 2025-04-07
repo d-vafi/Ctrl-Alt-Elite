@@ -50,9 +50,23 @@ const EventPlanning = () => {
     }
   };
 
-  const handleCancel = (index) => {
+  const handleCancel = async (index) => {
     const event = events[index];
-    alert(`Event "${event.title}" has been cancelled.`);
+    const confirmDelete = window.confirm(`Are you sure you want to cancel "${event.title}"?`);
+    if (!confirmDelete) return;
+  
+    try {
+      await axios.delete(`http://localhost:8080/api/events/${event.id}`);
+      alert(`Event "${event.title}" has been cancelled and deleted.`);
+  
+      // Remove from state
+      const updated = [...events];
+      updated.splice(index, 1);
+      setEvents(updated);
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      alert("Failed to cancel the event.");
+    }
   };
 
   const handleNewEventChange = (e) => {

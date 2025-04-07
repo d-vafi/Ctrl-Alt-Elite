@@ -4,6 +4,7 @@ import com.example.soen343.model.Event;
 import com.example.soen343.model.Sponsorship;
 import com.example.soen343.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,6 +83,16 @@ public class EventController {
                 return ResponseEntity.ok(eventRepository.save(existingEvent));
             })
             .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteEvent(@PathVariable String id) {
+        if (eventRepository.existsById(id)) {
+            eventRepository.deleteById(id);
+            return ResponseEntity.ok("Event deleted successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Event not found.");
+        }
     }
 }
     
