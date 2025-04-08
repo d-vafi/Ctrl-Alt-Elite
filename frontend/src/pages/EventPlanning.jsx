@@ -174,6 +174,10 @@ const EventPlanning = () => {
     }
   };
 
+  const today = new Date().toISOString().split("T")[0];
+  const futureEvents = events.filter((e) => e.date >= today);
+  const pastEvents = events.filter((e) => e.date < today);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4">
       <h1 className="text-3xl font-bold text-blue-700 mb-6">Event Planning</h1>
@@ -257,17 +261,15 @@ const EventPlanning = () => {
         </div>
       )}
 
+      {/* FUTURE EVENTS */}
       <div className="w-full max-w-3xl space-y-6">
-        {events.map((event, index) => {
+        {futureEvents.map((event, index) => {
           const confirmed = event.speakers || [];
           const invited =
             event.invitedSpeakers?.filter((s) => !confirmed.includes(s)) || [];
 
           return (
-            <div
-              key={event.id}
-              className="bg-white shadow-md rounded p-6 space-y-4"
-            >
+            <div key={event.id} className="bg-white shadow-md rounded p-6">
               <input
                 type="text"
                 className="w-full border p-2 rounded"
@@ -311,48 +313,62 @@ const EventPlanning = () => {
                 <option value="false">Does Not Accept Sponsorship</option>
               </select>
 
-              <div>
-                <strong>Confirmed Speakers:</strong>
-                <ul className="list-disc ml-6 text-green-700">
-                  {confirmed.length ? (
-                    confirmed.map((s, i) => <li key={i}>{s}</li>)
-                  ) : (
-                    <li>None</li>
-                  )}
-                </ul>
-              </div>
+              {confirmed.length > 0 && (
+                <div className="mt-2">
+                  <strong>Confirmed Speakers:</strong>
+                  <ul className="space-y-1 mt-1">
+                    {confirmed.map((s, i) => (
+                      <li
+                        key={i}
+                        className="flex items-center gap-2 text-green-700"
+                      >
+                        <span className="w-2 h-2 bg-green-600 rounded-full inline-block"></span>
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
-              <div>
-                <strong>Pending Invitations:</strong>
-                <ul className="list-disc ml-6 text-yellow-700">
-                  {invited.length ? (
-                    invited.map((s, i) => <li key={i}>{s}</li>)
-                  ) : (
-                    <li>None</li>
-                  )}
-                </ul>
-              </div>
+              {invited.length > 0 && (
+                <div className="mt-2">
+                  <strong>Pending Invitations:</strong>
+                  <ul className="space-y-1 mt-1">
+                    {invited.map((s, i) => (
+                      <li
+                        key={i}
+                        className="flex items-center gap-2 text-yellow-700"
+                      >
+                        <span className="w-2 h-2 bg-yellow-500 rounded-full inline-block"></span>
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
-              <input
-                type="text"
-                placeholder="Invite more speakers (comma-separated)"
-                className="w-full border p-2 rounded"
-                value={newSpeakerInput[event.id] || ""}
-                onChange={(e) =>
-                  setNewSpeakerInput({
-                    ...newSpeakerInput,
-                    [event.id]: e.target.value,
-                  })
-                }
-              />
-
-              <div className="flex justify-between space-x-4">
+              <div className="flex items-center space-x-2 mt-4">
+                <input
+                  type="text"
+                  placeholder="Invite more speakers (comma-separated)"
+                  className="flex-1 border p-2 rounded"
+                  value={newSpeakerInput[event.id] || ""}
+                  onChange={(e) =>
+                    setNewSpeakerInput({
+                      ...newSpeakerInput,
+                      [event.id]: e.target.value,
+                    })
+                  }
+                />
                 <button
                   onClick={() => handleInvite(event.id)}
                   className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                 >
                   Invite
                 </button>
+              </div>
+
+              <div className="flex justify-end space-x-4 mt-3">
                 <button
                   onClick={() => handleUpdate(index)}
                   className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
@@ -370,6 +386,36 @@ const EventPlanning = () => {
           );
         })}
       </div>
+
+      {/* PAST EVENTS */}
+      {pastEvents.length > 0 && (
+        <div className="w-full max-w-3xl mt-12">
+          <h2 className="text-xl font-bold mb-4 text-gray-700">Past Events</h2>
+          <div className="space-y-6">
+            {pastEvents.map((event) => (
+              <div key={event.id} className="bg-white shadow-md rounded p-6">
+                <p>
+                  <strong>Title:</strong> {event.title}
+                </p>
+                <p>
+                  <strong>Description:</strong> {event.description}
+                </p>
+                <p>
+                  <strong>Date:</strong> {event.date}
+                </p>
+                <p>
+                  <strong>Price:</strong> ${event.price}
+                </p>
+                {event.speakers?.length > 0 && (
+                  <p className="mt-2">
+                    <strong>Speakers:</strong> {event.speakers.join(", ")}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
