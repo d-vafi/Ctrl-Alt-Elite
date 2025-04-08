@@ -7,9 +7,11 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Document(collection = "user")  // Maps to MongoDB collection
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Document(collection = "user") // Maps to MongoDB collection
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     private String id;

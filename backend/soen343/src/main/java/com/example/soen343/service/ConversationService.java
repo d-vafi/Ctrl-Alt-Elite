@@ -18,7 +18,7 @@ public class ConversationService {
     private ConversationRepository conversationRepository;
 
     public List<Conversation> findByUserId(String userId) {
-        return conversationRepository.findByUserId(new ObjectId(userId));
+        return conversationRepository.findByUserId(userId);
     }
 
     public Conversation save(Conversation conversation) {
@@ -32,7 +32,7 @@ public class ConversationService {
     }
 
     public List<Conversation> findByUserIds(List<String> userIds) {
-        return conversationRepository.findByUserIds(userIds.stream().map(ObjectId::new).toList());
+        return conversationRepository.findByUserIds(userIds);
     }
 
     public List<Conversation> findByUserIds(String userId1, String userId2) {

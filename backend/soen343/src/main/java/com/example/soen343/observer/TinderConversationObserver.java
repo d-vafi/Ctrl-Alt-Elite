@@ -24,6 +24,7 @@ public class TinderConversationObserver implements Observer {
 
     @Override
     public void update(Object data) {
+        System.out.println("TinderConversationObserver: update called with data: " + data);
         if (data instanceof Map<?, ?>) {
             @SuppressWarnings("unchecked")
             Map<String, String> dataMap = (Map<String, String>) data;

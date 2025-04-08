@@ -8,7 +8,6 @@ import com.example.soen343.model.*;
 import com.example.soen343.repository.OrganizationRepository;
 import com.example.soen343.repository.TinderMatchRepository;
 import com.example.soen343.repository.UserRepository;
-import com.example.soen343.repository.ConversationRepository;
 import com.example.soen343.repository.EventRepository;
 
 import org.bson.types.ObjectId;
@@ -29,7 +28,7 @@ public class UserService {
     private OrganizationRepository organizationRepository;
 
     @Autowired
-    private ConversationRepository conversationRepository;
+    private ConversationService conversationService;
 
     @Autowired
     private TinderMatchRepository tinderMatchRepository;
@@ -101,20 +100,23 @@ public class UserService {
 
     public List<User> getOtherNonConnectedUsersInSameEvents(String userId) {
         List<User> otherUsers = new ArrayList<>();
-        List<Conversation> conversations = conversationRepository.findByUserId(new ObjectId(userId));
+        List<Conversation> conversations = conversationService.findByUserId(userId);
+        System.out.println("Conversations size: " + conversations.size());
         HashSet<String> alreadyConnectedUserIds = new HashSet<>();
         for (Conversation conversation : conversations) {
+            System.out.println("conversation = " + conversation);
             List<String> userIds = conversation.getUserIds();
             if (userIds.size() != 2) {
                 continue;
             }
             for (String otherUserId : userIds) {
+                System.out.println("otherUserId = " + otherUserId);
                 if (!otherUserId.equals(userId)) {
                     alreadyConnectedUserIds.add(otherUserId);
                 }
             }
         }
-        List<TinderMatch> otherTinderUsers = tinderMatchRepository.findByUserId(userId);
+        List<TinderMatch> otherTinderUsers = tinderMatchRepository.findBySenderUserId(userId);
         for (TinderMatch otherTinderUser : otherTinderUsers) {
             String otherUserId = otherTinderUser.getSenderUserId();
             if (!otherUserId.equals(userId)) {

@@ -28,7 +28,9 @@ public class TinderEmailObserver implements Observer {
 
     @Override
     public void update(Object data) {
+        System.out.println("TinderEmailObserver: update called with data: " + data);
         if (data instanceof Map<?, ?>) {
+            System.out.println("TinderEmailObserver: data is a Map");
             @SuppressWarnings("unchecked")
             Map<String, String> dataMap = (Map<String, String>) data;
             String senderUserId = dataMap.get("senderUserId");

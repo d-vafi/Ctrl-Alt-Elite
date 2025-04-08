@@ -29,24 +29,25 @@ public class TinderMatchService {
             List<TinderMatch> existingMatches = tinderMatchRepository
                     .findBySenderUserIdAndReceiverUserId(senderUserId, receiverUserId);
             if (!existingMatches.isEmpty()) {
+                System.out.println("Existing Match found: " + existingMatches);
                 return "Match already exists";
             }
 
             List<Conversation> existingConversations = conversationService.findByUserIds(senderUserId, receiverUserId);
 
             if (existingConversations.size() > 0) {
+                System.out.println("Conversation already exists: " + existingConversations);
                 return "Conversation already exists";
             }
             // Check if the reverse match exists
             existingMatches = tinderMatchRepository
                     .findBySenderUserIdAndReceiverUserIdAndIsRejectionFalse(receiverUserId, senderUserId);
             if (!existingMatches.isEmpty()) {
+                System.out.println("Reverse match found: " + existingMatches);
                 // Delete the reverse match
                 TinderMatch reverseMatch = existingMatches.get(0);
                 tinderMatchRepository.delete(reverseMatch);
 
-                // Create a conversation
-                conversationService.createConversation(senderUserId, receiverUserId);
                 tinderObservable
                         .notifyObservers(createNotification(senderUserId, receiverUserId));
 
