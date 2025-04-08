@@ -5,12 +5,19 @@ import { AuthContext } from "../contexts/AuthContext";
 const Navbar = () => {
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
+  const userType = localStorage.getItem("userType");
 
   const handleSignOut = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userType");
     setIsLoggedIn(false);
-    navigate("/"); // Redirect to home or login
+    navigate("/");
   };
+
+  const isAttendee = userType?.toLowerCase() === "attendee";
+  const isOrganizer = userType?.toLowerCase() === "organizer";
+  const isStakeholder = userType?.toLowerCase() === "stakeholder";
 
   return (
     <nav className="bg-blue-600 w-full p-4 fixed top-0 left-0 z-10">
@@ -22,18 +29,31 @@ const Navbar = () => {
           <Link to="/about" className="text-white hover:text-gray-200">
             About
           </Link>
-          <Link to="/eventplanning" className="text-white hover:text-gray-200">
-            Event Planning
-          </Link>
+
+          {isOrganizer && (
+            <Link
+              to="/eventplanning"
+              className="text-white hover:text-gray-200"
+            >
+              Event Planning
+            </Link>
+          )}
+
           <Link to="/events" className="text-white hover:text-gray-200">
             Events Catalog
           </Link>
-          <Link to="/networking" className="text-white hover:text-gray-200">
-            Networking
-          </Link>
-          <Link to="/eventlogin" className="text-white hover:text-gray-200">
-            Event Promotion
-          </Link>
+
+          {isAttendee && (
+            <Link to="/networking" className="text-white hover:text-gray-200">
+              Networking
+            </Link>
+          )}
+
+          {(isOrganizer || isStakeholder) && (
+            <Link to="/eventlogin" className="text-white hover:text-gray-200">
+              Event Promotion
+            </Link>
+          )}
 
           {!isLoggedIn ? (
             <>
@@ -49,7 +69,6 @@ const Navbar = () => {
               <Link to="/dashboard" className="text-white hover:text-gray-200">
                 Dashboard
               </Link>
-
               <button
                 onClick={handleSignOut}
                 className="text-white hover:text-gray-200"
