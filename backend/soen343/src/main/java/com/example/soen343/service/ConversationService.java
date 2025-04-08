@@ -39,4 +39,18 @@ public class ConversationService {
         return findByUserIds(List.of(userId1, userId2));
     }
 
+    public Optional<Conversation> findById(String conversationId) {
+        return conversationRepository.findById(conversationId);
+    }
+
+    public void addUserToConversation(String conversationId, String userId) {
+        conversationRepository.findById(conversationId).ifPresent(conversation -> {
+            List<String> userIds = conversation.getUserIds();
+            if (!userIds.contains(userId)) {
+                userIds.add(userId);
+                conversationRepository.save(conversation);
+            }
+        });
+    }
+
 }

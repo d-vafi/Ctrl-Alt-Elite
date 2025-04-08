@@ -8,6 +8,7 @@ import com.example.soen343.model.*;
 import com.example.soen343.repository.OrganizationRepository;
 import com.example.soen343.repository.TinderMatchRepository;
 import com.example.soen343.repository.UserRepository;
+import com.example.soen343.repository.ConversationRepository;
 import com.example.soen343.repository.EventRepository;
 
 import org.bson.types.ObjectId;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -148,6 +150,31 @@ public class UserService {
             }
         });
         return otherUsers;
+    }
+
+    public List<User> getOtherConnectedUsersInSameEvents(String currentUserId, String conversationId) {
+        List<String> returnedUsers = new ArrayList<>();
+        List<Conversation> conversations = conversationService.findByUserId(currentUserId);
+        Conversation currConversation = conversationService.findById(conversationId).get();
+        List<String> cureConversationUserIds = currConversation.getUserIds();
+        cureConversationUserIds.remove(currentUserId);
+        for (Conversation conversation : conversations) {
+            if (conversation.getId().equals(currConversation.getId())) {
+                continue;
+            }
+            List<String> otherUserIdsInConversation = conversation.getUserIds();
+            for (String otherUserId : otherUserIdsInConversation) {
+                if (!otherUserId.equals(currentUserId) && !cureConversationUserIds.contains(otherUserId)) {
+                    returnedUsers.add(otherUserId);
+                }
+            }
+        }
+
+        return returnedUsers.stream()
+                .map(userId -> userRepository.findById(userId).orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
     }
 
 }

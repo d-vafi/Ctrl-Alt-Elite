@@ -1,11 +1,18 @@
 import "react-chat-elements/dist/main.css";
 import React, { useState, useEffect, useRef } from "react";
-import { MessageList, MessageBox, Input, ChatItem } from "react-chat-elements";
+import { MessageBox, Input, ChatItem } from "react-chat-elements";
 import axios from "axios";
+import AddIcon from "@mui/icons-material/Add";
+import PollIcon from "@mui/icons-material/Poll";
+import Modal from "react-modal";
+import NetworkAddUserToChat from "./NetworkAddUserToChat";
+Modal.setAppElement("#root");
+
 const NetworkChat = () => {
   const [conversations, setConversations] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [addUserModalIsOpen, setAddUserModalIsOpen] = useState(false);
   const userId = localStorage.getItem("userId");
   const messagesEndRef = useRef(null);
 
@@ -98,39 +105,55 @@ const NetworkChat = () => {
           <h3 className="text-lg font-semibold mb-3">Conversations</h3>
           {conversations.length > 0 ? (
             conversations.map((conversation) => (
-              <ChatItem
+              <div
                 key={conversation.id}
-                onClick={() => selectChat(conversation.id)}
-                subtitle={
-                  conversation.lastMessageTime === null
-                    ? "No messages yet"
-                    : conversation.lastMessageSender === userId
-                    ? "You: " + conversation.lastMessage
-                    : conversation.users[conversation.lastMessageSender] +
-                      ": " +
-                      conversation.lastMessage
-                }
-                date={
-                  conversation.lastMessageTime === null
-                    ? null
-                    : new Date(conversation.lastMessageTime * 1000)
-                }
-                title={Object.keys(conversation.users)
-                  .filter((user) => user !== userId)
-                  .map((user) => conversation.users[user])
-                  .join(", ")}
-                avatar="/user-icon.png"
-                unread={
-                  conversation.lastMessageSender !== userId &&
-                  conversation.lastMessageTime >
-                    (localStorage.getItem(`read-${conversation.id}`) || 0)
-                }
-                className={`cursor-pointer ${
-                  selectedConversation?.id === conversation.id
-                    ? "bg-gray-100"
-                    : "hover:bg-gray-50"
-                } p-2 rounded`}
-              />
+                className="flex flex-row items-center mb-2"
+              >
+                <ChatItem
+                  key={conversation.id}
+                  onClick={() => selectChat(conversation.id)}
+                  subtitle={
+                    conversation.lastMessageTime === null
+                      ? "No messages yet"
+                      : conversation.lastMessageSender === userId
+                      ? "You: " + conversation.lastMessage
+                      : conversation.users[conversation.lastMessageSender] +
+                        ": " +
+                        conversation.lastMessage
+                  }
+                  date={
+                    conversation.lastMessageTime === null
+                      ? null
+                      : new Date(conversation.lastMessageTime * 1000)
+                  }
+                  title={Object.keys(conversation.users)
+                    .filter((user) => user !== userId)
+                    .map((user) => conversation.users[user])
+                    .join(", ")}
+                  avatar="/user-icon.png"
+                  unread={
+                    conversation.lastMessageSender !== userId &&
+                    conversation.lastMessageTime >
+                      (localStorage.getItem(`read-${conversation.id}`) || 0)
+                  }
+                  className={`cursor-pointer ${
+                    selectedConversation?.id === conversation.id
+                      ? "bg-gray-100"
+                      : "hover:bg-gray-50"
+                  } p-2 rounded`}
+                />
+                <div className="ml-auto">
+                  <button
+                    onClick={() => {
+                      console.log("Opening modal");
+                      selectChat(conversation.id);
+                      setAddUserModalIsOpen(true);
+                    }}
+                  >
+                    <AddIcon />
+                  </button>
+                </div>
+              </div>
             ))
           ) : (
             <p className="text-gray-600">No conversations yet.</p>
@@ -176,6 +199,7 @@ const NetworkChat = () => {
               </div>
               <div className="mt-2">
                 <Input
+                  className="rce-input-field"
                   placeholder="Type a message..."
                   multiline={false}
                   onKeyPress={(event) => {
@@ -184,6 +208,11 @@ const NetworkChat = () => {
                       event.target.value = "";
                     }
                   }}
+                  leftButtons={
+                    <button className="mr-2">
+                      <PollIcon />
+                    </button>
+                  }
                   rightButtons={
                     <button
                       className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -191,6 +220,7 @@ const NetworkChat = () => {
                         const inputElement =
                           document.querySelector(".rce-input-field");
                         if (inputElement) {
+                          console.log(inputElement);
                           sendMessage(inputElement.value);
                           inputElement.value = "";
                         }
@@ -211,6 +241,14 @@ const NetworkChat = () => {
           )}
         </main>
       </div>
+      <Modal isOpen={addUserModalIsOpen}>
+        <NetworkAddUserToChat
+          currentUserId={userId}
+          conversationId={selectedConversation?.id}
+          addUserModalIsOpen={addUserModalIsOpen}
+          setAddUserModalIsOpen={setAddUserModalIsOpen}
+        />
+      </Modal>
     </div>
   );
 };

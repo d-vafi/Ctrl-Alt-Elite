@@ -45,8 +45,16 @@ public class UserController {
         return userService.acceptInvitation(userId, eventId);
     }
 
-    @GetMapping("/events/otherusers")
+    @GetMapping("/events/otherusers/nonconnected")
     public List<User> getOtherUsers(@RequestParam String userId) {
         return userService.getOtherNonConnectedUsersInSameEvents(userId);
+    }
+
+    @GetMapping("/events/otherusers/connected")
+    public List<User> getConnectedUsers(
+            @RequestParam String currentUserId,
+            @RequestParam String conversationId) {
+
+        return userService.getOtherConnectedUsersInSameEvents(currentUserId, conversationId);
     }
 }

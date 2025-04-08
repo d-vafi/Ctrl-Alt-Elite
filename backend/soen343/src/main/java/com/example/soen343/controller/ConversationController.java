@@ -66,4 +66,14 @@ public class ConversationController {
         return response;
     }
 
+    @PostMapping("/addUser")
+    public Map<String, Object> addUserToConversation(@RequestBody Map<String, Object> data) {
+        Map<String, Object> response = new HashMap<>();
+        String conversationId = (String) data.get("conversationId");
+        String userId = (String) data.get("userId");
+        conversationService.addUserToConversation(conversationId, userId);
+        response.put("success", true);
+        return response;
+    }
+
 }
