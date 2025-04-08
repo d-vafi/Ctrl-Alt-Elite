@@ -61,7 +61,7 @@ const Navbar = () => {
               to="/organizer-dashboard"
               className="text-white hover:text-gray-200"
             >
-              Organizer Dashboard
+              Event Analytics
             </Link>
           )}
 
