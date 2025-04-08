@@ -47,14 +47,16 @@ const SwipeDeck = ({ initialUsers }) => {
       ) : (
         <p>No more users to show</p>
       )}
-      <div className="flex justify-between mt-4">
-        <button className="text-4xl" onClick={handleSwipeLeft}>
-          &larr;
-        </button>
-        <button className="text-4xl" onClick={handleSwipeRight}>
-          &rarr;
-        </button>
-      </div>
+      {users.length > 0 && (
+        <div className="flex justify-between mt-4">
+          <button className="text-4xl" onClick={handleSwipeLeft}>
+            &larr;
+          </button>
+          <button className="text-4xl" onClick={handleSwipeRight}>
+            &rarr;
+          </button>
+        </div>
+      )}
     </div>
   );
 };

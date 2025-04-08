@@ -19,7 +19,7 @@ const Networking = () => {
   };
 
   return (
-    <div className="p-4 h-full flex flex-col">
+    <div className="p-4  flex flex-col">
       <h1 className="text-2xl font-bold mb-4 sticky top-0">Networking</h1>
       <div className="flex-1">
         <ul className="flex space-x-4 mb-4">

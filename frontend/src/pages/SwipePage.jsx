@@ -2,23 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import SwipeDeck from "../components/SwipeDeck";
 
-// const SwipePage = () => {
-//   const [users, setUsers] = useState([]);
-
-//   useEffect(() => {
-//     axios.get('http://localhost:8080/api/users')
-//       .then(response => setUsers(response.data))
-//       .catch(err => console.error("Error fetching users:", err));
-//   }, []);
-
-//   return (
-//     <div className="swipe-page">
-//       <h1 className="text-2xl font-bold mb-4">Swipe to Match</h1>
-//       <SwipeDeck users={users} />
-//     </div>
-//   );
-// };
-
 const SwipePage = () => {
   const [users, setUsers] = useState([]);
   const userId = localStorage.getItem("userId");

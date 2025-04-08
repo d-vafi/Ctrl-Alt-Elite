@@ -28,9 +28,15 @@ public interface TinderMatchRepository extends MongoRepository<TinderMatch, Stri
         @Query("{'$or': [{'senderUserId': ?0}, {'receiverUserId': ?0}]}")
         List<TinderMatch> findByUserId(String userId);
 
-        @Query("{'$or': [{'senderUserId': ?0}, {'receiverUserId': ?0}], 'isRejection': false}")
-        List<TinderMatch> findAcceptedMatchesByUserId(String userId);
+        @Query("{'senderUserId': ?0, 'isRejection': false}")
+        List<TinderMatch> findAcceptedMatchesBySenderUserId(String userId);
 
-        @Query("{'$or': [{'senderUserId': ?0}, {'receiverUserId': ?0}], 'isRejection': true}")
-        List<TinderMatch> findRejectedMatchesByUserId(String userId);
+        @Query("{'senderUserId': ?0, 'isRejection': true}")
+        List<TinderMatch> findRejectedMatchesBySenderUserId(String userId);
+
+        @Query("{'receiverUserId': ?0, 'isRejection': false}")
+        List<TinderMatch> findAcceptedMatchesByReceiverUserId(String userId);
+
+        @Query("{'receiverUserId': ?0, 'isRejection': true}")
+        List<TinderMatch> findRejectedMatchesByReceiverUserId(String userId);
 }

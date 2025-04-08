@@ -116,8 +116,11 @@ public class UserService {
                 }
             }
         }
-        List<TinderMatch> otherTinderUsers = tinderMatchRepository.findBySenderUserId(userId);
-        for (TinderMatch otherTinderUser : otherTinderUsers) {
+        List<TinderMatch> seenBeforeTinderUsers = tinderMatchRepository.findBySenderUserId(userId);
+        List<TinderMatch> alreadyRejectedByTinderUsers = tinderMatchRepository
+                .findRejectedMatchesByReceiverUserId(userId);
+        seenBeforeTinderUsers.addAll(alreadyRejectedByTinderUsers);
+        for (TinderMatch otherTinderUser : seenBeforeTinderUsers) {
             String otherUserId = otherTinderUser.getSenderUserId();
             if (!otherUserId.equals(userId)) {
                 alreadyConnectedUserIds.add(otherUserId);
@@ -127,6 +130,7 @@ public class UserService {
                 alreadyConnectedUserIds.add(otherUserId);
             }
         }
+
         userRepository.findById(userId).ifPresent(user -> {
             List<Registration> registrations = user.getRegistrations();
             for (Registration registration : registrations) {
