@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 
-
 const Navbar = () => {
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -20,6 +19,9 @@ const Navbar = () => {
           <Link to="/">EduBook</Link>
         </div>
         <div className="space-x-10">
+          <Link to="/about" className="text-white hover:text-gray-200">
+            About
+          </Link>
           <Link to="/eventplanning" className="text-white hover:text-gray-200">
             Event Planning
           </Link>
@@ -28,9 +30,6 @@ const Navbar = () => {
           </Link>
           <Link to="/networking" className="text-white hover:text-gray-200">
             Networking
-          </Link>
-          <Link to="/about" className="text-white hover:text-gray-200">
-            About
           </Link>
           <Link to="/eventlogin" className="text-white hover:text-gray-200">
             Event Promotion

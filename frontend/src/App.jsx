@@ -20,6 +20,7 @@ import SwipePage from "./pages/SwipePage.jsx"; // Import the SwipePage component
 
 import UserDashboard from "./pages/UserDashboard.jsx";
 import Networking from "./pages/Networking.jsx";
+import SignupDetails from "./pages/SignupDetails.jsx";
 
 const App = () => {
   return (
@@ -62,6 +63,7 @@ const App = () => {
               </PrivateRoute>
             }
           />
+          <Route path="/signup-details" element={<SignupDetails />} />
         </Routes>
       </main>
       <Footer />
