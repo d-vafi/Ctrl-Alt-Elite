@@ -23,14 +23,14 @@ const EventPlanning = () => {
         const userRes = await axios.get(
           `http://localhost:8080/api/users/me?userId=${userId}`
         );
-
         const orgId = userRes.data.user?.organizationId;
         setOrganizationId(orgId);
 
         const eventRes = await axios.get("http://localhost:8080/api/events");
-        const orgEvents = eventRes.data.filter(
-          (event) => event.organizerId === orgId
-        );
+        const orgEvents = eventRes.data
+          .filter((event) => event.organizerId === orgId)
+          .map((e) => ({ ...e }))
+          .sort((a, b) => new Date(a.date) - new Date(b.date));
 
         setEvents(orgEvents);
 
@@ -90,9 +90,9 @@ const EventPlanning = () => {
       });
 
       const refreshed = await axios.get("http://localhost:8080/api/events");
-      const orgEvents = refreshed.data.filter(
-        (event) => event.organizerId === organizationId
-      );
+      const orgEvents = refreshed.data
+        .filter((event) => event.organizerId === organizationId)
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
       setEvents(orgEvents);
     } catch (err) {
       console.error("Error creating event:", err);
@@ -163,9 +163,9 @@ const EventPlanning = () => {
       alert("Speakers invited.");
 
       const refreshed = await axios.get("http://localhost:8080/api/events");
-      const orgEvents = refreshed.data.filter(
-        (event) => event.organizerId === organizationId
-      );
+      const orgEvents = refreshed.data
+        .filter((event) => event.organizerId === organizationId)
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
       setEvents(orgEvents);
       setNewSpeakerInput({ ...newSpeakerInput, [eventId]: "" });
     } catch (err) {
@@ -175,8 +175,12 @@ const EventPlanning = () => {
   };
 
   const today = new Date().toISOString().split("T")[0];
-  const futureEvents = events.filter((e) => e.date >= today);
-  const pastEvents = events.filter((e) => e.date < today);
+  const futureEvents = events
+    .filter((e) => e.date >= today)
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
+  const pastEvents = events
+    .filter((e) => e.date < today)
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4">
@@ -189,6 +193,7 @@ const EventPlanning = () => {
         Create Event
       </button>
 
+      {/* MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
@@ -389,7 +394,7 @@ const EventPlanning = () => {
 
       {/* PAST EVENTS */}
       {pastEvents.length > 0 && (
-        <div className="w-full max-w-3xl mt-12">
+        <div className="w-full max-w-3xl mt-12 bg-gray-100 p-6 rounded">
           <h2 className="text-xl font-bold mb-4 text-gray-700">Past Events</h2>
           <div className="space-y-6">
             {pastEvents.map((event) => (
