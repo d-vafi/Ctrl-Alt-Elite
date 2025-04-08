@@ -12,6 +12,7 @@ const Navbar = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("userType");
     setIsLoggedIn(false);
+    localStorage.removeItem("type");
     navigate("/");
   };
 
@@ -52,6 +53,24 @@ const Navbar = () => {
           {(isOrganizer || isStakeholder) && (
             <Link to="/eventlogin" className="text-white hover:text-gray-200">
               Event Promotion
+            </Link>
+          )}
+
+          {isOrganizer && (
+            <Link
+              to="/organizer-dashboard"
+              className="text-white hover:text-gray-200"
+            >
+              Organizer Dashboard
+            </Link>
+          )}
+
+          {userType === "organizer" && (
+            <Link
+              to="/organizer-dashboard"
+              className="text-white hover:text-gray-200"
+            >
+              Organizer Dashboard
             </Link>
           )}
 

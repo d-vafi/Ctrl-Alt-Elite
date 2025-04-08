@@ -30,6 +30,7 @@ const Login = () => {
 
         localStorage.setItem("token", "mock-token");
         localStorage.setItem("userId", userId);
+        localStorage.setItem("type", res.data.userType);
         setIsLoggedIn(true);
 
         // 🔁 Get user profile to extract their type

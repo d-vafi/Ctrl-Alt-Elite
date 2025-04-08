@@ -15,6 +15,7 @@ import PrivateRoute from "./components/PrivateRoute.jsx";
 import PaymentSuccess from "./pages/PaymentSuccess.jsx";
 import PaymentError from "./pages/PaymentError.jsx";
 import EventPlanning from "./pages/EventPlanning"; // 👈 import the new page
+import OrganizerDashboard from "./pages/OrganizerDashboard.jsx";
 
 import SwipePage from "./pages/SwipePage.jsx"; // Import the SwipePage component
 
@@ -60,6 +61,14 @@ const App = () => {
             element={
               <PrivateRoute>
                 <UserDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/organizer-dashboard"
+            element={
+              <PrivateRoute>
+                <OrganizerDashboard />
               </PrivateRoute>
             }
           />
