@@ -29,6 +29,13 @@ public class UserService {
     }
 
     public User registerUser(User user) {
+        // Optional: check for duplicate email
+        Optional<User> existing = userRepository.findByEmail(user.getEmail());
+        if (existing.isPresent()) {
+            throw new RuntimeException("Email already registered.");
+        }
+
+        // Optional: additional validation or hashing
         return userRepository.save(user);
     }
 
