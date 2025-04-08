@@ -14,6 +14,9 @@ public class Event {
     private String description;
     private double price;
     private String date;
+    private String organizerId;
+    private double rentCost = 0;
+    private double foodCost = 0;
 
     private List<String> speakers = new ArrayList<>();
 
@@ -30,6 +33,29 @@ public class Event {
         this.price = price;
         this.date = date;
     }
+
+    public String getOrganizerId() { return organizerId; }
+ 
+    public void setOrganizerId(String organizerId) {
+        this.organizerId = organizerId;
+    }
+
+
+    public Double getRentCost(){
+        return rentCost;
+    }
+
+    public void setRentCost(double rentCost){
+        this.rentCost = rentCost;
+    }
+    public Double getFoodCost(){
+        return foodCost;
+    }
+
+    public void setFoodCost(double foodCost){
+        this.foodCost = foodCost;
+    }
+
 
     // Getters and setters
     public String getId() {

@@ -3,13 +3,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 
 
+
 const Navbar = () => {
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
+  const userType = localStorage.getItem("type");
 
   const handleSignOut = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
+    localStorage.removeItem("userId");
+    localStorage.removeItem("type");
     navigate("/"); // Redirect to home or login
   };
 
@@ -36,6 +40,15 @@ const Navbar = () => {
             Event Promotion
           </Link>
 
+          {userType === "organizer" && (
+             <Link
+               to="/organizer-dashboard"
+               className="text-white hover:text-gray-200"
+             >
+               Organizer Dashboard
+             </Link>
+           )}
+
           {!isLoggedIn ? (
             <>
               <Link to="/signup" className="text-white hover:text-gray-200">
@@ -47,9 +60,13 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link to="/dashboard" className="text-white hover:text-gray-200">
-                Dashboard
-              </Link>
+              {userType !== "organizer" && (
+               <Link to="/dashboard" className="text-white hover:text-gray-200">
+                 Dashboard
+               Dashboard
+               </Link>
+ 
+             )}
 
               <button
                 onClick={handleSignOut}
