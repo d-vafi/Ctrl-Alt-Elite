@@ -12,19 +12,98 @@ const EventPlanning = () => {
     acceptsSponsorship: "true",
     speakers: "",
   });
+  const [newSpeakerInput, setNewSpeakerInput] = useState({});
+  const [organizationId, setOrganizationId] = useState("");
+
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
-    axios.get("http://localhost:8080/api/events")
-      .then(response => setEvents(response.data))
-      .catch(error => console.error("Error fetching events:", error));
-  }, []);
+    const fetchUserAndEvents = async () => {
+      try {
+        const userRes = await axios.get(
+          `http://localhost:8080/api/users/me?userId=${userId}`
+        );
 
-  const handleChange = (index, field, value) => {
+        const orgId = userRes.data.user?.organizationId;
+        setOrganizationId(orgId);
+
+        const eventRes = await axios.get("http://localhost:8080/api/events");
+        const orgEvents = eventRes.data.filter(
+          (event) => event.organizerId === orgId
+        );
+
+        setEvents(orgEvents);
+
+        const initialInputs = {};
+        orgEvents.forEach((e) => (initialInputs[e.id] = ""));
+        setNewSpeakerInput(initialInputs);
+      } catch (err) {
+        console.error("Error loading user/events:", err);
+      }
+    };
+
+    fetchUserAndEvents();
+  }, [userId]);
+
+  const handleNewEventChange = (e) => {
+    const { name, value } = e.target;
+    setNewEvent({ ...newEvent, [name]: value });
+  };
+
+  const handleCreateEvent = async () => {
+    try {
+      const invited = newEvent.speakers
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      const payload = {
+        ...newEvent,
+        organizerId: organizationId,
+        price: parseFloat(newEvent.price),
+        acceptsSponsorship: newEvent.acceptsSponsorship === "true",
+        speakers: [],
+        invitedSpeakers: invited,
+      };
+
+      const res = await axios.post(
+        "http://localhost:8080/api/events/create",
+        payload
+      );
+
+      if (invited.length > 0) {
+        await axios.post(
+          `http://localhost:8080/api/events/${res.data.id}/invite-speakers`,
+          invited
+        );
+      }
+
+      alert(`Event "${res.data.title}" created.`);
+      setIsModalOpen(false);
+      setNewEvent({
+        title: "",
+        description: "",
+        price: "",
+        date: "",
+        acceptsSponsorship: "true",
+        speakers: "",
+      });
+
+      const refreshed = await axios.get("http://localhost:8080/api/events");
+      const orgEvents = refreshed.data.filter(
+        (event) => event.organizerId === organizationId
+      );
+      setEvents(orgEvents);
+    } catch (err) {
+      console.error("Error creating event:", err);
+      alert("Failed to create event.");
+    }
+  };
+
+  const handleEventChange = (index, field, value) => {
     const updated = [...events];
     if (field === "acceptsSponsorship") {
       updated[index][field] = value === "true";
-    } else if (field === "speakers") {
-      updated[index][field] = value.split(",").map((s) => s.trim());
     } else {
       updated[index][field] = value;
     }
@@ -37,73 +116,63 @@ const EventPlanning = () => {
       const payload = {
         ...event,
         price: parseFloat(event.price),
-        acceptsSponsorship: Boolean(event.acceptsSponsorship),
-        speakers: Array.isArray(event.speakers)
-          ? event.speakers
-          : event.speakers.split(",").map((s) => s.trim()),
+        speakers: event.speakers || [],
+        invitedSpeakers: event.invitedSpeakers || [],
       };
-      const response = await axios.put(`http://localhost:8080/api/events/${event.id}`, payload);
-      alert(`Event "${response.data.title}" successfully updated.`);
-    } catch (error) {
-      console.error("Error updating event:", error);
+
+      const res = await axios.put(
+        `http://localhost:8080/api/events/${event.id}`,
+        payload
+      );
+      alert(`Event "${res.data.title}" updated.`);
+    } catch (err) {
+      console.error("Error updating event:", err);
       alert("Failed to update the event.");
     }
   };
 
   const handleCancel = async (index) => {
     const event = events[index];
-    const confirmDelete = window.confirm(`Are you sure you want to cancel "${event.title}"?`);
-    if (!confirmDelete) return;
-  
+    const confirm = window.confirm(`Cancel "${event.title}"?`);
+    if (!confirm) return;
+
     try {
       await axios.delete(`http://localhost:8080/api/events/${event.id}`);
-      alert(`Event "${event.title}" has been cancelled and deleted.`);
-  
-      // Remove from state
+      alert(`"${event.title}" cancelled.`);
       const updated = [...events];
       updated.splice(index, 1);
       setEvents(updated);
-    } catch (error) {
-      console.error("Error deleting event:", error);
-      alert("Failed to cancel the event.");
+    } catch (err) {
+      console.error("Error deleting event:", err);
+      alert("Failed to delete event.");
     }
   };
 
-  const handleNewEventChange = (e) => {
-    const { name, value } = e.target;
-    setNewEvent({ ...newEvent, [name]: value });
-  };
+  const handleInvite = async (eventId) => {
+    const names = newSpeakerInput[eventId]
+      .split(",")
+      .map((n) => n.trim())
+      .filter(Boolean);
+    if (!names.length) return alert("No valid names to invite.");
 
-  const handleCreateEvent = async () => {
     try {
-      const payload = {
-        ...newEvent,
-        price: parseFloat(newEvent.price),
-        acceptsSponsorship: newEvent.acceptsSponsorship === "true",
-        speakers: newEvent.speakers.split(",").map((s) => s.trim()),
-      };
-      const response = await axios.post("http://localhost:8080/api/events/create", payload);
-      alert(`Event "${response.data.title}" created.`);
-      setIsModalOpen(false);
-      setNewEvent({
-        title: "",
-        description: "",
-        price: "",
-        date: "",
-        acceptsSponsorship: "true",
-        speakers: "",
-      });
+      await axios.post(
+        `http://localhost:8080/api/events/${eventId}/invite-speakers`,
+        names
+      );
+      alert("Speakers invited.");
 
-      // Refetch updated list
-      const updated = await axios.get("http://localhost:8080/api/events");
-      setEvents(updated.data);
-
-    } catch (error) {
-      console.error("Error creating event:", error);
-      alert("Failed to create event.");
+      const refreshed = await axios.get("http://localhost:8080/api/events");
+      const orgEvents = refreshed.data.filter(
+        (event) => event.organizerId === organizationId
+      );
+      setEvents(orgEvents);
+      setNewSpeakerInput({ ...newSpeakerInput, [eventId]: "" });
+    } catch (err) {
+      console.error("Error inviting speakers:", err);
+      alert("Failed to invite speakers.");
     }
   };
-  
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4">
@@ -126,7 +195,7 @@ const EventPlanning = () => {
                 name="title"
                 value={newEvent.title}
                 onChange={handleNewEventChange}
-                className="w-full border border-gray-300 rounded p-2"
+                className="w-full border rounded p-2"
                 placeholder="Title"
               />
               <textarea
@@ -134,7 +203,7 @@ const EventPlanning = () => {
                 value={newEvent.description}
                 onChange={handleNewEventChange}
                 rows="3"
-                className="w-full border border-gray-300 rounded p-2"
+                className="w-full border rounded p-2"
                 placeholder="Description"
               />
               <input
@@ -142,7 +211,7 @@ const EventPlanning = () => {
                 name="price"
                 value={newEvent.price}
                 onChange={handleNewEventChange}
-                className="w-full border border-gray-300 rounded p-2"
+                className="w-full border rounded p-2"
                 placeholder="Price"
               />
               <input
@@ -150,21 +219,21 @@ const EventPlanning = () => {
                 name="date"
                 value={newEvent.date}
                 onChange={handleNewEventChange}
-                className="w-full border border-gray-300 rounded p-2"
+                className="w-full border rounded p-2"
               />
               <input
                 type="text"
                 name="speakers"
                 value={newEvent.speakers}
                 onChange={handleNewEventChange}
-                className="w-full border border-gray-300 rounded p-2"
-                placeholder="Comma-separated speakers"
+                className="w-full border rounded p-2"
+                placeholder="Comma-separated speakers to invite"
               />
               <select
                 name="acceptsSponsorship"
                 value={newEvent.acceptsSponsorship}
                 onChange={handleNewEventChange}
-                className="w-full border border-gray-300 rounded p-2"
+                className="w-full border rounded p-2"
               >
                 <option value="true">Accepts Sponsorship</option>
                 <option value="false">Does Not Accept Sponsorship</option>
@@ -180,7 +249,7 @@ const EventPlanning = () => {
                   onClick={handleCreateEvent}
                   className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                 >
-                  Create Event
+                  Create
                 </button>
               </div>
             </div>
@@ -189,66 +258,117 @@ const EventPlanning = () => {
       )}
 
       <div className="w-full max-w-3xl space-y-6">
-        {events.map((event, index) => (
-          <div key={event.id} className="bg-white shadow-md rounded p-6 space-y-4">
-            <input
-              type="text"
-              className="w-full border border-gray-300 rounded p-2"
-              value={event.title}
-              onChange={(e) => handleChange(index, "title", e.target.value)}
-              placeholder="Title"
-            />
-            <textarea
-              className="w-full border border-gray-300 rounded p-2"
-              rows="3"
-              value={event.description}
-              onChange={(e) => handleChange(index, "description", e.target.value)}
-              placeholder="Description"
-            />
-            <input
-              type="text"
-              className="w-full border border-gray-300 rounded p-2"
-              value={event.price}
-              onChange={(e) => handleChange(index, "price", e.target.value)}
-              placeholder="Price"
-            />
-            <input
-              type="date"
-              className="w-full border border-gray-300 rounded p-2"
-              value={event.date}
-              onChange={(e) => handleChange(index, "date", e.target.value)}
-            />
-            <input
-              type="text"
-              className="w-full border border-gray-300 rounded p-2"
-              value={event.speakers?.join(", ") || ""}
-              onChange={(e) => handleChange(index, "speakers", e.target.value)}
-              placeholder="Comma-separated speakers"
-            />
-            <select
-              className="w-full border border-gray-300 rounded p-2"
-              value={event.acceptsSponsorship}
-              onChange={(e) => handleChange(index, "acceptsSponsorship", e.target.value)}
+        {events.map((event, index) => {
+          const confirmed = event.speakers || [];
+          const invited =
+            event.invitedSpeakers?.filter((s) => !confirmed.includes(s)) || [];
+
+          return (
+            <div
+              key={event.id}
+              className="bg-white shadow-md rounded p-6 space-y-4"
             >
-              <option value="true">Accepts Sponsorship</option>
-              <option value="false">Does Not Accept Sponsorship</option>
-            </select>
-            <div className="flex justify-end space-x-2">
-              <button
-                onClick={() => handleUpdate(index)}
-                className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+              <input
+                type="text"
+                className="w-full border p-2 rounded"
+                value={event.title}
+                onChange={(e) =>
+                  handleEventChange(index, "title", e.target.value)
+                }
+              />
+              <textarea
+                className="w-full border p-2 rounded"
+                rows="3"
+                value={event.description}
+                onChange={(e) =>
+                  handleEventChange(index, "description", e.target.value)
+                }
+              />
+              <input
+                type="text"
+                className="w-full border p-2 rounded"
+                value={event.price}
+                onChange={(e) =>
+                  handleEventChange(index, "price", e.target.value)
+                }
+              />
+              <input
+                type="date"
+                className="w-full border p-2 rounded"
+                value={event.date}
+                onChange={(e) =>
+                  handleEventChange(index, "date", e.target.value)
+                }
+              />
+              <select
+                className="w-full border p-2 rounded"
+                value={event.acceptsSponsorship}
+                onChange={(e) =>
+                  handleEventChange(index, "acceptsSponsorship", e.target.value)
+                }
               >
-                Update
-              </button>
-              <button
-                onClick={() => handleCancel(index)}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                Cancel
-              </button>
+                <option value="true">Accepts Sponsorship</option>
+                <option value="false">Does Not Accept Sponsorship</option>
+              </select>
+
+              <div>
+                <strong>Confirmed Speakers:</strong>
+                <ul className="list-disc ml-6 text-green-700">
+                  {confirmed.length ? (
+                    confirmed.map((s, i) => <li key={i}>{s}</li>)
+                  ) : (
+                    <li>None</li>
+                  )}
+                </ul>
+              </div>
+
+              <div>
+                <strong>Pending Invitations:</strong>
+                <ul className="list-disc ml-6 text-yellow-700">
+                  {invited.length ? (
+                    invited.map((s, i) => <li key={i}>{s}</li>)
+                  ) : (
+                    <li>None</li>
+                  )}
+                </ul>
+              </div>
+
+              <input
+                type="text"
+                placeholder="Invite more speakers (comma-separated)"
+                className="w-full border p-2 rounded"
+                value={newSpeakerInput[event.id] || ""}
+                onChange={(e) =>
+                  setNewSpeakerInput({
+                    ...newSpeakerInput,
+                    [event.id]: e.target.value,
+                  })
+                }
+              />
+
+              <div className="flex justify-between space-x-4">
+                <button
+                  onClick={() => handleInvite(event.id)}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  Invite
+                </button>
+                <button
+                  onClick={() => handleUpdate(index)}
+                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+                >
+                  Update
+                </button>
+                <button
+                  onClick={() => handleCancel(index)}
+                  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

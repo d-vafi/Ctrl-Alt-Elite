@@ -22,16 +22,6 @@ const SignUp = () => {
     e.preventDefault();
 
     try {
-      // const response = await axios.post(
-      //   "http://localhost:8080/api/auth/register",
-      //   {
-      //     fullName: formData.fullName,
-      //     email: formData.email,
-      //     password: formData.password,
-      //     type: formData.role, // map 'role' to 'type'
-      //     username: formData.username, // use email as username for now
-      //   }
-      // );
       navigate("/signup-details", { state: formData });
     } catch (err) {
       console.error("Signup error:", err);

@@ -80,20 +80,39 @@ public class UserService {
     }
 
     public User acceptInvitation(String userId, String eventId) {
-        return userRepository.findById(userId).map(user -> {
-            if (user.getSpeakerInvitationIds().contains(eventId)) {
-                user.getSpeakerInvitationIds().remove(eventId);
+        Optional<User> optionalUser = userRepository.findById(userId);
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
 
-                boolean alreadyRegistered = user.getRegistrations().stream()
-                        .anyMatch(r -> r.getEventId().equals(eventId));
+        if (optionalUser.isEmpty() || optionalEvent.isEmpty()) {
+            return null;
+        }
 
-                if (!alreadyRegistered) {
-                    user.getRegistrations().add(new Registration(eventId, "Speaker"));
-                }
-                return userRepository.save(user);
-            }
-            return user;
-        }).orElse(null);
+        User user = optionalUser.get();
+        Event event = optionalEvent.get();
+
+        if (!user.getSpeakerInvitationIds().contains(eventId)) {
+            return user; // not invited
+        }
+
+        // Remove invitation
+        user.getSpeakerInvitationIds().remove(eventId);
+
+        // Add registration if not already present
+        boolean alreadyRegistered = user.getRegistrations().stream()
+                .anyMatch(r -> r.getEventId().equals(eventId));
+
+        if (!alreadyRegistered) {
+            user.getRegistrations().add(new Registration(eventId, "Speaker"));
+        }
+
+        // Add speaker's full name to the event if not already in speakers list
+        if (!event.getSpeakers().contains(user.getFullName())) {
+            event.getSpeakers().add(user.getFullName());
+            eventRepository.save(event);
+        }
+
+        return userRepository.save(user);
     }
+
 
 }

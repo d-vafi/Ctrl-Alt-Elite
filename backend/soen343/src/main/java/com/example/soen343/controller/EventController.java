@@ -3,11 +3,13 @@ package com.example.soen343.controller;
 import com.example.soen343.model.Event;
 import com.example.soen343.model.Sponsorship;
 import com.example.soen343.repository.EventRepository;
+import com.example.soen343.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +20,8 @@ public class EventController {
 
     @Autowired
     private EventRepository eventRepository;
-
+    @Autowired
+    private UserRepository userRepository;
     @GetMapping
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
@@ -94,6 +97,42 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Event not found.");
         }
     }
+
+    @PostMapping("/{eventId}/invite-speakers")
+    public ResponseEntity<String> inviteSpeakers(
+            @PathVariable String eventId,
+            @RequestBody List<String> speakerFullNames
+    ) {
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
+        if (eventOpt.isEmpty()) return ResponseEntity.notFound().build();
+
+        Event event = eventOpt.get();
+
+        if (event.getInvitedSpeakers() == null) {
+            event.setInvitedSpeakers(new ArrayList<>());
+        }
+
+        for (String fullName : speakerFullNames) {
+            if (!event.getInvitedSpeakers().contains(fullName)) {
+                event.getInvitedSpeakers().add(fullName);
+            }
+
+            // Add eventId to matching users' speakerInvitationIds
+            userRepository.findAll().stream()
+                    .filter(user -> user.getFullName().equalsIgnoreCase(fullName))
+                    .forEach(user -> {
+                        List<String> invites = user.getSpeakerInvitationIds();
+                        if (!invites.contains(eventId)) {
+                            invites.add(eventId);
+                            userRepository.save(user);
+                        }
+                    });
+        }
+
+        eventRepository.save(event);
+        return ResponseEntity.ok("Speakers invited.");
+    }
+
 }
     
 
