@@ -40,7 +40,10 @@ const Login = () => {
 
         const userType = profileRes.data?.user?.type || "";
         localStorage.setItem("userType", userType);
-
+        const email = profileRes.data?.user?.email || "";
+        console.log(profileRes.data);
+        console.log(profileRes.data.user.email);
+        localStorage.setItem("email", email);
         navigate("/events");
       } else {
         alert("Invalid credentials");
