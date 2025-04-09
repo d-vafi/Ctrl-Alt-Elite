@@ -12,7 +12,7 @@ import com.example.soen343.repository.UserRepository;
 
 import lombok.*;
 
-@Document(collection = "conversation") // Maps to MongoDB collection
+@Document(collection = "conversation")
 @Getter
 @Setter
 @NoArgsConstructor

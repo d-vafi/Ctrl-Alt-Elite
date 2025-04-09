@@ -6,12 +6,17 @@ import com.example.soen343.factory.Stakeholder;
 import com.example.soen343.factory.UserFactory;
 import com.example.soen343.model.*;
 import com.example.soen343.repository.OrganizationRepository;
+import com.example.soen343.repository.TinderMatchRepository;
 import com.example.soen343.repository.UserRepository;
+import com.example.soen343.repository.ConversationRepository;
 import com.example.soen343.repository.EventRepository;
+
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -23,6 +28,12 @@ public class UserService {
 
     @Autowired
     private OrganizationRepository organizationRepository;
+
+    @Autowired
+    private ConversationService conversationService;
+
+    @Autowired
+    private TinderMatchRepository tinderMatchRepository;
 
     public Optional<User> findByUsernameAndPassword(String username, String password) {
         return userRepository.findByUsernameAndPassword(username, password);
@@ -55,7 +66,7 @@ public class UserService {
             user.setEmail(updated.getEmail());
             user.setAffiliation(updated.getAffiliation());
             user.setProfession(updated.getProfession());
-//            user.setOrganizationId(updated.getOrganizationId());
+            // user.setOrganizationId(updated.getOrganizationId());
             return userRepository.save(user);
         }).orElse(null);
     }
@@ -114,5 +125,79 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public List<User> getOtherNonConnectedUsersInSameEvents(String userId) {
+        List<User> otherUsers = new ArrayList<>();
+        List<Conversation> conversations = conversationService.findByUserId(userId);
+        System.out.println("Conversations size: " + conversations.size());
+        HashSet<String> alreadyConnectedUserIds = new HashSet<>();
+        for (Conversation conversation : conversations) {
+            System.out.println("conversation = " + conversation);
+            List<String> userIds = conversation.getUserIds();
+
+            for (String otherUserId : userIds) {
+                System.out.println("otherUserId = " + otherUserId);
+                if (!otherUserId.equals(userId)) {
+                    alreadyConnectedUserIds.add(otherUserId);
+                }
+            }
+        }
+        List<TinderMatch> seenBeforeTinderUsers = tinderMatchRepository.findBySenderUserId(userId);
+        List<TinderMatch> alreadyRejectedByTinderUsers = tinderMatchRepository
+                .findRejectedMatchesByReceiverUserId(userId);
+        seenBeforeTinderUsers.addAll(alreadyRejectedByTinderUsers);
+        for (TinderMatch otherTinderUser : seenBeforeTinderUsers) {
+            String otherUserId = otherTinderUser.getSenderUserId();
+            if (!otherUserId.equals(userId)) {
+                alreadyConnectedUserIds.add(otherUserId);
+            }
+            otherUserId = otherTinderUser.getReceiverUserId();
+            if (!otherUserId.equals(userId)) {
+                alreadyConnectedUserIds.add(otherUserId);
+            }
+        }
+
+        userRepository.findById(userId).ifPresent(user -> {
+            List<Registration> registrations = user.getRegistrations();
+            for (Registration registration : registrations) {
+                String eventId = registration.getEventId();
+                if (eventId != null) {
+                    List<User> eventUsers = userRepository.findByRegistrationsEventId(eventId);
+                    for (User eventUser : eventUsers) {
+                        if (!eventUser.getId().equals(userId) &&
+                                !alreadyConnectedUserIds.contains(eventUser.getId()) &&
+                                !otherUsers.contains(eventUser)) {
+                            otherUsers.add(eventUser);
+                        }
+                    }
+                }
+            }
+        });
+        return otherUsers;
+    }
+
+    public List<User> getOtherConnectedUsersInSameEvents(String currentUserId, String conversationId) {
+        List<String> returnedUsers = new ArrayList<>();
+        List<Conversation> conversations = conversationService.findByUserId(currentUserId);
+        Conversation currConversation = conversationService.findById(conversationId).get();
+        List<String> cureConversationUserIds = currConversation.getUserIds();
+        cureConversationUserIds.remove(currentUserId);
+        for (Conversation conversation : conversations) {
+            if (conversation.getId().equals(currConversation.getId())) {
+                continue;
+            }
+            List<String> otherUserIdsInConversation = conversation.getUserIds();
+            for (String otherUserId : otherUserIdsInConversation) {
+                if (!otherUserId.equals(currentUserId) && !cureConversationUserIds.contains(otherUserId)) {
+                    returnedUsers.add(otherUserId);
+                }
+            }
+        }
+
+        return returnedUsers.stream()
+                .map(userId -> userRepository.findById(userId).orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+    }
 
 }

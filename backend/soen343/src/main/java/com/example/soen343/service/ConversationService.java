@@ -1,6 +1,10 @@
 package com.example.soen343.service;
 
+import com.example.soen343.controller.MessageController;
+import com.example.soen343.controller.PollController;
 import com.example.soen343.model.Conversation;
+import com.example.soen343.model.Message;
+import com.example.soen343.model.Poll;
 import com.example.soen343.model.User;
 import com.example.soen343.repository.ConversationRepository;
 import com.example.soen343.repository.UserRepository;
@@ -9,7 +13,9 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -17,8 +23,14 @@ public class ConversationService {
     @Autowired
     private ConversationRepository conversationRepository;
 
+    @Autowired
+    private MessageController messageController;
+
+    @Autowired
+    private PollController pollController;
+
     public List<Conversation> findByUserId(String userId) {
-        return conversationRepository.findByUserId(new ObjectId(userId));
+        return conversationRepository.findByUserId(userId);
     }
 
     public Conversation save(Conversation conversation) {
@@ -29,6 +41,37 @@ public class ConversationService {
         Conversation conversation = new Conversation();
         conversation.setUserIds(List.of(userId1, userId2));
         return conversationRepository.save(conversation);
+    }
+
+    public List<Conversation> findByUserIds(List<String> userIds) {
+        return conversationRepository.findByUserIds(userIds);
+    }
+
+    public List<Conversation> findByUserIds(String userId1, String userId2) {
+        return findByUserIds(List.of(userId1, userId2));
+    }
+
+    public Optional<Conversation> findById(String conversationId) {
+        return conversationRepository.findById(conversationId);
+    }
+
+    public void addUserToConversation(String conversationId, String userId) {
+        conversationRepository.findById(conversationId).ifPresent(conversation -> {
+            List<String> userIds = conversation.getUserIds();
+            if (!userIds.contains(userId)) {
+                userIds.add(userId);
+                conversationRepository.save(conversation);
+            }
+        });
+    }
+
+    public HashMap<String, Object> getAllMessagesAndPolls(String conversationId) {
+        HashMap<String, Object> result = new HashMap<>();
+        Map<String, Object> messages = messageController.getMessagesByConversationId(conversationId);
+        Map<String, Object> polls = pollController.getPollsByConversationId(conversationId);
+        result.put("messages", messages.get("messages"));
+        result.put("polls", polls.get("polls"));
+        return result;
     }
 
 }
