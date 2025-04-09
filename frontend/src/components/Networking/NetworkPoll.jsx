@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const NetworkPoll = (props) => {
   const {
@@ -10,10 +11,24 @@ const NetworkPoll = (props) => {
     votes,
     isClosed,
     senderId,
+    fetchMessages,
   } = props;
+
   const currentUserId = localStorage.getItem("userId");
   const [isActive, setIsActive] = useState(false);
   const [selectedVotes, setSelectedVotes] = useState({});
+
+  // Initialize selectedVotes based on the user's previous votes
+  useEffect(() => {
+    const initialSelectedVotes = {};
+    Object.entries(votes).forEach(([key, vote]) => {
+      if (vote.votes.includes(currentUserId)) {
+        initialSelectedVotes[key] = true;
+      }
+    });
+    setSelectedVotes(initialSelectedVotes);
+  }, [votes, currentUserId]);
+
   useEffect(() => {
     const now = Math.floor(Date.now() / 1000);
     const pollStartTime = parseInt(startTime, 10);
@@ -45,7 +60,25 @@ const NetworkPoll = (props) => {
     }
   };
 
-  const onVoteSubmit = async (selectedOptions) => {};
+  const onVoteSubmit = async (selectedOptions) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/api/poll/vote/${id}`,
+        {
+          userId: currentUserId,
+          options: selectedOptions,
+        }
+      );
+      if (response.data.success) {
+        alert("Vote submitted successfully!");
+        fetchMessages();
+      } else {
+        alert("Failed to submit vote.");
+      }
+    } catch (error) {
+      console.error("Error submitting vote:", error);
+    }
+  };
 
   const handleSubmitVote = () => {
     const selectedOptions = Object.keys(selectedVotes).filter(
@@ -61,19 +94,26 @@ const NetworkPoll = (props) => {
   };
 
   const handleClosePoll = async () => {
-    const response = await fetch(`http://localhost:8080/api/poll/close/${id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ senderId }),
-    });
-
-    if (response.ok) {
-      alert("Poll closed successfully!");
-    } else {
-      alert("Failed to close poll.");
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/api/poll/close/${id}`
+      );
+      if (response.data.success) {
+        alert("Poll closed successfully!");
+        fetchMessages();
+      } else {
+        alert("Failed to close poll.");
+      }
+    } catch (error) {
+      console.error("Error closing poll:", error);
     }
+  };
+
+  const userAlreadyVoted = () => {
+    const alreadyVotedOptions = Object.keys(votes).filter((key) =>
+      votes[key].votes.includes(currentUserId)
+    );
+    return alreadyVotedOptions;
   };
 
   return (
@@ -95,20 +135,24 @@ const NetworkPoll = (props) => {
                 type={isMultiselect ? "checkbox" : "radio"}
                 name="poll"
                 value={key}
-                checked={!!selectedVotes[key]}
                 onChange={() => handleVoteChange(key)}
                 className="mr-2"
+                checked={!!selectedVotes[key]} // Reflect the selectedVotes state
+                disabled={isClosed || userAlreadyVoted().length > 0} // Disable if poll is closed or user has already voted
               />
               {vote.option}
             </label>
           ))}
           <div className="flex flex-col items-start">
-            <button
-              onClick={handleSubmitVote}
-              className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
-            >
-              Submit Vote
-            </button>
+            {!userAlreadyVoted().length > 0 && (
+              <button
+                onClick={handleSubmitVote}
+                className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+                disabled={userAlreadyVoted().length > 0}
+              >
+                Submit Vote
+              </button>
+            )}
 
             {senderId === currentUserId && (
               <button
@@ -121,7 +165,26 @@ const NetworkPoll = (props) => {
           </div>
         </div>
       ) : (
-        <p className="text-red-500 mt-4">This poll is closed.</p>
+        <div>
+          {Math.floor(Date.now() / 1000) < parseInt(startTime, 10) ? (
+            <p className="text-yellow-500 mt-4">
+              This poll hasn't started yet.
+            </p>
+          ) : (
+            <>
+              <p className="text-red-500 mt-4">This poll is closed.</p>
+              <p>Results</p>
+              {Object.entries(votes).map(([key, vote]) => (
+                <div key={key} className="flex items-center mb-2">
+                  <span className="mr-2">{vote.option}</span>
+                  <span className="text-gray-500">
+                    {vote.votes.length} vote{vote.votes.length !== 1 && "s"}
+                  </span>
+                </div>
+              ))}
+            </>
+          )}
+        </div>
       )}
     </div>
   );

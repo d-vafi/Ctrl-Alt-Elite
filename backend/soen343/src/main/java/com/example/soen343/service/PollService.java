@@ -42,11 +42,19 @@ public class PollService {
         if (startTime != null) {
             poll.setStartTime(startTime);
         } else {
-            poll.setStartTime(Long.toString(System.currentTimeMillis() / 1000));
+            poll.setStartTime(Long.toString((System.currentTimeMillis() / 60000) * 60));
         }
         poll.setEndTime(endTime);
         poll.setClosed(isClosed);
         poll = pollRepository.save(poll);
         return poll;
+    }
+
+    public Optional<Poll> findById(String pollId) {
+        return pollRepository.findById(pollId);
+    }
+
+    public Poll save(Poll poll) {
+        return pollRepository.save(poll);
     }
 }

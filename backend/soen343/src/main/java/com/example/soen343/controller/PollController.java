@@ -41,6 +41,54 @@ public class PollController {
         return response;
     }
 
+    @PostMapping("/close/{pollId}")
+    public Map<String, Object> closePoll(@PathVariable String pollId) {
+        Map<String, Object> response = new HashMap<>();
+        Optional<Poll> poll = pollService.findById(pollId);
+        if (poll.isPresent()) {
+            Poll p = poll.get();
+            p.setClosed(true);
+            pollService.save(p);
+            response.put("success", true);
+        } else {
+            response.put("success", false);
+        }
+        return response;
+    }
+
+    @PostMapping("/vote/{pollId}")
+    public Map<String, Object> votePoll(@PathVariable String pollId, @RequestBody Map<String, Object> data) {
+        Map<String, Object> response = new HashMap<>();
+        Optional<Poll> poll = pollService.findById(pollId);
+
+        String userId = (String) data.get("userId");
+        List<String> options = (List<String>) data.get("options");
+        if (poll.isPresent()) {
+            Poll p = poll.get();
+
+            HashMap<String, VoteOption> votes = p.getVotes();
+            for (String option : options) {
+                if (votes.containsKey(option)) {
+                    VoteOption voteOption = votes.get(option);
+                    List<String> userVotes = voteOption.getVotes();
+                    if (!userVotes.contains(userId)) {
+                        userVotes.add(userId);
+                    }
+                } else {
+                    List<String> userVotes = new ArrayList<>();
+                    userVotes.add(userId);
+                    votes.put(option, new VoteOption(option, userVotes));
+                }
+            }
+            p.setVotes(votes);
+            pollService.save(p);
+            response.put("success", true);
+        } else {
+            response.put("success", false);
+        }
+        return response;
+    }
+
     @GetMapping("/conversation/{conversationId}")
     public Map<String, Object> getPollsByConversationId(@PathVariable String conversationId) {
         Map<String, Object> response = new HashMap<>();

@@ -28,15 +28,16 @@ const NetworkChat = () => {
   }, [messages]);
 
   const selectChat = async (conversationId) => {
+    fetchMessages(conversationId);
+    setSelectedConversation(conversations.find((c) => c.id === conversationId));
+  };
+
+  const fetchMessages = async (conversationId) => {
     try {
       const response = await axios.get(
         `http://localhost:8080/api/conversation/getAllMessagesAndPolls/${conversationId}`
       );
       setMessages(response.data.messages);
-      console.log("Messages:", response.data);
-      setSelectedConversation(
-        conversations.find((c) => c.id === conversationId)
-      );
     } catch (error) {
       console.error("Error fetching messages:", error);
     }
@@ -76,10 +77,7 @@ const NetworkChat = () => {
         senderId: userId,
         content: message,
       });
-      const response = await axios.get(
-        `http://localhost:8080/api/conversation/getAllMessagesAndPolls/${selectedConversation.id}`
-      );
-      setMessages(response.data.messages);
+      fetchMessages(selectedConversation.id);
       setConversations((prevConversations) =>
         prevConversations.map((conversation) => {
           if (conversation.id === selectedConversation.id) {
@@ -196,6 +194,9 @@ const NetworkChat = () => {
                           endTime={message.endTime}
                           isMultiselect={message.isMultiselect}
                           isClosed={message.isClosed}
+                          fetchMessages={() =>
+                            fetchMessages(message.conversationId)
+                          }
                         />
                       );
                     } else {

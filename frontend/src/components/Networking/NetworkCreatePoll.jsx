@@ -46,8 +46,10 @@ const NetworkCreatePoll = (props) => {
       title,
       isMultiselect,
       votes: { ...options.map((option) => ({ option, votes: [] })) },
-      startTime: startTime ? startTime.unix().toString() : null,
-      endTime: endTime ? endTime.unix().toString() : null,
+      startTime: startTime
+        ? startTime.set("second", 0).unix().toString()
+        : null,
+      endTime: endTime ? endTime.set("second", 0).unix().toString() : null,
       isClosed: false,
     };
     console.log("Poll Data:", pollData);
