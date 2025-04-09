@@ -50,8 +50,15 @@ const Navbar = () => {
             </Link>
           )}
 
-          {(isOrganizer || isStakeholder) && (
-            <Link to="/eventlogin" className="text-white hover:text-gray-200">
+          {isLoggedIn && (
+            <Link
+              to={
+                isAttendee
+                  ? "/userpromotiondashboard"
+                  : "/eventpromotiondashboard"
+              }
+              className="text-white hover:text-gray-200"
+            >
               Event Promotion
             </Link>
           )}

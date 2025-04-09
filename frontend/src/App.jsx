@@ -6,7 +6,6 @@ import About from "./pages/About.jsx";
 import Navbar from "./components/Navbar.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Login from "./pages/LogIn.jsx";
-import EventLogin from "./pages/EventLogIn.jsx";
 import EventPromotionDashboard from "./pages/EventPromotionDashboard.jsx";
 import UserPromotionDashboard from "./pages/UserPromotionDashboard.jsx";
 import PaymentForm from "./pages/PaymentForm.jsx";
@@ -33,7 +32,6 @@ const App = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/about" element={<About />} />
-          <Route path="/eventlogin" element={<EventLogin />} />
           <Route
             path="/eventpromotiondashboard"
             element={<EventPromotionDashboard />}
