@@ -55,14 +55,15 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-blue-600 mb-6">
-          Sign In
+    <div className="flex items-center justify-center min-h-screen transition-colors px-4">
+      <div className="bg-white dark:bg-gray-800 transition-colors p-8 shadow-lg rounded-xl w-full max-w-md transition-colors">
+        <h2 className="text-3xl font-bold text-center text-blue-600 dark:text-blue-400 mb-6">
+          Log In
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-gray-700 font-semibold">
+            <label className="block text-gray-700 dark:text-gray-200 font-semibold">
               Username
             </label>
             <input
@@ -71,13 +72,13 @@ const Login = () => {
               value={formData.username}
               onChange={handleChange}
               required
-              className="w-full p-2 border border-gray-300 rounded mt-1"
+              className="w-full p-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded mt-1"
               placeholder="Enter your username"
             />
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold">
+            <label className="block text-gray-700 dark:text-gray-200 font-semibold">
               Password
             </label>
             <input
@@ -86,21 +87,21 @@ const Login = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              className="w-full p-2 border border-gray-300 rounded mt-1"
+              className="w-full p-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded mt-1"
               placeholder="Enter your password"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white p-2 rounded mt-4 hover:bg-blue-700"
+            className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition duration-300"
           >
             Sign In
           </button>
 
-          <p className="text-center text-gray-600 text-sm mt-4">
+          <p className="text-center text-gray-600 dark:text-gray-400 text-sm mt-4">
             Don&apos;t have an account?{" "}
-            <Link to="/signup" className="text-blue-600 hover:underline">
+            <Link to="/signup" className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition duration-300">
               Sign Up
             </Link>
           </p>

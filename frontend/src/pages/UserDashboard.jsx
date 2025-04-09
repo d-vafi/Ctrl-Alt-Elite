@@ -114,8 +114,8 @@ const UserDashboard = () => {
   if (!user) return <p>Loading user data...</p>;
 
   return (
-    <div className="max-w-3xl mx-auto mt-10 p-6 bg-white rounded shadow-md">
-      <h1 className="text-2xl font-bold text-center text-blue-700 mb-6">
+    <div className="max-w-3xl mx-auto mt-10 p-6 bg-white dark:bg-gray-800 rounded shadow-md">
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-white text-center mb-6">
         My Profile
       </h1>
 
@@ -124,13 +124,15 @@ const UserDashboard = () => {
         {editMode ? (
           <>
             <div className="mb-4">
-              <label className="block font-semibold">Full Name</label>
+              <label className="block font-semibold text-gray-800 dark:text-gray-200">
+                Full Name
+              </label>
               <input
                 type="text"
                 name="fullName"
                 value={formData.fullName}
                 onChange={handleChange}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
               />
               {errors.fullName && (
                 <p className="text-red-500 text-sm">{errors.fullName}</p>
@@ -138,13 +140,15 @@ const UserDashboard = () => {
             </div>
 
             <div className="mb-4">
-              <label className="block font-semibold">Email</label>
+              <label className="block font-semibold text-gray-800 dark:text-gray-200">
+                Email
+              </label>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
               />
               {errors.email && (
                 <p className="text-red-500 text-sm">{errors.email}</p>
@@ -154,13 +158,15 @@ const UserDashboard = () => {
             {hasRole("Attendee") && (
               <>
                 <div className="mb-4">
-                  <label className="block font-semibold">Affiliation</label>
+                  <label className="block font-semibold text-gray-800 dark:text-gray-200">
+                    Affiliation
+                  </label>
                   <input
                     type="text"
                     name="affiliation"
                     value={formData.affiliation}
                     onChange={handleChange}
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                   />
                   {errors.affiliation && (
                     <p className="text-red-500 text-sm">{errors.affiliation}</p>
@@ -168,13 +174,15 @@ const UserDashboard = () => {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block font-semibold">Profession</label>
+                  <label className="block font-semibold text-gray-800 dark:text-gray-200">
+                    Profession
+                  </label>
                   <input
                     type="text"
                     name="profession"
                     value={formData.profession}
                     onChange={handleChange}
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                   />
                   {errors.profession && (
                     <p className="text-red-500 text-sm">{errors.profession}</p>
@@ -185,14 +193,16 @@ const UserDashboard = () => {
 
             {hasRole("Stakeholder") && (
               <div className="mb-4">
-                <label className="block font-semibold">Organization</label>
+                <label className="block font-semibold text-gray-800 dark:text-gray-200">
+                  Organization
+                </label>
                 <input
                   type="text"
                   value={formData.organization}
                   disabled
-                  className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
+                  className="w-full p-2 border rounded bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 cursor-not-allowed"
                 />
-                <p className="text-gray-500 text-sm mt-1">
+                <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
                   Organization info is not editable.
                 </p>
               </div>
@@ -207,28 +217,28 @@ const UserDashboard = () => {
           </>
         ) : (
           <>
-            <p>
+            <p className="text-gray-800 dark:text-gray-200">
               <strong>Name:</strong> {user.fullName}
             </p>
-            <p>
+            <p className="text-gray-800 dark:text-gray-200">
               <strong>Email:</strong> {user.email}
             </p>
             {hasRole("Attendee") && (
               <>
-                <p>
+                <p className="text-gray-800 dark:text-gray-200">
                   <strong>Affiliation:</strong> {user.affiliation}
                 </p>
-                <p>
+                <p className="text-gray-800 dark:text-gray-200">
                   <strong>Profession:</strong> {user.profession}
                 </p>
               </>
             )}
             {hasRole("Stakeholder") && (
-              <p>
+              <p className="text-gray-800 dark:text-gray-200">
                 <strong>Organization:</strong> {formData.organization}
               </p>
             )}
-            <p>
+            <p className="text-gray-800 dark:text-gray-200">
               <strong>Role:</strong> {user.type}
             </p>
 
@@ -245,9 +255,11 @@ const UserDashboard = () => {
       {/* Registered Events */}
       {hasRole("Attendee") && (
         <div className="mb-10">
-          <h2 className="text-2xl font-bold mb-4 text-blue-700">My Events</h2>
+          <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">
+            My Events
+          </h2>
           {user.registeredEvents.length === 0 ? (
-            <p className="text-gray-500 italic text-center">
+            <p className="text-gray-500 dark:text-gray-400 italic text-center">
               You haven't registered for any events yet.
             </p>
           ) : (
@@ -255,16 +267,18 @@ const UserDashboard = () => {
               {user.registeredEvents.map((event) => (
                 <div
                   key={event.id}
-                  className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border border-gray-200 rounded-lg shadow-sm p-4 bg-white transition hover:shadow-md"
+                  className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border border-gray-200 dark:border-gray-600 rounded-lg shadow-sm p-4 bg-white dark:bg-gray-700 transition hover:shadow-md"
                 >
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800">
+                    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                       {event.title}
                     </h3>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       Role: <span className="capitalize">{event.role}</span>
                     </p>
-                    <p className="text-sm text-gray-500">Date: {event.date}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Date: {event.date}
+                    </p>
                   </div>
                   <button
                     onClick={() => cancelRegistration(event.id)}
@@ -282,16 +296,20 @@ const UserDashboard = () => {
       {/* Speaker Invitations */}
       {user.speakerInvitations.length > 0 && (
         <div className="mb-10">
-          <h2 className="text-xl font-bold mb-3">Invitations to Speak</h2>
+          <h2 className="text-xl font-bold mb-3 text-gray-800 dark:text-white">
+            Invitations to Speak
+          </h2>
           <ul className="space-y-4">
             {user.speakerInvitations.map((event) => (
               <li
                 key={event.id}
-                className="border p-4 rounded shadow flex justify-between items-center"
+                className="border p-4 rounded shadow flex justify-between items-center dark:border-gray-600 dark:bg-gray-700"
               >
                 <div>
-                  <p className="font-semibold">{event.title}</p>
-                  <p className="text-gray-600 text-sm">
+                  <p className="font-semibold text-gray-800 dark:text-gray-200">
+                    {event.title}
+                  </p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">
                     You're invited as a speaker
                   </p>
                 </div>
@@ -309,21 +327,33 @@ const UserDashboard = () => {
 
       {/* Stakeholder Tools */}
       {hasRole("Stakeholder") && (
-        <div className="border-t pt-6">
-          <h2 className="text-xl font-bold mb-3">Stakeholder Tools</h2>
-          <p className="text-gray-600 mb-4">
+        <div className="border-t pt-6 dark:border-gray-600">
+          <h2 className="text-xl font-bold mb-3 text-gray-800 dark:text-white">
+            Stakeholder Tools
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
             Events sponsored by your organization:
           </p>
           {sponsoredEvents.length === 0 ? (
-            <p className="text-gray-500 italic">No events sponsored yet.</p>
+            <p className="text-gray-500 dark:text-gray-400 italic">
+              No events sponsored yet.
+            </p>
           ) : (
             <ul className="space-y-4">
               {sponsoredEvents.map((event) => (
-                <li key={event.id} className="border p-4 rounded shadow">
-                  <h3 className="font-semibold text-lg">{event.title}</h3>
-                  <p>{event.description}</p>
-                  <p className="text-sm text-gray-600">
-                    Sponsorship Amount: ${event.sponsorshipAmount.toFixed(2)}
+                <li
+                  key={event.id}
+                  className="border p-4 rounded shadow dark:border-gray-600 dark:bg-gray-700"
+                >
+                  <h3 className="font-semibold text-lg text-gray-800 dark:text-gray-200">
+                    {event.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {event.description}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Sponsorship Amount: $
+                    {event.sponsorshipAmount.toFixed(2)}
                   </p>
                 </li>
               ))}
@@ -334,13 +364,15 @@ const UserDashboard = () => {
 
       {/* Organizer Tools */}
       {hasRole("Organizer") && (
-        <div className="border-t pt-6 mt-6">
-          <h2 className="text-xl font-bold mb-3">Organizer Tools</h2>
-          <p className="text-gray-600 mb-2">
+        <div className="border-t pt-6 mt-6 dark:border-gray-600">
+          <h2 className="text-xl font-bold mb-3 text-gray-800 dark:text-white">
+            Organizer Tools
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-2">
             You can create and manage events through the{" "}
             <a
               href="/eventplanning"
-              className="text-blue-600 underline hover:text-blue-800"
+              className="text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-500"
             >
               Event Planning
             </a>{" "}
