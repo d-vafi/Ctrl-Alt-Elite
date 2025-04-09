@@ -36,29 +36,29 @@ const UserPromotionDashboard = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold text-blue-700 mb-6">User Promotion Dashboard</h1>
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors">
+      <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">User Promotion Dashboard</h1>
 
       <div className="w-full max-w-3xl">
         {campaigns.map((campaign) => {
           const isSubscribed = campaign.recipients.includes(userEmail);
           return (
-            <div key={campaign.id} className="bg-white shadow-md rounded p-6 mb-4">
-              <h2 className="text-xl font-semibold">{campaign.title}</h2>
-              <p className="text-gray-700">{campaign.description}</p>
-              <p className="text-sm text-gray-500 mt-1">Type: {campaign.type}</p>
+            <div key={campaign.id} className="bg-white dark:bg-gray-900 shadow-md rounded p-6 mb-4 transition-colors">
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{campaign.title}</h2>
+              <p className="text-gray-700 dark:text-gray-300">{campaign.description}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Type: {campaign.type}</p>
               <div className="mt-4">
                 {isSubscribed ? (
                   <button
                     onClick={() => handleUnsubscribe(campaign.id)}
-                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
                   >
                     Unsubscribe
                   </button>
                 ) : (
                   <button
                     onClick={() => handleSubscribe(campaign.id)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                   >
                     Subscribe
                   </button>

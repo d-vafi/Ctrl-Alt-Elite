@@ -9,6 +9,7 @@ import NetworkAddUserToChat from "./NetworkAddUserToChat";
 import NetworkCreatePoll from "./NetworkCreatePoll";
 import NetworkPoll from "./NetworkPoll";
 Modal.setAppElement("#root");
+import "../../theme.css";
 
 const NetworkChat = () => {
   const [conversations, setConversations] = useState([]);
@@ -103,13 +104,13 @@ const NetworkChat = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
-      <header className="bg-blue-500 text-white p-4">
+    <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-200 transition-colors">
+      <header className="bg-blue-500 dark:bg-blue-700 text-white p-4">
         <h2 className="text-xl font-bold">Chat</h2>
       </header>
       <div className="flex-1 flex flex-row overflow-hidden">
-        <aside className="bg-white border-r border-gray-200 p-4 overflow-y-auto">
-          <h3 className="text-lg font-semibold mb-3">Conversations</h3>
+        <aside className="bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4 overflow-y-auto">
+          <h3 className="text-lg font-semibold mb-3 text-gray-800 dark:text-gray-200">Conversations</h3>
           {conversations.length > 0 ? (
             conversations.map((conversation) => (
               <div
@@ -145,9 +146,9 @@ const NetworkChat = () => {
                   }
                   className={`cursor-pointer ${
                     selectedConversation?.id === conversation.id
-                      ? "bg-gray-100"
-                      : "hover:bg-gray-50"
-                  } p-2 rounded`}
+                      ? "bg-gray-100 dark:bg-gray-700"
+                      : "hover:bg-gray-50 dark:hover:bg-gray-600"
+                  } p-2 rounded transition-colors`}
                 />
                 <div className="ml-auto">
                   <button
@@ -156,6 +157,7 @@ const NetworkChat = () => {
                       await selectChat(conversation.id);
                       setAddUserModalIsOpen(true);
                     }}
+                    className="text-gray-600 dark:text-gray-400"
                   >
                     <AddIcon />
                   </button>
@@ -163,28 +165,26 @@ const NetworkChat = () => {
               </div>
             ))
           ) : (
-            <p className="text-gray-600">No conversations yet.</p>
+            <p className="text-gray-600 dark:text-gray-400">No conversations yet.</p>
           )}
         </aside>
-        <main className="flex-1 bg-gray-50 p-4 flex flex-col justify-between">
+        <main className="flex-1 bg-gray-50 dark:bg-gray-800 p-4 flex flex-col justify-between transition-colors">
           {selectedConversation ? (
             <>
-              <div className="mb-4 p-3 bg-white shadow rounded">
-                <h4 className="text-md font-semibold">
+              <div className="mb-4 p-3 bg-white dark:bg-gray-700 shadow rounded transition-colors">
+                <h4 className="text-md font-semibold text-gray-800 dark:text-gray-200">
                   {Object.keys(selectedConversation.users)
                     .filter((user) => user !== userId)
                     .map((user) => selectedConversation.users[user])
                     .join(", ")}
                 </h4>
-                <p className="text-gray-500 text-sm">
+                <p className="text-gray-500 dark:text-gray-400 text-sm">
                   Conversation started{" "}
                   {selectedConversation.createdAt &&
-                    new Date(
-                      selectedConversation.createdAt
-                    ).toLocaleDateString()}
+                    new Date(selectedConversation.createdAt).toLocaleDateString()}
                 </p>
               </div>
-              <div className="flex-1 overflow-y-auto mb-2">
+              <div className="flex-1 overflow-y-auto mb-2 text-gray-500 dark:text-gray-400">
                 {messages.length > 0 ? (
                   messages.map((message) => {
                     if (message.votes) {
@@ -200,9 +200,7 @@ const NetworkChat = () => {
                           endTime={message.endTime}
                           isMultiselect={message.isMultiselect}
                           isClosed={message.isClosed}
-                          fetchMessages={() =>
-                            fetchMessages(message.conversationId)
-                          }
+                          fetchMessages={() => fetchMessages(message.conversationId)}
                         />
                       );
                     } else {
@@ -210,19 +208,18 @@ const NetworkChat = () => {
                         <MessageBox
                           key={message.id}
                           title={selectedConversation.users[message.senderId]}
-                          position={
-                            message.senderId === userId ? "right" : "left"
-                          }
+                          position={message.senderId === userId ? "right" : "left"}
                           text={message.content}
                           date={new Date(message.timestamp * 1000)}
                           type="text"
                           avatar="/user-icon.png"
+                          className="dark:text-black" //REMOVE dark:bg-gray-700
                         />
                       );
                     }
                   })
                 ) : (
-                  <p className="text-gray-600 text-center mt-4">
+                  <p className="text-gray-600 dark:text-gray-400 text-center mt-4">
                     No messages in this conversation yet.
                   </p>
                 )}
@@ -230,7 +227,7 @@ const NetworkChat = () => {
               </div>
               <div className="mt-2">
                 <Input
-                  className="rce-input-field"
+                  className="rce-input-field text-gray-600 dark:text-gray-400"
                   placeholder="Type a message..."
                   multiline={false}
                   value={messageInput}
@@ -243,7 +240,7 @@ const NetworkChat = () => {
                   }}
                   leftButtons={
                     <button
-                      className="mr-2"
+                      className="mr-2 text-gray-600 dark:text-gray-400"
                       onClick={async () => {
                         console.log("Opening modal");
                         setCreatePollModalIsOpen(true);
@@ -254,7 +251,7 @@ const NetworkChat = () => {
                   }
                   rightButtons={
                     <button
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                      className="bg-blue-500 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors"
                       onClick={() => sendMessage(messageInput)}
                     >
                       Send
@@ -265,7 +262,7 @@ const NetworkChat = () => {
             </>
           ) : (
             <div className="flex items-center justify-center h-full">
-              <p className="text-gray-500">
+              <p className="text-gray-500 dark:text-gray-400">
                 Select a conversation to start messaging.
               </p>
             </div>

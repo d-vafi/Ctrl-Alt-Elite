@@ -96,47 +96,47 @@ const EventPromotionDashboard = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold text-blue-700 mb-6">Event Promotion Dashboard</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors">
+      <h1 className="text-3xl font-bold text-blue-700 dark:text-blue-300 mb-6">Event Promotion Dashboard</h1>
 
       <button
         onClick={() => setIsModalOpen(true)}
-        className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+        className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
       >
         Create Event Promotion
       </button>
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
-            <h2 className="text-xl font-bold mb-4">Create Promotion</h2>
+          <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg w-full max-w-lg transition-colors">
+            <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Create Promotion</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block font-semibold text-gray-700">Select Event</label>
+                <label className="block font-semibold text-gray-700 dark:text-gray-300">Select Event</label>
                 <select
-                name="event"
-                value={formData.event}
-                onChange={handleChange}
-                required
-                className="w-full border border-gray-300 rounded p-2 mt-1"
+                  name="event"
+                  value={formData.event}
+                  onChange={handleChange}
+                  required
+                  className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 mt-1 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-300"
                 >
-                <option value="">Select an event</option>
-                {events.map((event) => (
+                  <option value="">Select an event</option>
+                  {events.map((event) => (
                     <option key={event.id} value={event.id}>
-                    {event.title}
+                      {event.title}
                     </option>
-                ))}
+                  ))}
                 </select>
               </div>
 
               <div>
-                <label className="block font-semibold text-gray-700">Promotion Type</label>
+                <label className="block font-semibold text-gray-700 dark:text-gray-300">Promotion Type</label>
                 <select
                   name="type"
                   value={formData.type}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 rounded p-2 mt-1"
+                  className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 mt-1 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-300"
                 >
                   <option value="">Select type</option>
                   <option value="email">Email</option>
@@ -145,38 +145,38 @@ const EventPromotionDashboard = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-gray-700">Title</label>
+                <label className="block font-semibold text-gray-700 dark:text-gray-300">Title</label>
                 <input
                   type="text"
                   name="title"
                   value={formData.title}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 rounded p-2 mt-1"
+                  className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 mt-1 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-300"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-gray-700">Description</label>
+                <label className="block font-semibold text-gray-700 dark:text-gray-300">Description</label>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
                   required
                   rows="3"
-                  className="w-full border border-gray-300 rounded p-2 mt-1"
+                  className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 mt-1 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-300"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-gray-700">Recipients (comma-separated emails)</label>
+                <label className="block font-semibold text-gray-700 dark:text-gray-300">Recipients (comma-separated emails)</label>
                 <input
                   type="text"
                   name="recipients"
                   value={formData.recipients}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 rounded p-2 mt-1"
+                  className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 mt-1 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-300"
                 />
               </div>
 
@@ -184,13 +184,13 @@ const EventPromotionDashboard = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                  className="px-4 py-2 bg-gray-300 dark:bg-gray-700 rounded hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-300"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
                 >
                   Submit
                 </button>
@@ -200,60 +200,59 @@ const EventPromotionDashboard = () => {
         </div>
       )}
 
-        {/* Mock Campaign List */}
-        <div className="mt-10 w-full max-w-3xl">
-        <h2 className="text-xl font-bold mb-4 text-center text-gray-800">Existing Campaigns</h2>
+      <div className="mt-10 w-full max-w-3xl">
+        <h2 className="text-xl font-bold mb-4 text-center text-gray-800 dark:text-white">Existing Campaigns</h2>
         {campaigns.map((campaign, index) => (
-            <div key={campaign.id || index} className="bg-white shadow-md rounded p-6 mb-6">
+          <div key={campaign.id || index} className="bg-white dark:bg-gray-900 shadow-md rounded p-6 mb-6 transition-colors">
             <input
-                type="text"
-                className="block w-full mb-2 border border-gray-300 rounded p-2"
-                value={campaign.title}
-                onChange={(e) => handleCampaignChange(index, "title", e.target.value)}
+              type="text"
+              className="block w-full mb-2 border border-gray-300 dark:border-gray-700 rounded p-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-300"
+              value={campaign.title}
+              onChange={(e) => handleCampaignChange(index, "title", e.target.value)}
             />
             <textarea
-                className="block w-full mb-2 border border-gray-300 rounded p-2"
-                value={campaign.description}
-                rows="2"
-                onChange={(e) => handleCampaignChange(index, "description", e.target.value)}
+              className="block w-full mb-2 border border-gray-300 dark:border-gray-700 rounded p-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-300"
+              value={campaign.description}
+              rows="2"
+              onChange={(e) => handleCampaignChange(index, "description", e.target.value)}
             />
             <input
-                type="text"
-                className="block w-full mb-2 border border-gray-300 rounded p-2"
-                value={campaign.eventRef}
-                onChange={(e) => handleCampaignChange(index, "eventRef", e.target.value)}
+              type="text"
+              className="block w-full mb-2 border border-gray-300 dark:border-gray-700 rounded p-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-300"
+              value={campaign.eventRef}
+              onChange={(e) => handleCampaignChange(index, "eventRef", e.target.value)}
             />
             <select
-                className="block w-full mb-2 border border-gray-300 rounded p-2"
-                value={campaign.type}
-                onChange={(e) => handleCampaignChange(index, "type", e.target.value)}
+              className="block w-full mb-2 border border-gray-300 dark:border-gray-700 rounded p-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-300"
+              value={campaign.type}
+              onChange={(e) => handleCampaignChange(index, "type", e.target.value)}
             >
-                <option value="email">Email</option>
-                <option value="social">Social Media</option>
+              <option value="email">Email</option>
+              <option value="social">Social Media</option>
             </select>
             <input
-                type="text"
-                className="block w-full mb-4 border border-gray-300 rounded p-2"
-                value={campaign.recipients}
-                onChange={(e) => handleCampaignChange(index, "recipients", e.target.value)}
+              type="text"
+              className="block w-full mb-4 border border-gray-300 dark:border-gray-700 rounded p-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-300"
+              value={campaign.recipients}
+              onChange={(e) => handleCampaignChange(index, "recipients", e.target.value)}
             />
             <div className="flex justify-end space-x-2">
-                <button
+              <button
                 onClick={() => handleUpdate(index)}
-                className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-                >
+                className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 dark:bg-yellow-400 dark:hover:bg-yellow-500"
+              >
                 Update
-                </button>
-                <button
+              </button>
+              <button
                 onClick={() => handleSend(index)}
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                >
+                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600"
+              >
                 Send out Campaign
-                </button>
+              </button>
             </div>
-            </div>
+          </div>
         ))}
-        </div>
+      </div>
     </div>
   );
 };

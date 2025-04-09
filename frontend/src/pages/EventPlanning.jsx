@@ -183,12 +183,12 @@ const EventPlanning = () => {
     .sort((a, b) => new Date(b.date) - new Date(a.date));
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4">
-      <h1 className="text-3xl font-bold text-blue-700 mb-6">Event Planning</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors px-4">
+      <h1 className="text-3xl font-bold text-blue-700 dark:text-blue-300 mb-6">Event Planning</h1>
 
       <button
         onClick={() => setIsModalOpen(true)}
-        className="mb-6 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+        className="mb-6 bg-green-600 text-white dark:bg-green-700 dark:text-gray-200 px-6 py-2 rounded hover:bg-green-700 dark:hover:bg-green-800"
       >
         Create Event
       </button>
@@ -196,15 +196,15 @@ const EventPlanning = () => {
       {/* MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
-            <h2 className="text-xl font-bold mb-4">Create New Event</h2>
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-lg transition-colors">
+            <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">Create New Event</h2>
             <div className="space-y-4">
               <input
                 type="text"
                 name="title"
                 value={newEvent.title}
                 onChange={handleNewEventChange}
-                className="w-full border rounded p-2"
+                className="w-full border rounded p-2 bg-gray-100 dark:bg-gray-700 dark:text-gray-200"
                 placeholder="Title"
               />
               <textarea
@@ -212,7 +212,7 @@ const EventPlanning = () => {
                 value={newEvent.description}
                 onChange={handleNewEventChange}
                 rows="3"
-                className="w-full border rounded p-2"
+                className="w-full border rounded p-2 bg-gray-100 dark:bg-gray-700 dark:text-gray-200"
                 placeholder="Description"
               />
               <input
@@ -220,7 +220,7 @@ const EventPlanning = () => {
                 name="price"
                 value={newEvent.price}
                 onChange={handleNewEventChange}
-                className="w-full border rounded p-2"
+                className="w-full border rounded p-2 bg-gray-100 dark:bg-gray-700 dark:text-gray-200"
                 placeholder="Price"
               />
               <input
@@ -228,21 +228,21 @@ const EventPlanning = () => {
                 name="date"
                 value={newEvent.date}
                 onChange={handleNewEventChange}
-                className="w-full border rounded p-2"
+                className="w-full border rounded p-2 bg-gray-100 dark:bg-gray-700 dark:text-gray-200"
               />
               <input
                 type="text"
                 name="speakers"
                 value={newEvent.speakers}
                 onChange={handleNewEventChange}
-                className="w-full border rounded p-2"
+                className="w-full border rounded p-2 bg-gray-100 dark:bg-gray-700 dark:text-gray-200"
                 placeholder="Comma-separated speakers to invite"
               />
               <select
                 name="acceptsSponsorship"
                 value={newEvent.acceptsSponsorship}
                 onChange={handleNewEventChange}
-                className="w-full border rounded p-2"
+                className="w-full border rounded p-2 bg-gray-100 dark:bg-gray-700 dark:text-gray-200"
               >
                 <option value="true">Accepts Sponsorship</option>
                 <option value="false">Does Not Accept Sponsorship</option>
@@ -250,13 +250,13 @@ const EventPlanning = () => {
               <div className="flex justify-end space-x-2 pt-4">
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                  className="px-4 py-2 bg-gray-300 dark:bg-gray-600 dark:text-gray-200 rounded hover:bg-gray-400 dark:hover:bg-gray-700"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleCreateEvent}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  className="px-4 py-2 bg-blue-600 dark:bg-blue-700 dark:text-gray-200 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-800"
                 >
                   Create
                 </button>
@@ -274,17 +274,17 @@ const EventPlanning = () => {
             event.invitedSpeakers?.filter((s) => !confirmed.includes(s)) || [];
 
           return (
-            <div key={event.id} className="bg-white shadow-md rounded p-6">
+            <div key={event.id} className="bg-white dark:bg-gray-800 shadow-md rounded p-6 transition-colors">
               <input
                 type="text"
-                className="w-full border p-2 rounded"
+                className="w-full border p-2 rounded bg-gray-100 dark:bg-gray-700 dark:text-gray-200"
                 value={event.title}
                 onChange={(e) =>
                   handleEventChange(index, "title", e.target.value)
                 }
               />
               <textarea
-                className="w-full border p-2 rounded"
+                className="w-full border p-2 rounded bg-gray-100 dark:bg-gray-700 dark:text-gray-200"
                 rows="3"
                 value={event.description}
                 onChange={(e) =>
@@ -293,7 +293,7 @@ const EventPlanning = () => {
               />
               <input
                 type="text"
-                className="w-full border p-2 rounded"
+                className="w-full border p-2 rounded bg-gray-100 dark:bg-gray-700 dark:text-gray-200"
                 value={event.price}
                 onChange={(e) =>
                   handleEventChange(index, "price", e.target.value)
@@ -301,14 +301,14 @@ const EventPlanning = () => {
               />
               <input
                 type="date"
-                className="w-full border p-2 rounded"
+                className="w-full border p-2 rounded bg-gray-100 dark:bg-gray-700 dark:text-gray-200"
                 value={event.date}
                 onChange={(e) =>
                   handleEventChange(index, "date", e.target.value)
                 }
               />
               <select
-                className="w-full border p-2 rounded"
+                className="w-full border p-2 rounded bg-gray-100 dark:bg-gray-700 dark:text-gray-200"
                 value={event.acceptsSponsorship}
                 onChange={(e) =>
                   handleEventChange(index, "acceptsSponsorship", e.target.value)
@@ -320,14 +320,14 @@ const EventPlanning = () => {
 
               {confirmed.length > 0 && (
                 <div className="mt-2">
-                  <strong>Confirmed Speakers:</strong>
+                  <strong className="text-gray-800 dark:text-gray-200">Confirmed Speakers:</strong>
                   <ul className="space-y-1 mt-1">
                     {confirmed.map((s, i) => (
                       <li
                         key={i}
-                        className="flex items-center gap-2 text-green-700"
+                        className="flex items-center gap-2 text-green-700 dark:text-green-400"
                       >
-                        <span className="w-2 h-2 bg-green-600 rounded-full inline-block"></span>
+                        <span className="w-2 h-2 bg-green-600 dark:bg-green-400 rounded-full inline-block"></span>
                         <span>{s}</span>
                       </li>
                     ))}
@@ -337,14 +337,14 @@ const EventPlanning = () => {
 
               {invited.length > 0 && (
                 <div className="mt-2">
-                  <strong>Pending Invitations:</strong>
+                  <strong className="text-gray-800 dark:text-gray-200">Pending Invitations:</strong>
                   <ul className="space-y-1 mt-1">
                     {invited.map((s, i) => (
                       <li
                         key={i}
-                        className="flex items-center gap-2 text-yellow-700"
+                        className="flex items-center gap-2 text-yellow-700 dark:text-yellow-400"
                       >
-                        <span className="w-2 h-2 bg-yellow-500 rounded-full inline-block"></span>
+                        <span className="w-2 h-2 bg-yellow-500 dark:bg-yellow-400 rounded-full inline-block"></span>
                         <span>{s}</span>
                       </li>
                     ))}
@@ -356,7 +356,7 @@ const EventPlanning = () => {
                 <input
                   type="text"
                   placeholder="Invite more speakers (comma-separated)"
-                  className="flex-1 border p-2 rounded"
+                  className="flex-1 border p-2 rounded bg-gray-100 dark:bg-gray-700 dark:text-gray-200"
                   value={newSpeakerInput[event.id] || ""}
                   onChange={(e) =>
                     setNewSpeakerInput({
@@ -367,7 +367,7 @@ const EventPlanning = () => {
                 />
                 <button
                   onClick={() => handleInvite(event.id)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                  className="bg-blue-600 dark:bg-blue-700 dark:text-gray-200 text-white px-4 py-2 rounded hover:bg-blue-700 dark:hover:bg-blue-800"
                 >
                   Invite
                 </button>
@@ -376,13 +376,13 @@ const EventPlanning = () => {
               <div className="flex justify-end space-x-4 mt-3">
                 <button
                   onClick={() => handleUpdate(index)}
-                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+                  className="bg-yellow-500 dark:bg-yellow-600 dark:text-gray-200 text-white px-4 py-2 rounded hover:bg-yellow-600 dark:hover:bg-yellow-700"
                 >
                   Update
                 </button>
                 <button
                   onClick={() => handleCancel(index)}
-                  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                  className="bg-red-600 dark:bg-red-700 dark:text-gray-200 text-white px-4 py-2 rounded hover:bg-red-700 dark:hover:bg-red-800"
                 >
                   Cancel
                 </button>
@@ -394,25 +394,25 @@ const EventPlanning = () => {
 
       {/* PAST EVENTS */}
       {pastEvents.length > 0 && (
-        <div className="w-full max-w-3xl mt-12 bg-gray-100 p-6 rounded">
-          <h2 className="text-xl font-bold mb-4 text-gray-700">Past Events</h2>
+        <div className="w-full max-w-3xl mt-12 bg-gray-100 dark:bg-gray-800 p-6 rounded transition-colors">
+          <h2 className="text-xl font-bold mb-4 text-gray-700 dark:text-gray-200">Past Events</h2>
           <div className="space-y-6">
             {pastEvents.map((event) => (
-              <div key={event.id} className="bg-white shadow-md rounded p-6">
-                <p>
+              <div key={event.id} className="bg-white dark:bg-gray-800 shadow-md rounded p-6 transition-colors">
+                <p className="text-gray-800 dark:text-gray-200">
                   <strong>Title:</strong> {event.title}
                 </p>
-                <p>
+                <p className="text-gray-800 dark:text-gray-200">
                   <strong>Description:</strong> {event.description}
                 </p>
-                <p>
+                <p className="text-gray-800 dark:text-gray-200">
                   <strong>Date:</strong> {event.date}
                 </p>
-                <p>
+                <p className="text-gray-800 dark:text-gray-200">
                   <strong>Price:</strong> ${event.price}
                 </p>
                 {event.speakers?.length > 0 && (
-                  <p className="mt-2">
+                  <p className="mt-2 text-gray-800 dark:text-gray-200">
                     <strong>Speakers:</strong> {event.speakers.join(", ")}
                   </p>
                 )}
