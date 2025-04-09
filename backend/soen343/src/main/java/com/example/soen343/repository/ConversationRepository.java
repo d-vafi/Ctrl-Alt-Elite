@@ -14,6 +14,8 @@ import java.util.Optional;
 @Repository
 public interface ConversationRepository extends MongoRepository<Conversation, String> {
     @Query("{userIds: {$in: [?0]}}")
-    public List<Conversation> findByUserId(ObjectId userId);
+    public List<Conversation> findByUserId(String userId);
+
+    public List<Conversation> findByUserIds(List<String> userIds);
 
 }
