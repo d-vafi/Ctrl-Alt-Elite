@@ -4,7 +4,7 @@ import axios from "axios";
 const UserPromotionDashboard = () => {
   const [campaigns, setCampaigns] = useState([]);
 
-  const userEmail = sessionStorage.getItem("userEmail");
+  const userEmail = localStorage.getItem("email");
 
   useEffect(() => {
     axios.get("http://localhost:8080/api/campaigns")
@@ -14,6 +14,7 @@ const UserPromotionDashboard = () => {
 
   const handleSubscribe = async (id) => {
     try {
+      console.log(userEmail);
       const res = await axios.put(`http://localhost:8080/api/campaigns/${id}/subscribe`, null, {
         params: { email: userEmail }
       });

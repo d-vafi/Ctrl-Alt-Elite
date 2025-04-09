@@ -1,29 +1,32 @@
 import React, { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 const SignUp = () => {
-    
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     password: "",
-    role: "Organizer", // Default role
+    username: "",
+    role: "Attendee", // Default role
   });
 
-  const roles = [
-    "Organizer",
-    "Attendee",
-    "Administrative User",
-    "Stakeholder",
-  ];
+  const roles = ["Organizer", "Attendee", "Stakeholder"];
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("User Data:", formData);
-    alert("Sign up successful!"); // Placeholder alert
+
+    try {
+      navigate("/signup-details", { state: formData });
+    } catch (err) {
+      console.error("Signup error:", err);
+      alert(err.response?.data || "Signup failed");
+    }
   };
 
   return (
@@ -35,7 +38,9 @@ const SignUp = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Full Name */}
           <div>
-            <label className="block text-gray-700 font-semibold">Full Name</label>
+            <label className="block text-gray-700 font-semibold">
+              Full Name
+            </label>
             <input
               type="text"
               name="fullName"
@@ -44,6 +49,21 @@ const SignUp = () => {
               required
               className="w-full p-2 border border-gray-300 rounded mt-1"
               placeholder="Enter your full name"
+            />
+          </div>
+          {/* Username */}
+          <div>
+            <label className="block text-gray-700 font-semibold">
+              Username
+            </label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border border-gray-300 rounded mt-1"
+              placeholder="Enter your username"
             />
           </div>
 
@@ -63,7 +83,9 @@ const SignUp = () => {
 
           {/* Password */}
           <div>
-            <label className="block text-gray-700 font-semibold">Password</label>
+            <label className="block text-gray-700 font-semibold">
+              Password
+            </label>
             <input
               type="password"
               name="password"
@@ -77,7 +99,9 @@ const SignUp = () => {
 
           {/* Role Selection */}
           <div>
-            <label className="block text-gray-700 font-semibold">Select Role</label>
+            <label className="block text-gray-700 font-semibold">
+              Select Role
+            </label>
             <select
               name="role"
               value={formData.role}

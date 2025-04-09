@@ -10,11 +10,11 @@ import java.util.List;
 public class Event {
     @Id
     private String id;
+    private String organizerId;
     private String title;
     private String description;
     private double price;
     private String date;
-    private String organizerId;
     private double rentCost = 0;
     private double foodCost = 0;
 
@@ -22,8 +22,9 @@ public class Event {
 
     private List<Sponsorship> sponsorships = new ArrayList<>();
     private boolean acceptsSponsorship = true;             // Default to true
-    // Constructors
-    public Event() {}
+    private List<String> invitedSpeakers = new ArrayList<>();
+
+    // Constructor
 
 
 
@@ -33,13 +34,6 @@ public class Event {
         this.price = price;
         this.date = date;
     }
-
-    public String getOrganizerId() { return organizerId; }
- 
-    public void setOrganizerId(String organizerId) {
-        this.organizerId = organizerId;
-    }
-
 
     public Double getRentCost(){
         return rentCost;
@@ -119,5 +113,21 @@ public class Event {
     
     public void setSpeakers(List<String> speakers) {
         this.speakers = speakers;
+    }
+
+    public List<String> getInvitedSpeakers() {
+        return invitedSpeakers;
+    }
+
+    public void setInvitedSpeakers(List<String> invitedSpeakers) {
+        this.invitedSpeakers = invitedSpeakers;
+    }
+
+    public String getOrganizerId() {
+        return organizerId;
+    }
+
+    public void setOrganizerId(String organizerId) {
+        this.organizerId = organizerId;
     }
 }

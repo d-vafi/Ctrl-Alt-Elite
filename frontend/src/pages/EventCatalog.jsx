@@ -3,7 +3,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 
-
 const EventCatalog = () => {
   const [events, setEvents] = useState([]);
   const [userEvents, setUserEvents] = useState([]);
@@ -108,6 +107,7 @@ const EventCatalog = () => {
         const isSponsored = event.sponsorships?.some(
           (s) => s.organizationId === organizationId
         );
+        const confirmedSpeakers = event.speakers || [];
 
         return (
           <div
@@ -117,6 +117,12 @@ const EventCatalog = () => {
             <h2 className="text-xl font-semibold">{event.title}</h2>
             <p>{event.description}</p>
             <p className="font-bold mt-2">${event.price}</p>
+
+            {confirmedSpeakers.length > 0 && (
+              <p className="mt-2 text-sm text-gray-700">
+                <strong>Speakers:</strong> {confirmedSpeakers.join(", ")}
+              </p>
+            )}
 
             {userType === "Attendee" &&
               (status ? (

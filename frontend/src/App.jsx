@@ -6,7 +6,6 @@ import About from "./pages/About.jsx";
 import Navbar from "./components/Navbar.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Login from "./pages/LogIn.jsx";
-import EventLogin from "./pages/EventLogIn.jsx";
 import EventPromotionDashboard from "./pages/EventPromotionDashboard.jsx";
 import UserPromotionDashboard from "./pages/UserPromotionDashboard.jsx";
 import PaymentForm from "./pages/PaymentForm.jsx";
@@ -21,6 +20,7 @@ import SwipePage from "./pages/SwipePage.jsx"; // Import the SwipePage component
 
 import UserDashboard from "./pages/UserDashboard.jsx";
 import Networking from "./pages/Networking.jsx";
+import SignupDetails from "./pages/SignupDetails.jsx";
 
 const App = () => {
   return (
@@ -32,7 +32,6 @@ const App = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/about" element={<About />} />
-          <Route path="/eventlogin" element={<EventLogin />} />
           <Route
             path="/eventpromotiondashboard"
             element={<EventPromotionDashboard />}
@@ -63,14 +62,15 @@ const App = () => {
               </PrivateRoute>
             }
           />
-           <Route
-             path="/organizer-dashboard"
-             element={
-                 <PrivateRoute>
-                    <OrganizerDashboard/>
-                 </PrivateRoute>
-             }
-           />
+          <Route
+            path="/organizer-dashboard"
+            element={
+              <PrivateRoute>
+                <OrganizerDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/signup-details" element={<SignupDetails />} />
         </Routes>
       </main>
       <Footer />
