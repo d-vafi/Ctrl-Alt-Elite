@@ -11,41 +11,38 @@ const Navbar = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
     localStorage.removeItem("userType");
-    setIsLoggedIn(false);
     localStorage.removeItem("type");
+    setIsLoggedIn(false);
     navigate("/");
   };
 
   const isAttendee = userType?.toLowerCase() === "attendee";
   const isOrganizer = userType?.toLowerCase() === "organizer";
-  const isStakeholder = userType?.toLowerCase() === "stakeholder";
 
   return (
-    <nav className="bg-blue-600 w-full p-4 fixed top-0 left-0 z-10">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="text-white font-bold text-xl">
-          <Link to="/">EduBook</Link>
-        </div>
-        <div className="space-x-10">
-          <Link to="/about" className="text-white hover:text-gray-200">
+    <nav className="w-full fixed top-0 left-0 z-50 bg-white dark:bg-gray-900 text-black dark:text-white shadow-md">
+      <div className="container mx-auto flex justify-between items-center px-6 py-4">
+        <Link to="/" className="text-2xl font-bold tracking-wide text-blue-600 dark:text-blue-400">
+          EduBook
+        </Link>
+
+        <div className="flex flex-wrap items-center gap-6 text-base font-medium">
+          <Link to="/about" className="hover:text-blue-600 dark:hover:text-blue-400 transition">
             About
           </Link>
 
+          <Link to="/events" className="hover:text-blue-600 dark:hover:text-blue-400 transition">
+            Events
+          </Link>
+
           {isOrganizer && (
-            <Link
-              to="/eventplanning"
-              className="text-white hover:text-gray-200"
-            >
+            <Link to="/eventplanning" className="hover:text-blue-600 dark:hover:text-blue-400 transition">
               Event Planning
             </Link>
           )}
 
-          <Link to="/events" className="text-white hover:text-gray-200">
-            Events Catalog
-          </Link>
-
           {isAttendee && (
-            <Link to="/networking" className="text-white hover:text-gray-200">
+            <Link to="/networking" className="hover:text-blue-600 dark:hover:text-blue-400 transition">
               Networking
             </Link>
           )}
@@ -57,47 +54,35 @@ const Navbar = () => {
                   ? "/userpromotiondashboard"
                   : "/eventpromotiondashboard"
               }
-              className="text-white hover:text-gray-200"
+              className="hover:text-blue-600 dark:hover:text-blue-400 transition"
             >
-              Event Promotion
+              Promotion
             </Link>
           )}
 
           {isOrganizer && (
-            <Link
-              to="/organizer-dashboard"
-              className="text-white hover:text-gray-200"
-            >
-              Event Analytics
-            </Link>
-          )}
-
-          {userType === "organizer" && (
-            <Link
-              to="/organizer-dashboard"
-              className="text-white hover:text-gray-200"
-            >
-              Organizer Dashboard
+            <Link to="/organizer-dashboard" className="hover:text-blue-600 dark:hover:text-blue-400 transition">
+              Analytics
             </Link>
           )}
 
           {!isLoggedIn ? (
             <>
-              <Link to="/signup" className="text-white hover:text-gray-200">
+              <Link to="/signup" className="hover:text-blue-600 dark:hover:text-blue-400 transition">
                 Sign Up
               </Link>
-              <Link to="/login" className="text-white hover:text-gray-200">
+              <Link to="/login" className="hover:text-blue-600 dark:hover:text-blue-400 transition">
                 Log In
               </Link>
             </>
           ) : (
             <>
-              <Link to="/dashboard" className="text-white hover:text-gray-200">
+              <Link to="/dashboard" className="hover:text-blue-600 dark:hover:text-blue-400 transition">
                 Dashboard
               </Link>
               <button
                 onClick={handleSignOut}
-                className="text-white hover:text-gray-200"
+                className="hover:text-red-600 dark:hover:text-red-400 transition"
               >
                 Sign Out
               </button>

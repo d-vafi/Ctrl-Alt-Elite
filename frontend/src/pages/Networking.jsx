@@ -1,21 +1,24 @@
 import NetworkChat from "../components/Networking/NetworkChat";
 import SwipePage from "./SwipePage";
 import React, { useState } from "react";
+
 const Networking = () => {
   const [activeTab, setActiveTab] = useState("chat");
   const menu = ["Chat", "Tinder"];
   return (
-    <div className="p-4 h-full flex flex-col">
-      <h1 className="text-2xl font-bold mb-4 sticky top-0">Networking</h1>
+    <div className="p-4 h-full flex flex-col bg-gray-100 dark:bg-gray-900 transition-colors">
+      <h1 className="text-2xl font-bold mb-4 sticky top-0 text-gray-800 dark:text-white">
+        Networking
+      </h1>
       <div className="flex-1">
         <ul className="flex space-x-4 mb-4">
           {menu.map((tab) => (
             <li
               key={tab}
-              className={`px-4 py-2 rounded cursor-pointer ${
+              className={`px-4 py-2 rounded cursor-pointer transition-colors ${
                 activeTab === tab.toLowerCase()
                   ? "bg-blue-600 text-white"
-                  : "bg-gray-200 text-gray-800"
+                  : "bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
               }`}
               onClick={() => setActiveTab(tab.toLowerCase())}
             >

@@ -101,7 +101,7 @@ const EventCatalog = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Events Catalog</h1>
+      <h1 className="text-3xl font-bold text-center text-blue-600 dark:text-blue-400 mb-6">Events Catalog</h1>
       {events.map((event) => {
         const status = getEventStatus(event.id);
         const isSponsored = event.sponsorships?.some(
@@ -112,52 +112,56 @@ const EventCatalog = () => {
         return (
           <div
             key={event.id}
-            className="border p-4 rounded shadow mb-4 w-full max-w-xl"
+            className="border p-4 rounded shadow mb-4 w-full max-w-xl bg-white dark:bg-gray-800 transition-colors duration-300"
           >
-            <h2 className="text-xl font-semibold">{event.title}</h2>
-            <p>{event.description}</p>
-            <p className="font-bold mt-2">${event.price}</p>
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+              {event.title}
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300">{event.description}</p>
+            <p className="font-bold mt-2 text-blue-600 dark:text-blue-400">
+              ${event.price}
+            </p>
 
             {confirmedSpeakers.length > 0 && (
-              <p className="mt-2 text-sm text-gray-700">
-                <strong>Speakers:</strong> {confirmedSpeakers.join(", ")}
+              <p className="mt-2 text-sm text-gray-700 dark:text-gray-400">
+          <strong className="text-gray-800 dark:text-gray-200">Speakers:</strong> {confirmedSpeakers.join(", ")}
               </p>
             )}
 
             {userType === "Attendee" &&
               (status ? (
-                <span className="mt-2 inline-block px-4 py-2 bg-gray-200 text-gray-700 rounded">
-                  {status}
-                </span>
+          <span className="mt-2 inline-block px-4 py-2 bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200 rounded">
+            {status}
+          </span>
               ) : (
-                <button
-                  className="mt-2 px-4 py-2 bg-blue-600 text-white rounded"
-                  onClick={() => handleBuy(event.id)}
-                >
-                  Buy Ticket
-                </button>
+          <button
+            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition-colors duration-300"
+            onClick={() => handleBuy(event.id)}
+          >
+            Buy Ticket
+          </button>
               ))}
 
             {userType === "Stakeholder" && (
               <>
-                {event.acceptsSponsorship ? (
-                  isSponsored ? (
-                    <span className="mt-2 inline-block px-4 py-2 bg-green-200 text-green-800 rounded">
-                      You are a stakeholder for this event
-                    </span>
-                  ) : (
-                    <button
-                      className="mt-2 px-4 py-2 bg-yellow-500 text-white rounded"
-                      onClick={() => openModal(event.id)}
-                    >
-                      Sponsor this Event
-                    </button>
-                  )
-                ) : (
-                  <span className="mt-2 inline-block px-4 py-2 bg-red-100 text-red-700 rounded">
-                    This event does not accept sponsorships
-                  </span>
-                )}
+          {event.acceptsSponsorship ? (
+            isSponsored ? (
+              <span className="mt-2 inline-block px-4 py-2 bg-green-200 text-green-800 dark:bg-green-700 dark:text-green-200 rounded">
+                You are a stakeholder for this event
+              </span>
+            ) : (
+              <button
+                className="mt-2 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 dark:bg-yellow-400 dark:hover:bg-yellow-500 transition-colors duration-300"
+                onClick={() => openModal(event.id)}
+              >
+                Sponsor this Event
+              </button>
+            )
+          ) : (
+            <span className="mt-2 inline-block px-4 py-2 bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200 rounded">
+              This event does not accept sponsorships
+            </span>
+          )}
               </>
             )}
           </div>

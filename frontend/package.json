@@ -6,6 +6,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:tailwinds":"tailwind build src/index.css -o public/index.css",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
