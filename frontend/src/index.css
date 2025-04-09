@@ -1,3 +1,58 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.rce-citem {
+    background-color: rgb(73, 72, 72);
+  }
+
+.rce-citem-body--bottom-title{
+    color: rgb(255, 255, 255);
+  }
+
+  .rce-citem-body--top-time {
+    color: rgb(255, 255, 255);
+  }
+
+  .rce-citem-body--top-title {
+    color: rgb(255, 255, 255);
+  }
+
+
+  .rce-mbox {
+    background-color: rgb(73, 72, 72);
+  }
+  
+  
+  .rce-mbox-text.right {
+    color: rgb(255, 255, 255);
+  }
+  .rce-mbox-text.left {
+    color: rgb(255, 255, 255);
+  }
+
+  .rce-mbox-time {
+    color: rgb(255, 255, 255);
+  }
+  
+.rce-mbox-title.rce-mbox-title--clear span {
+    color: rgb(177, 178, 223);
+    /*bold*/
+    font-weight: bold;
+}
+
+.rce-container-input {
+    background-color: rgb(73, 72, 72);
+  }
+  
+  .rce-input {
+    background-color: rgb(221, 221, 221);
+  }
+
+  .rce-mbox-left-notch {
+    fill: rgb(73, 72, 72);
+  }
+  .rce-mbox-right-notch {
+    fill: rgb(73, 72, 72);
+  }

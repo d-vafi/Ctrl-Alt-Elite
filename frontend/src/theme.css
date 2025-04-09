@@ -1,110 +1,125 @@
 /* Light Mode (default) */
 body {
-    background-color: #f7fafc; /* Light background */
-    color: #1a202c; /* Dark text */
+  background-color: #f7fafc;
+  /* Light background */
+  color: #1a202c;
+  /* Dark text */
+}
+
+.container {
+  background-color: #ffffff;
+  /* White card background */
+  color: #1a202c;
+  /* Dark text */
+}
+
+.input {
+  background-color: #ffffff;
+  border: 1px solid #d2d6dc;
+  color: #1a202c;
+}
+
+.button {
+  background-color: #3182ce;
+  color: #ffffff;
+}
+
+.button:hover {
+  background-color: #2b6cb0;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #1a202c;
+    /* Dark background */
+    color: #f7fafc;
+    /* Light text */
   }
-  
+
   .container {
-    background-color: #ffffff; /* White card background */
-    color: #1a202c; /* Dark text */
+    background-color: #2d3748;
+    /* Dark card background */
+    color: #f7fafc;
+    /* Light text */
   }
-  
+
   .input {
-    background-color: #ffffff;
-    border: 1px solid #d2d6dc;
+    background-color: #2d3748;
+    border: 1px solid #4a5568;
+    color: #f7fafc;
+  }
+
+  .button {
+    background-color: #63b3ed;
     color: #1a202c;
   }
-  
-  .button {
-    background-color: #3182ce;
-    color: #ffffff;
-  }
-  
+
   .button:hover {
-    background-color: #2b6cb0;
+    background-color: #4299e1;
   }
-  
-  /* Dark Mode */
-  @media (prefers-color-scheme: dark) {
-    body {
-      background-color: #1a202c; /* Dark background */
-      color: #f7fafc; /* Light text */
-    }
-  
-    .container {
-      background-color: #2d3748; /* Dark card background */
-      color: #f7fafc; /* Light text */
-    }
-  
-    .input {
-      background-color: #2d3748;
-      border: 1px solid #4a5568;
-      color: #f7fafc;
-    }
-  
-    .button {
-      background-color: #63b3ed;
-      color: #1a202c;
-    }
-  
-    .button:hover {
-      background-color: #4299e1;
-    }
-  }
+}
 
 /* Navbar Styles (default for light mode) */
 .navbar {
-    background-color: #3182ce; /* Blue background */
-    color: #ffffff; /* White text */
+  background-color: #3182ce;
+  /* Blue background */
+  color: #ffffff;
+  /* White text */
+}
+
+.navbar a {
+  color: #ffffff;
+  /* White text for links */
+  text-decoration: none;
+}
+
+.navbar a:hover {
+  color: #d2d6dc;
+  /* Light gray on hover */
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .navbar {
+    background-color: #2b6cb0;
+    /* Slightly darker blue for dark mode */
+    color: #ffffff;
+    /* White text */
   }
-  
+
   .navbar a {
-    color: #ffffff; /* White text for links */
-    text-decoration: none;
+    color: #ffffff;
+    /* White text for links */
   }
-  
+
   .navbar a:hover {
-    color: #d2d6dc; /* Light gray on hover */
+    color: #a0aec0;
+    /* Gray on hover */
   }
-  
-  /* Dark Mode */
-  @media (prefers-color-scheme: dark) {
-    .navbar {
-      background-color: #2b6cb0; /* Slightly darker blue for dark mode */
-      color: #ffffff; /* White text */
-    }
-  
-    .navbar a {
-      color: #ffffff; /* White text for links */
-    }
-  
-    .navbar a:hover {
-      color: #a0aec0; /* Gray on hover */
-    }
-  }
-
-  .rce-citem {
-    background-color: red;
 }
 
-.rce-citem-body--top-title{
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #000000; /* Change to your desired color */
+
+.rce-citem-body--top-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #000000;
+  /* Change to your desired color */
 }
-.rce-container-mbox{
+
+.rce-container-mbox {
   background-color: transparent;
 }
 
 .rce-container-citem {
   background-color: white;
-  
+
 }
+
 .MuiFormControl-root {
   /*make all text blue*/
   color: blue;
   /*make all text bold*/
   font-weight: bold;
-  
-}
 
+}
