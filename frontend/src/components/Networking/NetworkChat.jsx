@@ -18,6 +18,7 @@ const NetworkChat = () => {
   const [createPollModalIsOpen, setCreatePollModalIsOpen] = useState(false);
   const userId = localStorage.getItem("userId");
   const messagesEndRef = useRef(null);
+  const [messageInput, setMessageInput] = useState("");
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -67,6 +68,22 @@ const NetworkChat = () => {
     fetchConversations();
   }, [userId]);
 
+  const updateConversation = (conversationId, content) => {
+    setConversations((prevConversations) =>
+      prevConversations.map((conversation) => {
+        if (conversation.id === conversationId) {
+          return {
+            ...conversation,
+            lastMessageTime: Date.now() / 1000,
+            lastMessageSender: userId,
+            lastMessage: content,
+          };
+        }
+        return conversation;
+      })
+    );
+  };
+
   const sendMessage = async (message) => {
     if (!message.trim() || !selectedConversation) {
       return;
@@ -78,19 +95,8 @@ const NetworkChat = () => {
         content: message,
       });
       fetchMessages(selectedConversation.id);
-      setConversations((prevConversations) =>
-        prevConversations.map((conversation) => {
-          if (conversation.id === selectedConversation.id) {
-            return {
-              ...conversation,
-              lastMessageTime: Date.now() / 1000,
-              lastMessageSender: userId,
-              lastMessage: message,
-            };
-          }
-          return conversation;
-        })
-      );
+      updateConversation(selectedConversation.id, message);
+      setMessageInput("");
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -227,6 +233,8 @@ const NetworkChat = () => {
                   className="rce-input-field"
                   placeholder="Type a message..."
                   multiline={false}
+                  value={messageInput}
+                  onChange={(event) => setMessageInput(event.target.value)}
                   onKeyPress={(event) => {
                     if (event.key === "Enter") {
                       sendMessage(event.target.value);
@@ -247,15 +255,7 @@ const NetworkChat = () => {
                   rightButtons={
                     <button
                       className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                      onClick={() => {
-                        const inputElement =
-                          document.querySelector(".rce-input-field");
-                        if (inputElement) {
-                          console.log(inputElement);
-                          sendMessage(inputElement.value);
-                          inputElement.value = "";
-                        }
-                      }}
+                      onClick={() => sendMessage(messageInput)}
                     >
                       Send
                     </button>
@@ -283,6 +283,7 @@ const NetworkChat = () => {
       </Modal>
       <Modal isOpen={createPollModalIsOpen}>
         <NetworkCreatePoll
+          updateConversation={updateConversation}
           currentUserId={userId}
           conversationId={selectedConversation?.id}
           createPollModalIsOpen={createPollModalIsOpen}

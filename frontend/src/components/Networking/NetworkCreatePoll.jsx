@@ -12,6 +12,7 @@ const NetworkCreatePoll = (props) => {
     conversationId,
     setCreatePollModalIsOpen,
     fetchMessages,
+    updateConversation,
   } = props;
 
   const [title, setTitle] = useState("");
@@ -67,6 +68,7 @@ const NetworkCreatePoll = (props) => {
       if (response.data.success) {
         alert("Poll created successfully!");
         fetchMessages();
+        updateConversation(conversationId, "Poll: " + title);
         handleCloseModal();
       } else {
         alert("Failed to create poll.");
