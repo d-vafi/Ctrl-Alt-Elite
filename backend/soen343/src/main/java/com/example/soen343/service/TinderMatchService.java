@@ -25,7 +25,6 @@ public class TinderMatchService {
 
     public String createTinderMatch(String senderUserId, String receiverUserId) {
         if (userRepository.existsById(senderUserId) && userRepository.existsById(receiverUserId)) {
-            // Check if the match already exists
             List<TinderMatch> existingMatches = tinderMatchRepository
                     .findBySenderUserIdAndReceiverUserId(senderUserId, receiverUserId);
             if (!existingMatches.isEmpty()) {
@@ -39,12 +38,10 @@ public class TinderMatchService {
                 System.out.println("Conversation already exists: " + existingConversations);
                 return "Conversation already exists";
             }
-            // Check if the reverse match exists
             existingMatches = tinderMatchRepository
                     .findBySenderUserIdAndReceiverUserIdAndIsRejectionFalse(receiverUserId, senderUserId);
             if (!existingMatches.isEmpty()) {
                 System.out.println("Reverse match found: " + existingMatches);
-                // Delete the reverse match
                 TinderMatch reverseMatch = existingMatches.get(0);
                 tinderMatchRepository.delete(reverseMatch);
 
@@ -54,7 +51,6 @@ public class TinderMatchService {
                 return "Reverse match deleted and conversation created";
             }
 
-            // Create a new match
             TinderMatch match = new TinderMatch(senderUserId, receiverUserId);
             tinderMatchRepository.save(match);
             return "New match created";
@@ -65,14 +61,12 @@ public class TinderMatchService {
 
     public String createTinderRejection(String senderUserId, String receiverUserId) {
         if (userRepository.existsById(senderUserId) && userRepository.existsById(receiverUserId)) {
-            // Check if the match already exists
             List<TinderMatch> existingMatches = tinderMatchRepository
                     .findBySenderUserIdAndReceiverUserId(senderUserId, receiverUserId);
             if (!existingMatches.isEmpty()) {
                 return "Match already exists";
             }
 
-            // Create a new rejection
             TinderMatch rejection = new TinderMatch(senderUserId, receiverUserId, true);
             tinderMatchRepository.save(rejection);
             return "New rejection created";

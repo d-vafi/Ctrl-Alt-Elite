@@ -3,6 +3,7 @@ package com.example.soen343.controller;
 import com.example.soen343.dto.ConversationDTO;
 import com.example.soen343.mapper.ConversationMapper;
 import com.example.soen343.model.Conversation;
+import com.example.soen343.model.Message;
 import com.example.soen343.model.User;
 import com.example.soen343.repository.UserRepository;
 import com.example.soen343.service.ConversationService;
@@ -76,4 +77,43 @@ public class ConversationController {
         return response;
     }
 
+    @GetMapping("/getAllMessagesAndPolls/{conversationId}")
+    public Map<String, Object> getAllMessagesAndPolls(@PathVariable String conversationId) {
+        Map<String, Object> response = new HashMap<>();
+        HashMap<String, Object> allMessages = conversationService.getAllMessagesAndPolls(conversationId);
+
+        // Cast messages and polls to List<Map<String, Object>>
+        List<Map<String, Object>> messages = (List<Map<String, Object>>) allMessages.get("messages");
+        List<Map<String, Object>> polls = (List<Map<String, Object>>) allMessages.get("polls");
+
+        List<Map<String, Object>> messageList = new ArrayList<>();
+
+        // Merge messages and polls based on their timestamps
+        int messageIndex = 0, pollIndex = 0;
+        while (messageIndex < messages.size() && pollIndex < polls.size()) {
+            long messageTimestamp = Long.parseLong(messages.get(messageIndex).get("timestamp").toString());
+            long pollTimestamp = Long.parseLong(polls.get(pollIndex).get("timestamp").toString());
+
+            if (messageTimestamp < pollTimestamp) {
+                messageList.add(messages.get(messageIndex));
+                messageIndex++;
+            } else {
+                messageList.add(polls.get(pollIndex));
+                pollIndex++;
+            }
+        }
+
+        // Add remaining messages and polls
+        while (messageIndex < messages.size()) {
+            messageList.add(messages.get(messageIndex));
+            messageIndex++;
+        }
+        while (pollIndex < polls.size()) {
+            messageList.add(polls.get(pollIndex));
+            pollIndex++;
+        }
+
+        response.put("messages", messageList);
+        return response;
+    }
 }

@@ -108,9 +108,7 @@ public class UserService {
         for (Conversation conversation : conversations) {
             System.out.println("conversation = " + conversation);
             List<String> userIds = conversation.getUserIds();
-            if (userIds.size() != 2) {
-                continue;
-            }
+
             for (String otherUserId : userIds) {
                 System.out.println("otherUserId = " + otherUserId);
                 if (!otherUserId.equals(userId)) {

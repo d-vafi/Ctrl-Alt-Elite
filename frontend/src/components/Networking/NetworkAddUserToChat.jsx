@@ -52,7 +52,6 @@ const NetworkAddUserToChat = (props) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-lg w-96 max-h-[80%] overflow-y-auto">
-        {/* Modal Header */}
         <div className="flex justify-between items-center border-b p-4">
           <h2 className="text-lg font-semibold">Add User to Chat</h2>
           <button
@@ -63,7 +62,6 @@ const NetworkAddUserToChat = (props) => {
           </button>
         </div>
 
-        {/* Modal Body */}
         <div className="p-4">
           {potentialUsers.length > 0 ? (
             <ul className="space-y-4">
@@ -91,7 +89,6 @@ const NetworkAddUserToChat = (props) => {
           )}
         </div>
 
-        {/* Modal Footer */}
         <div className="border-t p-4 flex justify-end">
           <button
             onClick={handleCloseModal}

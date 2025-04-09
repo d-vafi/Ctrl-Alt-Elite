@@ -1,6 +1,10 @@
 package com.example.soen343.service;
 
+import com.example.soen343.controller.MessageController;
+import com.example.soen343.controller.PollController;
 import com.example.soen343.model.Conversation;
+import com.example.soen343.model.Message;
+import com.example.soen343.model.Poll;
 import com.example.soen343.model.User;
 import com.example.soen343.repository.ConversationRepository;
 import com.example.soen343.repository.UserRepository;
@@ -9,13 +13,21 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class ConversationService {
     @Autowired
     private ConversationRepository conversationRepository;
+
+    @Autowired
+    private MessageController messageController;
+
+    @Autowired
+    private PollController pollController;
 
     public List<Conversation> findByUserId(String userId) {
         return conversationRepository.findByUserId(userId);
@@ -51,6 +63,15 @@ public class ConversationService {
                 conversationRepository.save(conversation);
             }
         });
+    }
+
+    public HashMap<String, Object> getAllMessagesAndPolls(String conversationId) {
+        HashMap<String, Object> result = new HashMap<>();
+        Map<String, Object> messages = messageController.getMessagesByConversationId(conversationId);
+        Map<String, Object> polls = pollController.getPollsByConversationId(conversationId);
+        result.put("messages", messages.get("messages"));
+        result.put("polls", polls.get("polls"));
+        return result;
     }
 
 }

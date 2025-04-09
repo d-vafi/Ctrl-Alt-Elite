@@ -15,8 +15,6 @@ import PrivateRoute from "./components/PrivateRoute.jsx";
 import PaymentSuccess from "./pages/PaymentSuccess.jsx";
 import PaymentError from "./pages/PaymentError.jsx";
 
-import SwipePage from "./pages/SwipePage.jsx"; // Import the SwipePage component
-
 import UserDashboard from "./pages/UserDashboard.jsx";
 import Networking from "./pages/Networking.jsx";
 

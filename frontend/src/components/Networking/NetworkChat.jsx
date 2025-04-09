@@ -6,6 +6,8 @@ import AddIcon from "@mui/icons-material/Add";
 import PollIcon from "@mui/icons-material/Poll";
 import Modal from "react-modal";
 import NetworkAddUserToChat from "./NetworkAddUserToChat";
+import NetworkCreatePoll from "./NetworkCreatePoll";
+import NetworkPoll from "./NetworkPoll";
 Modal.setAppElement("#root");
 
 const NetworkChat = () => {
@@ -13,6 +15,7 @@ const NetworkChat = () => {
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [addUserModalIsOpen, setAddUserModalIsOpen] = useState(false);
+  const [createPollModalIsOpen, setCreatePollModalIsOpen] = useState(false);
   const userId = localStorage.getItem("userId");
   const messagesEndRef = useRef(null);
 
@@ -27,9 +30,10 @@ const NetworkChat = () => {
   const selectChat = async (conversationId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/message/conversation/${conversationId}`
+        `http://localhost:8080/api/conversation/getAllMessagesAndPolls/${conversationId}`
       );
       setMessages(response.data.messages);
+      console.log("Messages:", response.data);
       setSelectedConversation(
         conversations.find((c) => c.id === conversationId)
       );
@@ -47,7 +51,6 @@ const NetworkChat = () => {
         const fetchedConversations = response.data.conversations;
         setConversations(fetchedConversations);
 
-        // Automatically select the first conversation if it exists
         if (fetchedConversations.length > 0) {
           const firstConversationId = fetchedConversations[0].id;
           selectChat(firstConversationId);
@@ -61,11 +64,11 @@ const NetworkChat = () => {
     };
 
     fetchConversations();
-  }, [userId]); // Fetch conversations when userId changes (e.g., after login)
+  }, [userId]);
 
   const sendMessage = async (message) => {
     if (!message.trim() || !selectedConversation) {
-      return; // Prevent sending empty messages or if no conversation is selected
+      return;
     }
     try {
       await axios.post("http://localhost:8080/api/message/create", {
@@ -74,7 +77,7 @@ const NetworkChat = () => {
         content: message,
       });
       const response = await axios.get(
-        `http://localhost:8080/api/message/conversation/${selectedConversation.id}`
+        `http://localhost:8080/api/conversation/getAllMessagesAndPolls/${selectedConversation.id}`
       );
       setMessages(response.data.messages);
       setConversations((prevConversations) =>
@@ -144,9 +147,9 @@ const NetworkChat = () => {
                 />
                 <div className="ml-auto">
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       console.log("Opening modal");
-                      selectChat(conversation.id);
+                      await selectChat(conversation.id);
                       setAddUserModalIsOpen(true);
                     }}
                   >
@@ -179,17 +182,38 @@ const NetworkChat = () => {
               </div>
               <div className="flex-1 overflow-y-auto mb-2">
                 {messages.length > 0 ? (
-                  messages.map((message) => (
-                    <MessageBox
-                      key={message.id}
-                      title={selectedConversation.users[message.senderId]}
-                      position={message.senderId === userId ? "right" : "left"}
-                      text={message.content}
-                      date={new Date(message.timestamp * 1000)}
-                      type="text"
-                      avatar="/user-icon.png"
-                    />
-                  ))
+                  messages.map((message) => {
+                    if (message.votes) {
+                      return (
+                        <NetworkPoll
+                          id={message.id}
+                          senderId={message.senderId}
+                          key={message.id}
+                          title={message.title}
+                          votes={message.votes}
+                          isActive={message.isActive}
+                          startTime={message.startTime}
+                          endTime={message.endTime}
+                          isMultiselect={message.isMultiselect}
+                          isClosed={message.isClosed}
+                        />
+                      );
+                    } else {
+                      return (
+                        <MessageBox
+                          key={message.id}
+                          title={selectedConversation.users[message.senderId]}
+                          position={
+                            message.senderId === userId ? "right" : "left"
+                          }
+                          text={message.content}
+                          date={new Date(message.timestamp * 1000)}
+                          type="text"
+                          avatar="/user-icon.png"
+                        />
+                      );
+                    }
+                  })
                 ) : (
                   <p className="text-gray-600 text-center mt-4">
                     No messages in this conversation yet.
@@ -209,7 +233,13 @@ const NetworkChat = () => {
                     }
                   }}
                   leftButtons={
-                    <button className="mr-2">
+                    <button
+                      className="mr-2"
+                      onClick={async () => {
+                        console.log("Opening modal");
+                        setCreatePollModalIsOpen(true);
+                      }}
+                    >
                       <PollIcon />
                     </button>
                   }
@@ -247,6 +277,14 @@ const NetworkChat = () => {
           conversationId={selectedConversation?.id}
           addUserModalIsOpen={addUserModalIsOpen}
           setAddUserModalIsOpen={setAddUserModalIsOpen}
+        />
+      </Modal>
+      <Modal isOpen={createPollModalIsOpen}>
+        <NetworkCreatePoll
+          currentUserId={userId}
+          conversationId={selectedConversation?.id}
+          createPollModalIsOpen={createPollModalIsOpen}
+          setCreatePollModalIsOpen={setCreatePollModalIsOpen}
         />
       </Modal>
     </div>

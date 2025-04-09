@@ -5,7 +5,7 @@ const SwipeDeck = ({ initialUsers }) => {
   const [users, setUsers] = useState(initialUsers);
 
   useEffect(() => {
-    setUsers(initialUsers); // Update users when initialUsers changes
+    setUsers(initialUsers);
   }, [initialUsers]);
 
   const handleSwipeLeft = () => {
