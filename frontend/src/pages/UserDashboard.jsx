@@ -331,6 +331,23 @@ const UserDashboard = () => {
           )}
         </div>
       )}
+
+      {/* Organizer Tools */}
+      {hasRole("Organizer") && (
+        <div className="border-t pt-6 mt-6">
+          <h2 className="text-xl font-bold mb-3">Organizer Tools</h2>
+          <p className="text-gray-600 mb-2">
+            You can create and manage events through the{" "}
+            <a
+              href="/eventplanning"
+              className="text-blue-600 underline hover:text-blue-800"
+            >
+              Event Planning
+            </a>{" "}
+            page.
+          </p>
+        </div>
+      )}
     </div>
   );
 };

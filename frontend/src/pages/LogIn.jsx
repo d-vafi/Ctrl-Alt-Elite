@@ -24,11 +24,26 @@ const Login = () => {
         "http://localhost:8080/api/auth/login",
         formData
       );
+
       if (res.data.status === "success") {
+        const userId = res.data.userId;
+
         localStorage.setItem("token", "mock-token");
-        localStorage.setItem("userId", res.data.userId);
+        localStorage.setItem("userId", userId);
         localStorage.setItem("type", res.data.userType);
         setIsLoggedIn(true);
+
+        // 🔁 Get user profile to extract their type
+        const profileRes = await axios.get(
+          `http://localhost:8080/api/users/me?userId=${userId}`
+        );
+
+        const userType = profileRes.data?.user?.type || "";
+        localStorage.setItem("userType", userType);
+        const email = profileRes.data?.user?.email || "";
+        console.log(profileRes.data);
+        console.log(profileRes.data.user.email);
+        localStorage.setItem("email", email);
         navigate("/events");
       } else {
         alert("Invalid credentials");

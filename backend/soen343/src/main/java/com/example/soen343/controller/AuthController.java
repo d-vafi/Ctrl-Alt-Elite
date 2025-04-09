@@ -3,6 +3,7 @@ package com.example.soen343.controller;
 import com.example.soen343.model.User;
 import com.example.soen343.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -38,9 +39,15 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public User registerUser(@RequestBody User user) {
-        return userService.registerUser(user);
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
+        try {
+            User saved = userService.registerUser(user);
+            return ResponseEntity.ok(saved);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
+
 
     @PostMapping("/login")
     public Map<String, String> loginUser(@RequestBody User loginRequest) {

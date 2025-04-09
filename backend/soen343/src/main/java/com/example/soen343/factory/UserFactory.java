@@ -9,6 +9,7 @@ public class UserFactory {
         return switch (rawUser.getType().toLowerCase()) {
             case "attendee" -> new Attendee(rawUser);
             case "stakeholder" -> new Stakeholder(rawUser);
+            case "organizer" -> new Organizer(rawUser);
             default -> null; // fallback to User if unknown type
         };
     }
