@@ -3,7 +3,12 @@ import React, { useState, useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 
 const NetworkAddUserToChat = (props) => {
-  const { currentUserId, conversationId, setAddUserModalIsOpen } = props;
+  const {
+    currentUserId,
+    conversationId,
+    setAddUserModalIsOpen,
+    fetchConversations,
+  } = props;
   const [potentialUsers, setPotentialUsers] = useState([]);
 
   const fetchUsers = async () => {
@@ -39,6 +44,7 @@ const NetworkAddUserToChat = (props) => {
         setPotentialUsers((prevUsers) =>
           prevUsers.filter((user) => user.id !== userId)
         );
+        fetchConversations();
       }
     } catch (error) {
       console.error("Error adding user:", error);

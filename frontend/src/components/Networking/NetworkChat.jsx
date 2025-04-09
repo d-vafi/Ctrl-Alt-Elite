@@ -43,27 +43,27 @@ const NetworkChat = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchConversations = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/api/conversation/${userId}`
-        );
-        const fetchedConversations = response.data.conversations;
-        setConversations(fetchedConversations);
+  const fetchConversations = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/conversation/${userId}`
+      );
+      const fetchedConversations = response.data.conversations;
+      setConversations(fetchedConversations);
 
-        if (fetchedConversations.length > 0) {
-          const firstConversationId = fetchedConversations[0].id;
-          selectChat(firstConversationId);
-        } else {
-          setSelectedConversation(null);
-          setMessages([]);
-        }
-      } catch (error) {
-        console.error("Error fetching conversations:", error);
+      if (fetchedConversations.length > 0) {
+        const firstConversationId = fetchedConversations[0].id;
+        selectChat(firstConversationId);
+      } else {
+        setSelectedConversation(null);
+        setMessages([]);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching conversations:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchConversations();
   }, [userId]);
 
@@ -278,6 +278,7 @@ const NetworkChat = () => {
           conversationId={selectedConversation?.id}
           addUserModalIsOpen={addUserModalIsOpen}
           setAddUserModalIsOpen={setAddUserModalIsOpen}
+          fetchConversations={fetchConversations}
         />
       </Modal>
       <Modal isOpen={createPollModalIsOpen}>
@@ -286,6 +287,7 @@ const NetworkChat = () => {
           conversationId={selectedConversation?.id}
           createPollModalIsOpen={createPollModalIsOpen}
           setCreatePollModalIsOpen={setCreatePollModalIsOpen}
+          fetchMessages={() => fetchMessages(selectedConversation?.id)}
         />
       </Modal>
     </div>

@@ -7,7 +7,12 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 
 const NetworkCreatePoll = (props) => {
-  const { currentUserId, conversationId, setCreatePollModalIsOpen } = props;
+  const {
+    currentUserId,
+    conversationId,
+    setCreatePollModalIsOpen,
+    fetchMessages,
+  } = props;
 
   const [title, setTitle] = useState("");
   const [options, setOptions] = useState([""]);
@@ -61,6 +66,7 @@ const NetworkCreatePoll = (props) => {
       );
       if (response.data.success) {
         alert("Poll created successfully!");
+        fetchMessages();
         handleCloseModal();
       } else {
         alert("Failed to create poll.");
