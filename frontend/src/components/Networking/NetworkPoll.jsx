@@ -117,20 +117,20 @@ const NetworkPoll = (props) => {
   };
 
   return (
-    <div className="p-4 border rounded shadow bg-white">
-      <h3 className="text-lg font-bold">{title}</h3>
-      <p className="text-sm text-gray-500">
+    <div className="p-4 border rounded shadow bg-white dark:bg-gray-900 transition-colors">
+      <h3 className="text-lg font-bold text-gray-800 dark:text-white">{title}</h3>
+      <p className="text-sm text-gray-500 dark:text-gray-400">
         Starts: {new Date(parseInt(startTime, 10) * 1000).toLocaleString()}
       </p>
       {endTime && (
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           Ends: {new Date(parseInt(endTime, 10) * 1000).toLocaleString()}
         </p>
       )}
       {isActive ? (
         <div>
           {Object.entries(votes).map(([key, vote]) => (
-            <label key={key} className="block mb-2 cursor-pointer">
+            <label key={key} className="block mb-2 cursor-pointer text-gray-800 dark:text-gray-200">
               <input
                 type={isMultiselect ? "checkbox" : "radio"}
                 name="poll"
@@ -147,7 +147,7 @@ const NetworkPoll = (props) => {
             {!userAlreadyVoted().length > 0 && (
               <button
                 onClick={handleSubmitVote}
-                className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+                className="bg-blue-500 text-white px-4 py-2 rounded mt-2 dark:bg-blue-700"
                 disabled={userAlreadyVoted().length > 0}
               >
                 Submit Vote
@@ -156,7 +156,7 @@ const NetworkPoll = (props) => {
 
             {senderId === currentUserId && (
               <button
-                className="bg-red-500 text-white px-4 py-2 rounded mt-2"
+                className="bg-red-500 text-white px-4 py-2 rounded mt-2 dark:bg-red-700"
                 onClick={handleClosePoll}
               >
                 Close Poll
@@ -167,17 +167,17 @@ const NetworkPoll = (props) => {
       ) : (
         <div>
           {Math.floor(Date.now() / 1000) < parseInt(startTime, 10) ? (
-            <p className="text-yellow-500 mt-4">
+            <p className="text-yellow-500 dark:text-yellow-400 mt-4">
               This poll hasn't started yet.
             </p>
           ) : (
             <>
-              <p className="text-red-500 mt-4">This poll is closed.</p>
-              <p>Results</p>
+              <p className="text-red-500 dark:text-red-400 mt-4">This poll is closed.</p>
+              <p className="text-gray-800 dark:text-gray-200">Results</p>
               {Object.entries(votes).map(([key, vote]) => (
                 <div key={key} className="flex items-center mb-2">
-                  <span className="mr-2">{vote.option}</span>
-                  <span className="text-gray-500">
+                  <span className="mr-2 text-gray-800 dark:text-gray-200">{vote.option}</span>
+                  <span className="text-gray-500 dark:text-gray-400">
                     {vote.votes.length} vote{vote.votes.length !== 1 && "s"}
                   </span>
                 </div>

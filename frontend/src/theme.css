@@ -82,3 +82,29 @@ body {
       color: #a0aec0; /* Gray on hover */
     }
   }
+
+  .rce-citem {
+    background-color: red;
+}
+
+.rce-citem-body--top-title{
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000000; /* Change to your desired color */
+}
+.rce-container-mbox{
+  background-color: transparent;
+}
+
+.rce-container-citem {
+  background-color: white;
+  
+}
+.MuiFormControl-root {
+  /*make all text blue*/
+  color: blue;
+  /*make all text bold*/
+  font-weight: bold;
+  
+}
+

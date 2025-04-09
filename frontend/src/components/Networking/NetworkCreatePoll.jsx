@@ -13,6 +13,7 @@ const NetworkCreatePoll = (props) => {
     setCreatePollModalIsOpen,
     fetchMessages,
     updateConversation,
+    darkMode = false, // Add a darkMode prop with default value
   } = props;
 
   const [title, setTitle] = useState("");
@@ -79,15 +80,30 @@ const NetworkCreatePoll = (props) => {
     }
   };
 
+  // Dynamic class assignments based on dark mode
+  const modalClasses = `fixed inset-0 ${darkMode ? 'bg-gray-900' : 'bg-black'} bg-opacity-50 flex items-center justify-center z-50`;
+  const cardClasses = `${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-lg w-96 max-h-[80%] overflow-y-auto`;
+  const headerClasses = `flex justify-between items-center ${darkMode ? 'border-gray-700' : 'border-gray-200'} border-b p-4`;
+  const headingClasses = `text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`;
+  const closeButtonClasses = `${darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'}`;
+  const labelClasses = `block ${darkMode ? 'text-gray-300' : 'text-gray-700'} font-medium mb-2`;
+  const inputClasses = `w-full ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'} border rounded px-3 py-2`;
+  const addOptionClasses = `${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-500 hover:text-blue-700'}`;
+  const removeButtonClasses = `${darkMode ? 'text-red-400 hover:text-red-300' : 'text-red-500 hover:text-red-700'}`;
+  const cancelButtonClasses = `${darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-300 text-gray-700 hover:bg-gray-400'} px-4 py-2 rounded`;
+  const createButtonClasses = `${darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} text-white px-4 py-2 rounded`;
+  const footerClasses = `${darkMode ? 'border-gray-700' : 'border-gray-200'} border-t p-4 flex justify-end space-x-2`;
+  const checkboxLabelClasses = `${darkMode ? 'text-gray-300' : 'text-gray-800'}`;
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg shadow-lg w-96 max-h-[80%] overflow-y-auto">
-          <div className="flex justify-between items-center border-b p-4">
-            <h2 className="text-lg font-semibold">Create Poll</h2>
+      <div className={modalClasses}>
+        <div className={cardClasses}>
+          <div className={headerClasses}>
+            <h2 className={headingClasses}>Create Poll</h2>
             <button
               onClick={handleCloseModal}
-              className="text-gray-500 hover:text-gray-700"
+              className={closeButtonClasses}
             >
               <CloseIcon />
             </button>
@@ -95,20 +111,20 @@ const NetworkCreatePoll = (props) => {
 
           <div className="p-4 space-y-4">
             <div>
-              <label className="block text-gray-700 font-medium mb-2">
+              <label className={labelClasses}>
                 Poll Title
               </label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full border rounded px-3 py-2"
+                className={inputClasses}
                 placeholder="Enter poll title"
               />
             </div>
 
             <div>
-              <label className="block text-gray-700 font-medium mb-2">
+              <label className={labelClasses}>
                 Poll Options
               </label>
               {options.map((option, index) => (
@@ -117,12 +133,12 @@ const NetworkCreatePoll = (props) => {
                     type="text"
                     value={option}
                     onChange={(e) => handleOptionChange(index, e.target.value)}
-                    className="flex-1 border rounded px-3 py-2"
+                    className={inputClasses}
                     placeholder={`Option ${index + 1}`}
                   />
                   <button
                     onClick={() => handleRemoveOption(index)}
-                    className="text-red-500 hover:text-red-700"
+                    className={removeButtonClasses}
                   >
                     Remove
                   </button>
@@ -130,14 +146,14 @@ const NetworkCreatePoll = (props) => {
               ))}
               <button
                 onClick={handleAddOption}
-                className="text-blue-500 hover:text-blue-700"
+                className={addOptionClasses}
               >
                 Add Option
               </button>
             </div>
 
             <div>
-              <label className="block text-gray-700 font-medium mb-2">
+              <label className={labelClasses}>
                 Allow Multiple Selections
               </label>
               <input
@@ -146,21 +162,22 @@ const NetworkCreatePoll = (props) => {
                 onChange={(e) => setIsMultiselect(e.target.checked)}
                 className="mr-2"
               />
-              <span>Enable</span>
+              <span className={checkboxLabelClasses}>Enable</span>
             </div>
 
             <div>
-              <label className="block text-gray-700 font-medium mb-2">
+              <label className={labelClasses}>
                 Start Time
               </label>
               <DesktopDateTimePicker
                 label="Start Time"
                 value={startTime}
                 onChange={(newValue) => setStartTime(newValue)}
+                className={darkMode ? "dark-mode-date-picker" : ""}
                 renderInput={(params) => (
                   <input
                     {...params}
-                    className="w-full border rounded px-3 py-2"
+                    className={inputClasses}
                     placeholder="Select start time"
                   />
                 )}
@@ -168,17 +185,18 @@ const NetworkCreatePoll = (props) => {
             </div>
 
             <div>
-              <label className="block text-gray-700 font-medium mb-2">
+              <label className={labelClasses}>
                 End Time
               </label>
               <DesktopDateTimePicker
                 label="End Time"
                 value={endTime}
                 onChange={(newValue) => setEndTime(newValue)}
+                className={darkMode ? "dark-mode-date-picker" : ""}
                 renderInput={(params) => (
                   <input
                     {...params}
-                    className="w-full border rounded px-3 py-2"
+                    className={inputClasses}
                     placeholder="Select end time"
                   />
                 )}
@@ -186,16 +204,16 @@ const NetworkCreatePoll = (props) => {
             </div>
           </div>
 
-          <div className="border-t p-4 flex justify-end space-x-2">
+          <div className={footerClasses}>
             <button
               onClick={handleCloseModal}
-              className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+              className={cancelButtonClasses}
             >
               Cancel
             </button>
             <button
               onClick={handleCreatePoll}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              className={createButtonClasses}
             >
               Create Poll
             </button>
